@@ -250,14 +250,14 @@ button:focus-visible {
 
 table {
   width: 100%;
-  min-width: 980px;
+  min-width: 900px;
   border-collapse: collapse;
 }
 
 th,
 td {
   padding: 11px 12px;
-  border-bottom: 1px solid rgba(41, 64, 54, 0.72);
+  border-bottom: 1px solid rgba(75, 79, 88, 0.72);
   text-align: left;
   vertical-align: top;
 }
@@ -279,6 +279,18 @@ tbody tr:hover {
 
 .num {
   text-align: right;
+}
+
+.player-col,
+.player-cell {
+  min-width: 180px;
+  max-width: 230px;
+}
+
+.be-col,
+.be-cell {
+  width: 86px;
+  min-width: 78px;
 }
 
 .player-name {
@@ -425,5 +437,53 @@ tbody tr:hover {
 
   .result-count {
     margin-top: 8px;
+  }
+
+  table {
+    min-width: 760px;
+  }
+
+  th,
+  td {
+    padding: 9px 8px;
+  }
+
+  .player-col,
+  .player-cell {
+    min-width: 132px;
+    max-width: 150px;
+  }
+
+  .be-col,
+  .be-cell {
+    width: 68px;
+    min-width: 64px;
+  }
+
+  .player-name,
+  .positions,
+  .team-code {
+    font-size: 13px;
+  }
+
+  .player-sub,
+  .team-name,
+  .note {
+    font-size: 11px;
+  }
+
+  .be-value {
+    font-size: 16px;
+  }
+
+  .team-pill {
+    min-width: 108px;
+    gap: 6px;
+  }
+
+  .team-swatch {
+    width: 24px;
+    height: 16px;
+    flex-basis: 24px;
   }
 }

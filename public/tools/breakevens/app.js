@@ -276,10 +276,11 @@ function renderPlayerRow(player) {
   const [primary, secondary] = getTeamColours(player.team.abbrev);
   return `
     <tr>
-      <td>
+      <td class="player-cell">
         <div class="player-name">${escapeHtml(player.name)}</div>
         <div class="player-sub">${escapeHtml(status)}</div>
       </td>
+      <td class="num be-cell"><span class="be-value ${beClass}">${player.estimatedBe === null ? "-" : formatInteger(player.estimatedBe)}</span></td>
       <td>
         <span
           class="team-pill"
@@ -296,7 +297,6 @@ function renderPlayerRow(player) {
       <td><span class="positions">${escapeHtml(player.positions.join("/"))}</span></td>
       <td class="num">${formatMoney(player.price)}</td>
       <td class="num">${formatNumber(player.average, 1)}</td>
-      <td class="num"><span class="be-value ${beClass}">${player.estimatedBe === null ? "-" : formatInteger(player.estimatedBe)}</span></td>
       <td><span class="pill ${escapeAttribute(player.estimateConfidence)}">${escapeHtml(player.estimateConfidence)}</span></td>
       <td class="note">${escapeHtml(player.estimateNote ?? "")}</td>
     </tr>
