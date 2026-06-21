@@ -14,15 +14,13 @@
       :root {
         color-scheme: dark;
         --bg: #07100f;
-        --panel: rgba(13, 28, 25, 0.82);
-        --panel-strong: rgba(16, 38, 34, 0.94);
+        --panel: rgba(16, 38, 34, 0.94);
         --line: rgba(189, 255, 218, 0.16);
         --line-strong: rgba(189, 255, 218, 0.34);
         --text: #f2fff8;
         --muted: #a9beb4;
         --green: #b7ff68;
         --blue: #7ec8ff;
-        --maroon: #a92f52;
         --shadow: rgba(0, 0, 0, 0.34);
       }
 
@@ -36,8 +34,8 @@
         font-family: Outfit, Arial, sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 18% 8%, rgba(183, 255, 104, 0.14), transparent 27%),
-          radial-gradient(circle at 86% 12%, rgba(126, 200, 255, 0.12), transparent 24%),
+          radial-gradient(circle at 18% 8%, rgba(183, 255, 104, 0.13), transparent 27%),
+          radial-gradient(circle at 86% 12%, rgba(126, 200, 255, 0.11), transparent 24%),
           linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
           var(--bg);
@@ -50,7 +48,7 @@
       }
 
       .shell {
-        width: min(1120px, calc(100% - 32px));
+        width: min(1040px, calc(100% - 32px));
         margin: 0 auto;
         padding: 42px 0 52px;
       }
@@ -60,7 +58,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        padding-bottom: 44px;
+        padding-bottom: 48px;
       }
 
       .brand {
@@ -106,83 +104,38 @@
         background: rgba(255, 255, 255, 0.04);
       }
 
-      .hero {
-        display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
-        gap: 28px;
-        align-items: stretch;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 820px;
-        font-family: "Space Grotesk", Arial, sans-serif;
-        font-size: clamp(3.25rem, 8vw, 6.9rem);
-        line-height: 0.92;
-        letter-spacing: 0;
-      }
-
-      .intro {
-        margin: 24px 0 0;
-        max-width: 620px;
-        color: var(--muted);
-        font-size: clamp(1.02rem, 2vw, 1.2rem);
-        line-height: 1.62;
-      }
-
-      .hero-panel {
-        min-height: 100%;
-        padding: 24px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: 0 24px 70px var(--shadow);
-      }
-
-      .hero-panel h2,
-      .section-title h2 {
-        margin: 0;
-        font-family: "Space Grotesk", Arial, sans-serif;
-        font-size: 1.45rem;
-      }
-
-      .hero-panel p {
-        margin: 12px 0 0;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-
-      .status-list {
-        display: grid;
-        gap: 10px;
-        margin-top: 24px;
-      }
-
-      .status {
-        display: flex;
-        justify-content: space-between;
-        gap: 14px;
-        padding: 13px 14px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.035);
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .status strong {
-        color: var(--text);
-      }
-
       .section-title {
         display: flex;
         align-items: end;
         justify-content: space-between;
         gap: 18px;
-        margin: 56px 0 18px;
+        margin: 0 0 18px;
+      }
+
+      .section-title + .section-title {
+        margin-top: 56px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Space Grotesk", Arial, sans-serif;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 5vw, 4.25rem);
+        line-height: 1;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.75rem, 3vw, 2.35rem);
       }
 
       .section-title p {
+        max-width: 48ch;
         margin: 0;
         color: var(--muted);
         line-height: 1.5;
@@ -196,12 +149,12 @@
 
       .tile {
         position: relative;
-        min-height: 250px;
+        min-height: 240px;
         overflow: hidden;
         padding: 22px;
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: var(--panel-strong);
+        background: var(--panel);
         box-shadow: 0 20px 55px var(--shadow);
       }
 
@@ -210,10 +163,10 @@
         position: absolute;
         inset: 0;
         background:
-          linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 34%),
-          linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+          linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 34%),
+          linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
         background-size: auto, 100% 42px;
-        opacity: 0.7;
+        opacity: 0.72;
         pointer-events: none;
       }
 
@@ -230,14 +183,13 @@
       }
 
       .tile.tools {
-        min-height: 190px;
-        opacity: 0.82;
+        min-height: 170px;
+        margin-top: 18px;
+        opacity: 0.84;
       }
 
       .kicker {
         display: inline-flex;
-        align-items: center;
-        gap: 8px;
         color: var(--green);
         font-size: 0.76rem;
         font-weight: 800;
@@ -250,8 +202,7 @@
       }
 
       .tile h3 {
-        margin: 44px 0 12px;
-        font-family: "Space Grotesk", Arial, sans-serif;
+        margin: 42px 0 12px;
         font-size: clamp(1.75rem, 4vw, 2.5rem);
         line-height: 1;
       }
@@ -279,6 +230,10 @@
         color: var(--green);
       }
 
+      .tools-wrap {
+        margin-top: 56px;
+      }
+
       footer {
         margin-top: 54px;
         color: var(--muted);
@@ -303,18 +258,13 @@
           justify-content: space-between;
         }
 
-        .hero,
         .grid {
           grid-template-columns: 1fr;
         }
 
-        .hero-panel,
-        .tile {
-          padding: 18px;
-        }
-
         .tile {
           min-height: 220px;
+          padding: 18px;
         }
       }
     </style>
@@ -332,28 +282,12 @@
         </nav>
       </header>
 
-      <section class="hero" aria-labelledby="home-title">
-        <div>
-          <h1 id="home-title">Games and tools with a bit of edge.</h1>
-          <p class="intro">A growing collection of browser games and practical online tools. Built for quick sessions, clean interfaces, and ideas that are easy to share.</p>
-        </div>
-        <aside class="hero-panel" aria-label="Site overview">
-          <h2>Now live</h2>
-          <p>Two rugby league games are available now, with a tools section ready for future projects.</p>
-          <div class="status-list">
-            <div class="status"><span>Games</span><strong>2 live</strong></div>
-            <div class="status"><span>Tools</span><strong>Coming soon</strong></div>
-            <div class="status"><span>Updates</span><strong>In progress</strong></div>
-          </div>
-        </aside>
-      </section>
-
       <section id="games" aria-labelledby="games-title">
         <div class="section-title">
           <div>
-            <h2 id="games-title">Games</h2>
-            <p>Fan-made rugby league selection and simulation games.</p>
+            <h1 id="games-title">Games</h1>
           </div>
+          <p>Fan-made rugby league selection and simulation games.</p>
         </div>
         <div class="grid">
           <article class="tile nrl">
@@ -371,12 +305,12 @@
         </div>
       </section>
 
-      <section id="tools" aria-labelledby="tools-title">
+      <section id="tools" class="tools-wrap" aria-labelledby="tools-title">
         <div class="section-title">
           <div>
             <h2 id="tools-title">Tools</h2>
-            <p>Simple online tools will live here as they are released.</p>
           </div>
+          <p>Simple online tools will live here as they are released.</p>
         </div>
         <article class="tile tools">
           <span class="kicker">Coming soon</span>
