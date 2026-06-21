@@ -1,4 +1,4 @@
-const ENDPOINTS = ["/api/breakevens-data.json", "/.netlify/functions/breakevens-data", "/api/breakevens-data"];
+const ENDPOINTS = ["api/breakevens-data.json", "/api/breakevens-data.json", "/.netlify/functions/breakevens-data", "/api/breakevens-data"];
 
 const TEAM_COLOURS = {
   BRI: ["#6a1e3a", "#f7c948"],
@@ -134,7 +134,10 @@ async function fetchData(refresh = false) {
   for (const endpoint of ENDPOINTS) {
     const url = refresh ? `${endpoint}?refresh=1` : endpoint;
     try {
-      const response = await fetch(url, { headers: { Accept: "application/json" } });
+      const response = await fetch(url, {
+        cache: refresh ? "reload" : "no-cache",
+        headers: { Accept: "application/json" }
+      });
       if (!response.ok) throw new Error(`${endpoint} returned ${response.status}`);
       const text = await response.text();
       const trimmed = text.trimStart();
