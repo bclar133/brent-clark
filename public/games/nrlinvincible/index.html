@@ -9,8 +9,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="styles.css?v=ratings-merge-3-20260616" />
+    <style>
+      .site-home-link {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 80;
+        display: inline-flex;
+        padding: 8px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        color: #f4fff7;
+        background: rgba(5, 12, 9, 0.82);
+        font: 800 12px/1 Outfit, Arial, sans-serif;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        text-transform: uppercase;
+        backdrop-filter: blur(8px);
+      }
+
+      .site-home-link:hover {
+        border-color: rgba(183, 255, 104, 0.65);
+        color: #b7ff68;
+      }
+
+      @media (max-width: 720px) {
+        .site-home-link {
+          position: static;
+          margin: 10px 10px 0;
+        }
+      }
+    </style>
   </head>
   <body>
+    <a class="site-home-link" href="/">Brent Clark Home</a>
     <main id="app" class="shell"></main>
     <script src="player-data.js?v=position-audit-20260613"></script>
     <script>
