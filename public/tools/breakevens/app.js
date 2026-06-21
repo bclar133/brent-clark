@@ -1,4 +1,4 @@
-const ENDPOINTS = ["/.netlify/functions/breakevens-data", "/api/breakevens-data"];
+const ENDPOINTS = ["/api/breakevens-data.json", "/.netlify/functions/breakevens-data", "/api/breakevens-data"];
 
 const TEAM_COLOURS = {
   BRI: ["#6a1e3a", "#f7c948"],
@@ -136,7 +136,10 @@ async function fetchData(refresh = false) {
     try {
       const response = await fetch(url, { headers: { Accept: "application/json" } });
       if (!response.ok) throw new Error(`${endpoint} returned ${response.status}`);
-      return response.json();
+      const text = await response.text();
+      const trimmed = text.trimStart();
+      if (trimmed.startsWith("<")) throw new Error(`${endpoint} returned HTML, not JSON`);
+      return JSON.parse(text);
     } catch (error) {
       errors.push(error instanceof Error ? error.message : String(error));
     }

@@ -1,0 +1,31 @@
+﻿name: Update Breakevens Data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Generate public breakevens data
+        run: BREAKEVENS_DATA_OUTPUT=public/api/breakevens-data.json node scripts/generate-breakevens-data.mjs
+      - name: Commit updated data
+        run: |
+          if [ -n "$(git status --porcelain public/api/breakevens-data.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/api/breakevens-data.json
+            git commit -m "Update breakevens data"
+            git push
+          else
+            echo "Breakevens data is already current."
+          fi
