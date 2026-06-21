@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NRL Invincible">
+  <rect width="512" height="512" rx="96" fill="#101311"/>
+  <path d="M68 52h376l36 280-224 136L32 332 68 52z" fill="#17251c" stroke="#ffd166" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M94 82h324l28 226-190 116L66 308 94 82z" fill="#142119" stroke="#b7ef5d" stroke-opacity=".32" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M168 132h176v112" fill="none" stroke="#ffd166" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M256 132v206" fill="none" stroke="#ffd166" stroke-width="28" stroke-linecap="round"/>
+  <circle cx="256" cy="304" r="84" fill="#101311" stroke="#b7ef5d" stroke-width="12"/>
+  <text x="256" y="342" text-anchor="middle" font-family="Impact, Arial Black, sans-serif" font-size="132" font-weight="900" fill="#b7ef5d">I</text>
+  <path d="M132 392c42 24 83 36 124 36s82-12 124-36" fill="none" stroke="#67d8d0" stroke-width="10" stroke-linecap="round" opacity=".65"/>
+</svg>
