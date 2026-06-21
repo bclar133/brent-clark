@@ -11,50 +11,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <style>
-      .site-topbar {
+      .site-footer-link {
         width: min(1180px, calc(100% - 24px));
-        margin: 10px auto 0;
+        margin: 8px auto 22px;
         display: flex;
-        justify-content: flex-start;
-      }
-
-      .site-home-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 10px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 8px;
-        color: rgba(244, 255, 247, 0.82);
-        background: rgba(5, 12, 9, 0.54);
+        justify-content: center;
+        color: rgba(244, 255, 247, 0.62);
         font: 800 11px/1 Outfit, Arial, sans-serif;
         letter-spacing: 0.04em;
-        text-decoration: none;
         text-transform: uppercase;
       }
 
-      .site-home-link::before {
-        content: "<";
+      .site-footer-link a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .site-footer-link a:hover {
         color: #b7ff68;
-      }
-
-      .site-home-link:hover {
-        border-color: rgba(183, 255, 104, 0.54);
-        color: #f4fff7;
-      }
-
-      @media (max-width: 720px) {
-        .site-topbar {
-          margin-top: 8px;
-        }
       }
     </style>
   </head>
   <body class="neutral">
-    <nav class="site-topbar" aria-label="Site navigation">
-      <a class="site-home-link" href="/">Home</a>
-    </nav>
     <main id="app" class="app-shell"></main>
+    <footer class="site-footer-link">
+      <a href="/">Brent Clark Home</a>
+    </footer>
     <script src="origin-data.js?v=20260619immortalstate"></script>
     <script src="app.js?v=20260619immortalstate"></script>
   </body>
