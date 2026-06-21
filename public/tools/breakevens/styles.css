@@ -1,17 +1,17 @@
 :root {
   color-scheme: dark;
-  --bg: #07100c;
-  --panel: #101b15;
-  --panel-2: #16231c;
-  --line: #294036;
-  --text: #f4fff7;
-  --muted: #a9bcae;
-  --lime: #adff55;
-  --green: #35c878;
-  --gold: #ffd166;
-  --red: #ff725c;
-  --blue: #70d7ff;
-  --shadow: 0 18px 54px rgba(0, 0, 0, 0.3);
+  --bg: #202124;
+  --panel: #2b2d31;
+  --panel-2: #343740;
+  --line: #4b4f58;
+  --text: #fff8e7;
+  --muted: #bfc6c9;
+  --lime: #f4d35e;
+  --green: #7bdff2;
+  --gold: #f4d35e;
+  --red: #ee6352;
+  --blue: #7bdff2;
+  --shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
 }
 
 * {
@@ -27,10 +27,10 @@ body {
   min-height: 100%;
   margin: 0;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    radial-gradient(circle at 18% 0%, rgba(173, 255, 85, 0.16), transparent 28rem),
-    #07100c;
+    linear-gradient(rgba(255, 248, 231, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 248, 231, 0.035) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(244, 211, 94, 0.08), transparent 34rem),
+    var(--bg);
   background-size:
     44px 44px,
     44px 44px,
@@ -120,9 +120,9 @@ h2 {
 .policy-panel,
 .table-panel,
 .control-band {
-  border: 1px solid rgba(173, 255, 85, 0.2);
+  border: 1px solid rgba(244, 211, 94, 0.28);
   border-radius: 8px;
-  background: rgba(16, 27, 21, 0.9);
+  background: rgba(43, 45, 49, 0.92);
   box-shadow: var(--shadow);
 }
 
@@ -154,7 +154,7 @@ h2 {
   padding: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #0c1711;
+  background: #23252a;
 }
 
 .platform-button,
@@ -174,8 +174,8 @@ h2 {
 }
 
 .platform-button.is-active {
-  background: linear-gradient(135deg, var(--lime), var(--green));
-  color: #07100c;
+  background: linear-gradient(135deg, var(--lime), var(--red));
+  color: #202124;
 }
 
 .field {
@@ -200,7 +200,7 @@ select {
   min-height: 42px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #0c1711;
+  background: #23252a;
   color: var(--text);
   padding: 9px 10px;
 }
@@ -208,7 +208,7 @@ select {
 input:focus,
 select:focus,
 button:focus-visible {
-  outline: 2px solid rgba(173, 255, 85, 0.75);
+  outline: 2px solid rgba(123, 223, 242, 0.78);
   outline-offset: 2px;
 }
 
@@ -216,12 +216,12 @@ button:focus-visible {
   width: 100%;
   min-height: 42px;
   padding: 9px 14px;
-  background: #233529;
-  border: 1px solid rgba(173, 255, 85, 0.2);
+  background: #3b3e45;
+  border: 1px solid rgba(244, 211, 94, 0.24);
 }
 
 .refresh-button:hover {
-  background: #2b4233;
+  background: #494d56;
 }
 
 .table-panel {
@@ -235,7 +235,7 @@ button:focus-visible {
   gap: 16px;
   padding: 18px;
   border-bottom: 1px solid var(--line);
-  background: rgba(22, 35, 28, 0.86);
+  background: rgba(52, 55, 64, 0.88);
 }
 
 .result-count {
@@ -266,7 +266,7 @@ th {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: #142119;
+  background: #2f3239;
   color: var(--muted);
   font-size: 12px;
   font-weight: 900;
@@ -274,7 +274,7 @@ th {
 }
 
 tbody tr:hover {
-  background: rgba(173, 255, 85, 0.055);
+  background: rgba(123, 223, 242, 0.07);
 }
 
 .num {
@@ -339,7 +339,7 @@ tbody tr:hover {
 }
 
 .be-value.good {
-  color: var(--green);
+  color: var(--blue);
 }
 
 .be-value.warn {
@@ -362,18 +362,18 @@ tbody tr:hover {
 }
 
 .pill.medium {
-  background: rgba(53, 200, 120, 0.16);
-  color: #8cf0b7;
+  background: rgba(123, 223, 242, 0.16);
+  color: #a8edfa;
 }
 
 .pill.low {
-  background: rgba(255, 209, 102, 0.15);
+  background: rgba(244, 211, 94, 0.15);
   color: var(--gold);
 }
 
 .pill.unavailable {
-  background: rgba(255, 114, 92, 0.15);
-  color: #ffb2a5;
+  background: rgba(238, 99, 82, 0.16);
+  color: #ffb9af;
 }
 
 .note {
