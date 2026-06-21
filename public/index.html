@@ -174,6 +174,21 @@
         position: relative;
       }
 
+      .tile-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 42px 0 12px;
+      }
+
+      .tile-icon {
+        width: 58px;
+        height: 58px;
+        flex: 0 0 58px;
+        border-radius: 13px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      }
+
       .tile.nrl {
         border-color: rgba(183, 255, 104, 0.26);
       }
@@ -202,7 +217,7 @@
       }
 
       .tile h3 {
-        margin: 42px 0 12px;
+        margin: 0;
         font-size: clamp(1.75rem, 4vw, 2.5rem);
         line-height: 1;
       }
@@ -275,6 +290,16 @@
           min-height: 220px;
           padding: 18px;
         }
+
+        .tile-title {
+          gap: 12px;
+        }
+
+        .tile-icon {
+          width: 48px;
+          height: 48px;
+          flex-basis: 48px;
+        }
       }
     </style>
   </head>
@@ -301,13 +326,19 @@
         <div class="grid">
           <article class="tile nrl">
             <span class="kicker">Season simulator</span>
-            <h3>NRL Invincible</h3>
+            <div class="tile-title">
+              <img class="tile-icon" src="/games/nrlinvincible/favicon.svg" alt="" width="58" height="58" />
+              <h3>NRL Invincible</h3>
+            </div>
             <p>Draft a 13-player squad, choose a style, play through the season and finals, and see if you can go undefeated.</p>
             <a class="tile-link" href="/games/nrlinvincible/">Play NRL Invincible</a>
           </article>
           <article class="tile origin">
             <span class="kicker">Origin series</span>
-            <h3>Origin Invincible</h3>
+            <div class="tile-title">
+              <img class="tile-icon" src="/games/origin/favicon.svg" alt="" width="58" height="58" />
+              <h3>Origin Invincible</h3>
+            </div>
             <p>Choose Queensland or New South Wales, build an all-era XIII, and chase a series win without conceding a point.</p>
             <a class="tile-link" href="/games/origin/">Play Origin Invincible</a>
           </article>
@@ -323,7 +354,10 @@
         </div>
         <article class="tile tools">
           <span class="kicker">Fantasy tool</span>
-          <h3>NRL Breakeven Lab</h3>
+          <div class="tile-title">
+            <img class="tile-icon" src="/tools/breakevens/favicon.svg" alt="" width="58" height="58" />
+            <h3>NRL Breakeven Lab</h3>
+          </div>
           <p>Compare NRL Fantasy and NRL SuperCoach players using public data and clearly labelled estimated breakevens.</p>
           <a class="tile-link" href="/tools/breakevens/">Open Breakeven Lab</a>
         </article>
