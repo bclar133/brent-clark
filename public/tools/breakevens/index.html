@@ -1,1 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NRL Breakeven Lab | Brent Clark</title>
+    <meta
+      name="description"
+      content="A lawful NRL Fantasy and NRL SuperCoach breakeven research tool using official public data and clearly labelled estimates."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <a class="back-link" href="/">Back to Brent Clark Games</a>
+        <div class="hero-grid">
+          <div>
+            <p class="kicker">Prototype</p>
+            <h1>NRL Breakeven Lab</h1>
+            <p class="intro">
+              A live NRL Fantasy and NRL SuperCoach research table that uses public official data only.
+              Paid Coach and SuperCoach Plus breakevens are not requested or redistributed.
+            </p>
+          </div>
+          <aside class="policy-panel" aria-label="Data policy">
+            <p class="panel-label">Data policy</p>
+            <p>
+              Player, price and score inputs come from unauthenticated public feeds. Breakevens are
+              labelled as estimates until a licensed exact source is available.
+            </p>
+          </aside>
+        </div>
+      </header>
 
+      <section class="control-band" aria-label="Controls">
+        <div class="platform-switch" role="tablist" aria-label="Platform">
+          <button class="platform-button is-active" type="button" data-platform="fantasy">NRL Fantasy</button>
+          <button class="platform-button" type="button" data-platform="supercoach">NRL SuperCoach</button>
+        </div>
+        <label class="field">
+          <span>View by</span>
+          <select id="filterModeSelect">
+            <option value="search">Player search</option>
+            <option value="team">Team</option>
+            <option value="position">Position</option>
+          </select>
+        </label>
+        <label class="field filter-control" data-filter-control="search">
+          <span>Player search</span>
+          <input id="searchInput" type="search" placeholder="Player name" autocomplete="off" />
+        </label>
+        <label class="field filter-control is-hidden" data-filter-control="team">
+          <span>Team</span>
+          <select id="teamSelect"></select>
+        </label>
+        <label class="field filter-control is-hidden" data-filter-control="position">
+          <span>Position</span>
+          <select id="positionSelect"></select>
+        </label>
+        <label class="field">
+          <span>Confidence</span>
+          <select id="confidenceSelect">
+            <option value="all">All</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="unavailable">Unavailable</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Sort</span>
+          <select id="sortSelect">
+            <option value="be">Lowest estimated BE</option>
+            <option value="be-desc">Highest estimated BE</option>
+            <option value="price-desc">Highest price</option>
+            <option value="price">Lowest price</option>
+            <option value="name">Name</option>
+            <option value="team">Team</option>
+          </select>
+        </label>
+        <button id="refreshButton" class="refresh-button" type="button">Refresh</button>
+      </section>
+
+      <section class="table-panel" aria-label="Player breakeven table">
+        <div class="table-header">
+          <div>
+            <p class="panel-label">Players</p>
+            <h2 id="tableTitle">Estimated breakevens</h2>
+          </div>
+          <p id="resultCount" class="result-count"></p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Pos</th>
+                <th class="num">Price</th>
+                <th class="num">Avg</th>
+                <th class="num">Est. BE</th>
+                <th>Confidence</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="playersBody">
+              <tr>
+                <td colspan="8" class="empty-cell">Loading players...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <p>
+          This is not affiliated with or endorsed by NRL Fantasy, the NRL, SuperCoach, News Corp, or
+          Virtual Sports. It is a prototype for lawful public-data research.
+        </p>
+      </footer>
+    </main>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
