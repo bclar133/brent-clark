@@ -3,21 +3,43 @@
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 */6 * * *"
+    # GitHub cron is UTC: Tuesday at 8:17 am in Brisbane.
+    - cron: "17 22 * * 1"
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-breakevens-data
+  cancel-in-progress: false
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
       - name: Generate public breakevens data
-        run: BREAKEVENS_DATA_OUTPUT=public/api/breakevens-data.json node scripts/generate-breakevens-data.mjs
+        env:
+          BREAKEVENS_DATA_OUTPUT: public/api/breakevens-data.json
+        run: |
+          for attempt in 1 2 3 4; do
+            if node scripts/generate-breakevens-data.mjs; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 4 ]; then
+              echo "Data generation failed after ${attempt} attempts."
+              exit 1
+            fi
+
+            wait_seconds=$((attempt * 30))
+            echo "Data source request failed; retrying in ${wait_seconds}s..."
+            sleep "$wait_seconds"
+          done
       - name: Commit updated data
         run: |
           if [ -n "$(git status --porcelain public/api/breakevens-data.json)" ]; then
