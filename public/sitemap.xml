@@ -2,7 +2,7 @@
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.brent-clark.com/</loc>
-    <lastmod>2026-06-21</lastmod>
+    <lastmod>2026-06-29</lastmod>
   </url>
   <url>
     <loc>https://www.brent-clark.com/games/nrlinvincible/</loc>
@@ -11,5 +11,9 @@
   <url>
     <loc>https://www.brent-clark.com/games/origin/</loc>
     <lastmod>2026-06-21</lastmod>
+  </url>
+  <url>
+    <loc>https://www.brent-clark.com/games/testmatch/</loc>
+    <lastmod>2026-06-29</lastmod>
   </url>
 </urlset>

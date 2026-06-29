@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Brent Clark</title>
-    <meta name="description" content="Games and online tools by Brent Clark." />
+    <meta name="description" content="Sports games and online tools by Brent Clark." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.brent-clark.com/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,7 +48,7 @@
       }
 
       .shell {
-        width: min(1040px, calc(100% - 32px));
+        width: min(1180px, calc(100% - 32px));
         margin: 0 auto;
         padding: 42px 0 52px;
       }
@@ -143,7 +143,7 @@
 
       .grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
       }
 
@@ -197,6 +197,10 @@
         border-color: rgba(126, 200, 255, 0.3);
       }
 
+      .tile.testmatch {
+        border-color: rgba(246, 207, 98, 0.34);
+      }
+
       .tile.tools {
         min-height: 170px;
         margin-top: 18px;
@@ -214,6 +218,10 @@
 
       .origin .kicker {
         color: var(--blue);
+      }
+
+      .testmatch .kicker {
+        color: #f6cf62;
       }
 
       .tile h3 {
@@ -265,6 +273,16 @@
         color: var(--green);
       }
 
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .tile.testmatch {
+          grid-column: 1 / -1;
+        }
+      }
+
       @media (max-width: 780px) {
         .shell {
           width: min(100% - 24px, 620px);
@@ -284,6 +302,10 @@
 
         .grid {
           grid-template-columns: 1fr;
+        }
+
+        .tile.testmatch {
+          grid-column: auto;
         }
 
         .tile {
@@ -321,7 +343,7 @@
           <div>
             <h1 id="games-title">Games</h1>
           </div>
-          <p>Fan-made rugby league selection and simulation games.</p>
+          <p>Fan-made sports selection and simulation games built around all-era teams and unbeaten challenges.</p>
         </div>
         <div class="grid">
           <article class="tile nrl">
@@ -341,6 +363,15 @@
             </div>
             <p>Choose Queensland or New South Wales, build an all-era XIII, and chase a series win without conceding a point.</p>
             <a class="tile-link" href="/games/origin/">Play Origin Invincible</a>
+          </article>
+          <article class="tile testmatch">
+            <span class="kicker">Test cricket series</span>
+            <div class="tile-title">
+              <img class="tile-icon" src="/games/testmatch/favicon.svg" alt="" width="58" height="58" />
+              <h3>Test Match Invincible</h3>
+            </div>
+            <p>Draft an all-era Test XI one country and decade at a time, then try to win every Test by an innings.</p>
+            <a class="tile-link" href="/games/testmatch/">Play Test Match Invincible</a>
           </article>
         </div>
       </section>
