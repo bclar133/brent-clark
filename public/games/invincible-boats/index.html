@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#073f57">
+  <meta name="description" content="Watch 2–10 colourful sailing boats race around a fresh random course in this spectator sailing game.">
+  <meta property="og:title" content="Invincible Boats">
+  <meta property="og:description" content="Name your fleet, pick a race format and watch the wind decide.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.brent-clark.com/games/invincible-boats/">
+  <meta property="og:image" content="https://www.brent-clark.com/games/invincible-boats/assets/invincible-boats-icon-512.png">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://www.brent-clark.com/games/invincible-boats/">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <title>Invincible Boats</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="setupView" class="setup-view" aria-labelledby="gameTitle">
+      <div class="setup-copy">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="brand-sail brand-sail--left"></span>
+          <span class="brand-sail brand-sail--right"></span>
+          <span class="brand-hull"></span>
+        </div>
+        <p class="eyebrow">A pocket-sized sailing spectacle</p>
+        <h1 id="gameTitle">Invincible<br><em>Boats</em></h1>
+        <p class="intro">Pick your fleet, name the skippers, then watch the wind decide. Every race brings a fresh coast, course and comeback.</p>
+        <div class="feature-row" aria-label="Game highlights">
+          <span><b>2–10</b> boats</span>
+          <span><b>~40</b> seconds</span>
+          <span><b>∞</b> courses</span>
+        </div>
+      </div>
+
+      <form id="setupForm" class="setup-card">
+        <div class="card-heading">
+          <div>
+            <p class="step-label">Race desk</p>
+            <h2>Build your fleet</h2>
+          </div>
+          <button id="soundToggleSetup" class="icon-button" type="button" aria-label="Turn sound off" title="Toggle sound">
+            <span class="sound-icon">♪</span>
+          </button>
+        </div>
+
+        <div class="counter-grid">
+          <div class="field-group">
+            <label for="boatCount">Boats</label>
+            <div class="stepper">
+              <button type="button" data-stepper="boats" data-delta="-1" aria-label="Fewer boats">−</button>
+              <output id="boatCount" aria-live="polite">6</output>
+              <button type="button" data-stepper="boats" data-delta="1" aria-label="More boats">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="humanCount">Your players</label>
+            <div class="stepper">
+              <button type="button" data-stepper="humans" data-delta="-1" aria-label="Fewer human players">−</button>
+              <output id="humanCount" aria-live="polite">2</output>
+              <button type="button" data-stepper="humans" data-delta="1" aria-label="More human players">+</button>
+            </div>
+          </div>
+          <div class="field-group pc-total">
+            <span class="field-label">Computer</span>
+            <strong id="pcCount">4</strong>
+          </div>
+        </div>
+
+        <div class="race-format">
+          <span class="field-label">Race format</span>
+          <div class="mode-toggle" role="group" aria-label="Race format">
+            <button class="is-active" type="button" data-race-mode="single" aria-pressed="true">
+              <strong>Single race</strong><small>One dash for glory</small>
+            </button>
+            <button type="button" data-race-mode="tournament" aria-pressed="false">
+              <strong>Tournament</strong><small>Points over several races</small>
+            </button>
+          </div>
+          <div id="tournamentOptions" class="tournament-options" hidden>
+            <div>
+              <strong>Championship length</strong>
+              <small>20 points for a win</small>
+            </div>
+            <div class="stepper compact-stepper">
+              <button type="button" data-stepper="races" data-delta="-1" aria-label="Fewer tournament races">−</button>
+              <output id="tournamentRaceCount" aria-live="polite">5 races</output>
+              <button type="button" data-stepper="races" data-delta="1" aria-label="More tournament races">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="roster-heading">
+          <span>Race roster</span>
+          <button id="shuffleNames" type="button">Surprise me</button>
+        </div>
+        <div id="roster" class="roster"></div>
+
+        <button class="start-button" type="submit">
+          <span>Set sail</span>
+          <span class="start-arrow" aria-hidden="true">↗</span>
+        </button>
+        <p class="fine-print">No controls needed — grab a good seat and cheer.</p>
+        <a class="creator-link" href="https://www.brent-clark.com/">← Visit brent-clark.com</a>
+      </form>
+    </section>
+
+    <section id="raceView" class="race-view" hidden aria-label="Sailing race">
+      <canvas id="raceCanvas"></canvas>
+
+      <header class="race-header">
+        <div class="race-brand">
+          <div class="mini-sail" aria-hidden="true"></div>
+          <div>
+            <span>Invincible</span>
+            <strong>Boats</strong>
+          </div>
+        </div>
+        <div class="course-pill">
+          <span id="courseIcon">∞</span>
+          <div>
+            <small id="courseContext">Today’s course</small>
+            <strong id="courseName">Figure Eight</strong>
+          </div>
+        </div>
+        <div class="race-actions">
+          <button id="soundToggleRace" class="glass-button" type="button" aria-label="Turn sound off">♪</button>
+          <button id="exitRace" class="glass-button exit-button" type="button">End race</button>
+        </div>
+      </header>
+
+      <aside class="leaderboard" aria-label="Live standings">
+        <div class="leaderboard-title">
+          <div>
+            <small>Live</small>
+            <strong>Standings</strong>
+          </div>
+          <span class="live-dot"></span>
+        </div>
+        <ol id="standingsList"></ol>
+      </aside>
+
+      <div class="race-clock" aria-live="polite">
+        <small>Race time</small>
+        <strong id="raceTime">00:00.0</strong>
+      </div>
+
+      <div id="countdown" class="countdown" aria-live="assertive"></div>
+      <div id="gustNotice" class="gust-notice" aria-live="polite"></div>
+
+      <div id="finishOverlay" class="finish-overlay" hidden>
+        <div class="winner-card">
+          <p id="resultKicker" class="winner-kicker">First across the line</p>
+          <div id="winnerBoat" class="winner-boat" aria-hidden="true"></div>
+          <h2 id="resultTitle">Maya wins!</h2>
+          <p id="winnerDetail">A masterclass on the water.</p>
+          <ol id="finalPodium" class="final-podium"></ol>
+          <div id="tournamentResults" class="tournament-results" hidden>
+            <div class="tournament-table-head"><span>Overall</span><span>Race</span><span>Total</span></div>
+            <ol id="tournamentTable"></ol>
+          </div>
+          <div class="winner-actions">
+            <button id="raceAgain" class="primary-small" type="button">Race again</button>
+            <button id="newFleet" class="secondary-small" type="button">New fleet</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
