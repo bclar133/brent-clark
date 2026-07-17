@@ -257,6 +257,15 @@
         margin-top: 56px;
       }
 
+      .tools-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 18px;
+      }
+
+      .tools-grid .tile.tools {
+        margin-top: 0;
+      }
+
       footer {
         margin-top: 54px;
         color: var(--muted);
@@ -381,17 +390,28 @@
           <div>
             <h2 id="tools-title">Tools</h2>
           </div>
-          <p>Simple online tools for rugby league projects.</p>
+          <p>Simple online tools for sports, data projects, and travel planning.</p>
         </div>
-        <article class="tile tools">
-          <span class="kicker">Fantasy tool</span>
-          <div class="tile-title">
-            <img class="tile-icon" src="/tools/breakevens/favicon.svg" alt="" width="58" height="58" />
-            <h3>NRL Breakeven Lab</h3>
-          </div>
-          <p>Compare NRL Fantasy and NRL SuperCoach players using public data and clearly labelled estimated breakevens.</p>
-          <a class="tile-link" href="/tools/breakevens/">Open Breakeven Lab</a>
-        </article>
+        <div class="grid tools-grid">
+          <article class="tile tools">
+            <span class="kicker">Fantasy tool</span>
+            <div class="tile-title">
+              <img class="tile-icon" src="/tools/breakevens/favicon.svg" alt="" width="58" height="58" />
+              <h3>NRL Breakeven Lab</h3>
+            </div>
+            <p>Compare NRL Fantasy and NRL SuperCoach players using public data and clearly labelled estimated breakevens.</p>
+            <a class="tile-link" href="/tools/breakevens/">Open Breakeven Lab</a>
+          </article>
+          <article class="tile tools">
+            <span class="kicker">Golf course map</span>
+            <div class="tile-title">
+              <img class="tile-icon" src="/tools/aussie-golf-guide/assets/icon.svg" alt="" width="58" height="58" />
+              <h3>Aussie Golf Guide</h3>
+            </div>
+            <p>Browse Australian golf courses on an interactive map with search, satellite view, course links, rankings, and price guides.</p>
+            <a class="tile-link" href="/tools/aussie-golf-guide/">Open Aussie Golf Guide</a>
+          </article>
+        </div>
       </section>
 
       <footer>

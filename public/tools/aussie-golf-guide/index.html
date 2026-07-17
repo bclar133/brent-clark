@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b3d26" />
+    <title>Aussie Golf Guide | Brent Clark</title>
+    <meta name="description" content="Search and browse Australian golf courses on an interactive map with course links, satellite view, rankings, and price guides." />
+    <link rel="canonical" href="https://www.brent-clark.com/tools/aussie-golf-guide/" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&amp;display=swap" rel="stylesheet" />
+    <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="course-panel" aria-label="Golf course search and details">
+        <header class="app-header">
+          <p class="working-title">Australia course map</p>
+          <h1>Aussie Golf Guide</h1>
+        </header>
+
+        <section class="search-tools" aria-label="Search controls">
+          <label class="search-field">
+            <span>Search</span>
+            <input
+              id="searchInput"
+              type="search"
+              autocomplete="off"
+              placeholder="Course, town, travel region, state"
+            />
+          </label>
+
+          <div class="filter-grid">
+            <label>
+              <span>State</span>
+              <select id="stateFilter"></select>
+            </label>
+            <label>
+              <span>Price</span>
+              <select id="priceFilter">
+                <option value="all">Any price</option>
+                <option value="2">Value - up to $$</option>
+                <option value="3">Standard - up to $$$</option>
+                <option value="4">Premium - up to $$$$</option>
+                <option value="5">Destination - up to $$$$$</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button id="nearMeButton" class="secondary-button" type="button">Near me</button>
+            <button id="clearButton" class="icon-button" type="button" aria-label="Clear filters">
+              Clear
+            </button>
+          </div>
+        </section>
+
+        <section id="selectedCourse" class="selected-course" aria-live="polite"></section>
+
+        <section class="results-section" aria-label="Matching courses">
+          <div class="results-heading">
+            <h2>Courses</h2>
+            <span id="resultCount"></span>
+          </div>
+          <div id="resultsList" class="results-list"></div>
+        </section>
+
+        <p class="data-attribution">
+          Course data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Satellite thumbnails &copy; Esri World Imagery where logos or course photos are not yet verified
+        </p>
+      </aside>
+
+      <main class="map-stage" aria-label="Map of Australian golf courses">
+        <div id="map"></div>
+        <div id="mapModeToggle" class="map-mode-toggle" role="group" aria-label="Map view">
+          <button class="is-active" type="button" data-map-style="map" aria-pressed="true">Map</button>
+          <button type="button" data-map-style="satellite" aria-pressed="false">Satellite</button>
+        </div>
+        <div id="mapStatus" class="map-status" role="status" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+    <script src="courses.js"></script>
+    <script src="top100-rankings.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
