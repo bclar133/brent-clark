@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AFL Invincible - AFL Season Simulator | Brent Clark Games</title>
+  <meta name="description" content="Play AFL Invincible, a fan-made AFL game where you draft an all-era XVIII, choose a strategy, simulate a season and chase an unbeaten premiership.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.brent-clark.com/games/afl-invincible/">
+  <meta property="og:site_name" content="Brent Clark Games">
+  <meta property="og:title" content="AFL Invincible">
+  <meta property="og:description" content="Draft an all-era AFL XVIII, simulate a season and see if you can go undefeated.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.brent-clark.com/games/afl-invincible/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AFL Invincible">
+  <meta name="twitter:description" content="A fan-made AFL season simulator by Brent Clark Games.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=hub-20260727">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "AFL Invincible",
+      "url": "https://www.brent-clark.com/games/afl-invincible/",
+      "description": "A fan-made AFL season simulator where you draft an all-era XVIII, choose a strategy, simulate a season and chase an unbeaten premiership.",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web browser",
+      "genre": ["Sports game", "Simulation game"],
+      "creator": { "@type": "Person", "name": "Brent Clark" }
+    }
+  </script>
+  <style>
+    .site-footer-link {
+      width: min(1560px, calc(100% - 24px));
+      margin: 8px auto 22px;
+      display: flex;
+      justify-content: center;
+      color: rgba(232, 238, 251, 0.68);
+      font: 900 11px/1 Manrope, Arial, sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .site-footer-link a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .site-footer-link a:hover {
+      color: #ffd447;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="app-header">
+      <div class="brand-lockup">
+        <img class="brand-mark" src="assets/afl-invincible-logo.svg" alt="" aria-hidden="true">
+        <div>
+          <h1>AFL Invincible</h1>
+          <p class="lede">Spin a club-season, place one player into an open role, then chase an unbeaten season.</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button id="spinBtn" class="primary" type="button">Spin</button>
+        <button id="skipBtn" class="secondary" type="button" disabled>Re-roll</button>
+        <button id="simulateBtn" class="primary simulate-control" type="button" disabled>Simulate Season</button>
+        <button id="quickSimBtn" class="secondary" type="button" disabled>Quick Season</button>
+        <button id="resetBtn" class="danger" type="button">Reset</button>
+      </div>
+    </header>
+
+    <section class="cockpit">
+      <section class="team-section panel">
+        <div class="section-heading">
+          <div>
+            <h2>Selected XVIII</h2>
+            <p>3 full-backs, 3 half-backs, 5 midfielders, 1 ruck, 3 half-forwards, 3 full-forwards.</p>
+          </div>
+          <strong id="squadCount" class="draft-count">0/18 Drafted</strong>
+        </div>
+        <div class="team-metrics" aria-label="Team ratings">
+          <div><strong id="overallRating">--</strong><span>Overall</span></div>
+          <div><strong id="attackRating">--</strong><span>Forward</span></div>
+          <div><strong id="midRating">--</strong><span>Mid/Ruck</span></div>
+          <div><strong id="defenceRating">--</strong><span>Defence</span></div>
+        </div>
+        <div id="teamGrid" class="team-grid"></div>
+      </section>
+
+      <section class="right-column">
+        <section class="draft-panel panel">
+          <div class="section-heading">
+            <div>
+              <h2>Draft</h2>
+              <p id="pickHelp">Spin first. Position buttons show the rating that player carries in that role.</p>
+            </div>
+          </div>
+
+          <div class="mode-panel">
+            <button id="normalModeBtn" class="mode-button active" type="button">
+              <strong>Career Peak</strong>
+              <span>Normal mode</span>
+            </button>
+            <button id="hardModeBtn" class="mode-button" type="button">
+              <strong>Season Form</strong>
+              <span>Hard mode</span>
+            </button>
+          </div>
+
+          <div class="spin-card" id="spinCard">
+            <span class="spin-label">Current Spin</span>
+            <h2 id="spinTitle">Ready</h2>
+            <p id="spinMeta">Spin to reveal a club and AFL-era season.</p>
+            <span class="jersey-icon spin-jersey" aria-hidden="true"></span>
+          </div>
+
+          <section class="player-panel">
+            <div class="section-heading compact-heading">
+              <h2>Pick One Player</h2>
+            </div>
+            <div id="positionSort" class="position-sort hidden" aria-label="Sort available players by position"></div>
+            <div id="playerOptions" class="player-options"></div>
+          </section>
+        </section>
+
+        <section id="simSection" class="sim-section panel">
+          <div class="section-heading">
+            <div>
+              <h2>Season Simulation</h2>
+              <p>Available once the team is complete. Watch each game result roll in.</p>
+            </div>
+          </div>
+          <div id="speechPanel" class="speech-panel hidden"></div>
+          <div id="simLog" class="sim-log" aria-live="polite"></div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="afl-data.js"></script>
+  <script src="app.js?v=hub-20260727"></script>
+  <footer class="site-footer-link">
+    <a href="/">Brent Clark Home</a>
+  </footer>
+</body>
+</html>
