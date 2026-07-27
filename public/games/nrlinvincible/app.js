@@ -1113,8 +1113,7 @@ function render() {
     <section class="topbar">
       <div class="brand">
         <div class="brand-mark" aria-label="NRL Invincible icon">
-          <span class="mark-goal"></span>
-          <span class="mark-core">I</span>
+          <img class="brand-icon" src="favicon.svg" alt="" aria-hidden="true">
         </div>
         <div>
           <h1>NRL Invincible</h1>
