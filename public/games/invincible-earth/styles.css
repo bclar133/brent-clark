@@ -1268,7 +1268,7 @@ body[data-theme="satellite"] .country-base.is-touch-selected {
   font-size: 0.86rem;
 }
 
-@media (hover: none), (pointer: coarse), (max-width: 760px) {
+@media (max-width: 760px) {
   .touch-answer-bar {
     position: fixed;
     right: 10px;

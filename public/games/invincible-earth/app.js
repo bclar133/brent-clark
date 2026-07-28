@@ -26,7 +26,7 @@ const STEPS = [
 ];
 
 const TAP_CONFIRM_STAGES = new Set(["hemisphere", "continent", "country", "town"]);
-const TAP_CONFIRM_QUERY = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 760px)");
+const TAP_CONFIRM_QUERY = window.matchMedia("(max-width: 760px)");
 
 const DIFFICULTY_RANK = {
   easy: 1,
