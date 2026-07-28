@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invincible Earth - Geography Map Game | Brent Clark Games</title>
+  <meta name="description" content="Play Invincible Earth, a geography map game where you find towns and cities by narrowing the world from hemisphere to country to city spot.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.brent-clark.com/games/invincible-earth/">
+  <meta property="og:site_name" content="Brent Clark Games">
+  <meta property="og:title" content="Invincible Earth">
+  <meta property="og:description" content="Find towns and cities by narrowing the world, then earn bonus points by spotting the right flag.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.brent-clark.com/games/invincible-earth/">
+  <meta property="og:image" content="https://www.brent-clark.com/games/invincible-earth/assets/globe-icon-512.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Invincible Earth">
+  <meta name="twitter:description" content="A geography map game by Brent Clark Games.">
+  <meta name="theme-color" content="#177e89">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png?v=brand-1">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/globe-icon-192.png?v=brand-1">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/globe-icon-512.png?v=brand-1">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=brand-1">
+  <link rel="stylesheet" href="styles.css?v=mobile-touch-3">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Invincible Earth",
+      "url": "https://www.brent-clark.com/games/invincible-earth/",
+      "description": "A geography map game where players find towns and cities by narrowing the world from hemisphere to continent, country and city spot.",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web browser",
+      "genre": ["Educational game", "Geography game"],
+      "creator": { "@type": "Person", "name": "Brent Clark" }
+    }
+  </script>
+  <style>
+    .site-footer-link {
+      width: min(1320px, calc(100% - 32px));
+      margin: 8px auto 22px;
+      display: flex;
+      justify-content: center;
+      color: var(--muted);
+      font: 900 11px/1 var(--font-heading);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .site-footer-link a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .site-footer-link a:hover {
+      color: var(--accent-2);
+    }
+  </style>
+</head>
+<body data-theme="classroom">
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <img class="brand-mark" src="assets/globe-icon-192.png?v=brand-1" alt="" width="72" height="72" aria-hidden="true">
+        <div class="brand-copy">
+          <p class="eyebrow">World map challenge</p>
+          <h1 class="site-title"><span>Invincible</span> <span>Earth</span></h1>
+        </div>
+      </div>
+      <div class="score-strip" aria-live="polite">
+        <span>Score</span>
+        <strong id="scoreLabel">0</strong>
+        <span id="possibleLabel">/ 0</span>
+      </div>
+    </header>
+
+    <section class="menu-screen" id="menuScreen">
+      <div class="menu-copy">
+        <svg id="menuMap" class="menu-map" viewBox="0 0 1000 560" role="img" aria-label="World map preview"></svg>
+        <div>
+          <h2>Find cities by narrowing the world.</h2>
+          <p>Choose a hemisphere, locate the country, zoom through smaller map zones, then earn a bonus by spotting the right flag.</p>
+          <p class="challenge-note">It's easy to cheat, but can you get it without looking it up?</p>
+        </div>
+      </div>
+
+      <form class="setup-panel" id="setupForm">
+        <div class="setting-row">
+          <label for="placesInput">Places to find</label>
+          <div class="number-control">
+            <input id="placesInput" type="range" min="3" max="10" value="5">
+            <output id="placesOutput" for="placesInput">5</output>
+          </div>
+        </div>
+
+        <fieldset class="setting-row">
+          <legend>Difficulty</legend>
+          <div class="segmented-control" id="difficultyControl">
+            <button type="button" class="is-selected" data-difficulty="easy">Easy</button>
+            <button type="button" data-difficulty="medium">Medium</button>
+            <button type="button" data-difficulty="hard">Difficult</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="setting-row">
+          <legend>Map style</legend>
+          <div class="segmented-control" id="themeControl">
+            <button type="button" class="is-selected" data-theme-choice="classroom">Classroom</button>
+            <button type="button" data-theme-choice="arcade">Arcade</button>
+            <button type="button" data-theme-choice="satellite">Satellite</button>
+          </div>
+        </fieldset>
+
+        <div class="rules-grid" aria-label="Scoring">
+          <span><strong>+1</strong> Hemisphere</span>
+          <span><strong>+1</strong> Continent</span>
+          <span><strong>+2</strong> Country</span>
+          <span><strong>+5</strong> Town</span>
+          <span><strong>+2</strong> Flag</span>
+        </div>
+
+        <p class="loading-note" id="loadingNote">Loading the border map...</p>
+        <button class="primary-action" id="startButton" type="submit" disabled>Start Game</button>
+      </form>
+    </section>
+
+    <section class="game-screen hidden" id="gameScreen">
+      <aside class="side-panel">
+        <div class="round-block">
+          <span id="roundLabel">Round 1 of 5</span>
+          <h2 id="targetName">Tokyo</h2>
+          <p id="targetMeta">Country hidden</p>
+        </div>
+
+        <ol class="step-list" id="stepList"></ol>
+
+        <div class="round-score">
+          <span>This round</span>
+          <strong id="roundScoreLabel">0</strong>
+        </div>
+
+        <button class="secondary-action" id="newGameButton" type="button">New Game</button>
+      </aside>
+
+      <section class="map-panel">
+        <div class="map-toolbar">
+          <div>
+            <p class="eyebrow" id="stageLabel">Hemisphere</p>
+            <h2 id="stagePrompt">Choose the hemisphere.</h2>
+          </div>
+          <div class="map-actions">
+            <p id="hoverLabel">Hover over a highlighted map choice.</p>
+            <div class="zoom-controls" aria-label="Map zoom controls">
+              <button id="zoomOutButton" type="button" aria-label="Zoom out">-</button>
+              <button id="zoomResetButton" type="button" aria-label="Reset zoom">Reset</button>
+              <button id="zoomInButton" type="button" aria-label="Zoom in">+</button>
+            </div>
+          </div>
+        </div>
+        <svg id="worldMap" class="world-map" viewBox="0 0 1000 560" role="img" aria-label="World map game board"></svg>
+        <p class="map-attribution">Satellite imagery: Esri World Imagery</p>
+      </section>
+
+      <aside class="choice-panel" id="choicePanel" aria-live="polite"></aside>
+    </section>
+  </main>
+  <footer class="site-footer-link">
+    <a href="/">Brent Clark Home</a>
+  </footer>
+  <div class="touch-answer-bar hidden" id="touchAnswerBar" aria-live="polite"></div>
+
+  <script src="vendor/d3.min.js"></script>
+  <script src="vendor/topojson-client.min.js"></script>
+  <script src="data/game-data.js?v=town-spacing-2"></script>
+  <script src="data/countries-110m.js?v=town-spacing-2"></script>
+  <script src="app.js?v=mobile-touch-3"></script>
+</body>
+</html>
