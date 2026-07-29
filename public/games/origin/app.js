@@ -327,7 +327,7 @@ function renderDraftBody() {
       <p class="subtle">Your XIII is complete. Choose the series strategy and goal kicker before Game 1.</p>
       <button class="primary-button" data-action="start-series">Choose Strategy</button>
     ` : `
-      <button class="primary-button spin-button" data-action="spin">Spin</button>
+      <button class="primary-button spin-button" data-action="spin" ${state.currentOffer ? "disabled" : ""}>Spin</button>
       <div class="draft-actions">
         <button class="secondary-button" data-action="reroll" ${state.currentOffer && !state.rerollUsed ? "" : "disabled"}>
           Re-roll ${state.rerollUsed ? "used" : "available"}
@@ -723,6 +723,7 @@ function renderSeriesStatsTable(rows) {
 }
 
 function spinOffer() {
+  if (state.currentOffer) return;
   const team = randomItem(DATA.teams.filter((item) => item.state === state.selectedState));
   const players = team.players.map((player) => createPlayer(player, team));
   let hasImmortal = false;
@@ -751,6 +752,7 @@ function spinOffer() {
 function rerollOffer() {
   if (!state.currentOffer || state.rerollUsed) return;
   state.rerollUsed = true;
+  state.currentOffer = null;
   spinOffer();
 }
 
