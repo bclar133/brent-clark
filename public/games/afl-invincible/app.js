@@ -139,6 +139,16 @@
     return window.matchMedia ? window.matchMedia("(max-width: 1060px)").matches : false;
   }
 
+  function scrollToFirstPlayerOption() {
+    const firstOption = els.playerOptions.querySelector(".player-card") || els.playerOptions;
+    const header = document.querySelector(".app-header");
+    window.requestAnimationFrame(() => {
+      const offset = header ? header.getBoundingClientRect().height + 10 : 10;
+      const top = firstOption.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
+  }
+
   function currentSeasonYear() {
     return Math.max(...data.years);
   }
@@ -602,6 +612,9 @@
       els.spinMeta.textContent = "No suitable open-position player in this spin. Spin again.";
     }
     renderTeam();
+    if (currentSpin.pickRequired && shouldAutoScrollDraft()) {
+      scrollToFirstPlayerOption();
+    }
   }
 
   function rerollSpin() {

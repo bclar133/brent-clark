@@ -1969,18 +1969,60 @@ body.simulating .draft-panel {
 
   .team-metrics,
   .team-grid,
-  .position-slots,
   .speech-options,
   .mode-panel {
     grid-template-columns: 1fr;
   }
 
+  .position-sort {
+    gap: 6px;
+  }
+
+  .position-sort button {
+    min-height: 34px;
+    padding: 6px 8px;
+  }
+
+  .position-sort button span {
+    font-size: 10px;
+  }
+
   .season-stat-summary,
   .season-leaders,
   .prediction-panel,
-  .prediction-checks,
-  .strategy-buttons {
+  .prediction-checks {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sim-log {
+    padding: 10px;
+  }
+
+  .sim-current {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .sim-current strong {
+    margin: 18px 0 10px;
+    font-size: clamp(46px, 17vw, 68px);
+    line-height: .86;
+    overflow-wrap: anywhere;
+  }
+
+  .sim-current p {
+    font-size: 15px;
+    line-height: 1.25;
+  }
+
+  .sim-current h3 {
+    font-size: 22px;
+  }
+
+  .sim-current.grand-final-preview strong,
+  .sim-current.brownlow strong {
+    font-size: clamp(34px, 12vw, 52px);
+    line-height: .92;
   }
 
   .prediction-comparison,
@@ -1994,10 +2036,368 @@ body.simulating .draft-panel {
 
   .strategy-picker > div:first-child {
     grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .strategy-picker {
+    padding: 12px;
+  }
+
+  .strategy-picker > div:first-child strong {
+    font-size: 36px;
+    line-height: .9;
+    overflow-wrap: anywhere;
+  }
+
+  .strategy-picker p {
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .strategy-picker > small {
+    font-size: 11px;
+    line-height: 1.32;
+  }
+
+  .strategy-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .strategy-buttons button {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 0;
+    gap: 3px 8px;
+    padding: 10px;
+  }
+
+  .strategy-buttons button span {
+    font-size: 9px;
+  }
+
+  .strategy-buttons button strong {
+    font-size: 14px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .strategy-buttons button b {
+    min-width: 34px;
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  .strategy-buttons button small {
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .game-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+  }
+
+  .game-table thead {
+    display: none;
+  }
+
+  .game-table tbody {
+    display: grid;
+    gap: 8px;
+  }
+
+  .game-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 8px;
+    border-bottom: 1px solid rgba(145, 213, 255, .16);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(8, 17, 34, .72);
+  }
+
+  .game-table td,
+  .game-table td:first-child,
+  .game-table td:nth-child(n) {
+    display: block;
+    width: auto;
+    min-width: 0;
+    border-bottom: 0;
+    padding: 0;
+    text-align: left;
+    background: transparent;
+  }
+
+  .game-table td:first-child {
+    grid-column: 1;
+    grid-row: 1;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .game-table td:first-child::before {
+    content: "Game ";
+  }
+
+  .game-table td:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+    color: var(--afl-gold);
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .game-table td:nth-child(3) {
+    grid-column: 1;
+    grid-row: 3;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .game-table td:nth-child(3)::before {
+    content: "Weather: ";
+    color: #dcecff;
+  }
+
+  .game-table td:nth-child(4) {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+  }
+
+  .game-table td:nth-child(4)::before {
+    content: "Opp: ";
+    color: #dcecff;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .game-table td:nth-child(5) {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 950;
+    line-height: 1;
+  }
+
+  .game-table td:nth-child(6) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: end;
+    align-self: start;
+  }
+
+  .game-table td:nth-child(7),
+  .game-table td:nth-child(8) {
+    grid-column: 1 / -1;
+  }
+
+  .game-table td:nth-child(7)::before,
+  .game-table td:nth-child(8)::before {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .game-table td:nth-child(7)::before {
+    content: "Best";
+  }
+
+  .game-table td:nth-child(8)::before {
+    content: "Goals";
+  }
+
+  .game-table .opponent-cell {
+    justify-content: flex-end;
   }
 
   .team-grid {
     min-height: 0;
-    padding: 12px;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .position-section {
+    padding: 7px;
+  }
+
+  .position-section-heading {
+    margin-bottom: 6px;
+  }
+
+  .position-section-heading strong {
+    font-size: 11px;
+  }
+
+  .position-section-heading span {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  .position-slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .slot {
+    min-height: 76px;
+    padding: 7px;
+  }
+
+  .slot.filled {
+    padding-left: 9px;
+  }
+
+  .slot.filled::before {
+    width: 4px;
+  }
+
+  .slot.filled .slot-type,
+  .slot.filled .slot-name,
+  .slot.filled .slot-tags {
+    max-width: calc(100% - 28px);
+  }
+
+  .slot-type {
+    font-size: 8px;
+    line-height: 1.1;
+  }
+
+  .slot-name {
+    margin: 5px 0;
+    font-size: 12px;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+
+  .slot-tags {
+    gap: 3px;
+  }
+
+  .slot .pill {
+    padding: 2px 5px;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  .slot .club-pill {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .slot .jersey-icon {
+    top: 7px;
+    right: 7px;
+    width: 24px;
+    border-radius: 5px 5px 4px 4px;
+  }
+
+  .slot .jersey-icon::before {
+    top: 2px;
+    width: 8px;
+    height: 5px;
+  }
+
+  .slot .jersey-icon::after {
+    font-size: 11px;
+  }
+
+  .player-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .player-card.legend-card {
+    grid-column: auto;
+  }
+
+  .player-sash {
+    height: 6px;
+  }
+
+  .legend-card .player-sash {
+    height: 8px;
+  }
+
+  .legend-ribbon {
+    padding: 7px 8px;
+    font-size: 9px;
+  }
+
+  .legend-ribbon strong {
+    min-width: 34px;
+    padding: 3px 7px;
+    font-size: 14px;
+  }
+
+  .player-body {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .player-meta {
+    gap: 4px;
+    font-size: 9px;
+    line-height: 1.1;
+  }
+
+  .player-meta .pill {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .player-body h3,
+  .legend-card .player-body h3 {
+    font-size: 20px;
+    line-height: .98;
+    overflow-wrap: anywhere;
+  }
+
+  .rating-row,
+  .tags {
+    gap: 4px;
+  }
+
+  .player-card .pill {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  .position-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .position-buttons button {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    gap: 0 6px;
+    padding: 6px 8px;
+  }
+
+  .position-buttons button span {
+    font-size: 10px;
+  }
+
+  .position-buttons button strong {
+    font-size: 18px;
+  }
+
+  .position-buttons button small {
+    display: none;
   }
 }
