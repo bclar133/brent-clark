@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Brent Clark Games - Invincible Games and Online Tools</title>
-    <meta name="description" content="Brent Clark Games is the home of NRL Invincible, AFL Invincible, Origin Invincible, Test Match Invincible, Invincible Goal, Invincible Boats, Invincible Earth, Aussie Golf Guide and other online games and tools." />
+    <meta name="description" content="Brent Clark Games is the home of NRL Invincible, AFL Invincible, Origin Invincible, Test Match Invincible, Invincible Goal, Invincible Boats, Invincible Earth, Aussie Golf Guide, Teacher Tools and other online games and tools." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.brent-clark.com/" />
     <meta property="og:site_name" content="Brent Clark Games" />
     <meta property="og:title" content="Brent Clark Games" />
-    <meta property="og:description" content="Play NRL Invincible, AFL Invincible, Origin Invincible, Test Match Invincible, Invincible Goal, Invincible Boats, Invincible Earth and explore Aussie Golf Guide." />
+    <meta property="og:description" content="Play NRL Invincible, AFL Invincible, Origin Invincible, Test Match Invincible, Invincible Goal, Invincible Boats, Invincible Earth and explore Aussie Golf Guide and Teacher Tools." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.brent-clark.com/" />
     <meta name="twitter:card" content="summary" />
@@ -25,7 +25,7 @@
         "@type": "WebSite",
         "name": "Brent Clark Games",
         "url": "https://www.brent-clark.com/",
-        "description": "Online games and tools by Brent Clark, including NRL Invincible, AFL Invincible, Origin Invincible, Test Match Invincible, Invincible Goal, Invincible Boats, Invincible Earth and Aussie Golf Guide.",
+        "description": "Online games and tools by Brent Clark, including NRL Invincible, AFL Invincible, Origin Invincible, Test Match Invincible, Invincible Goal, Invincible Boats, Invincible Earth, Aussie Golf Guide and Teacher Tools.",
         "creator": {
           "@type": "Person",
           "name": "Brent Clark"
@@ -45,7 +45,8 @@
           { "@type": "ListItem", "position": 5, "name": "Invincible Goal", "url": "https://www.brent-clark.com/games/invincible-goal/" },
           { "@type": "ListItem", "position": 6, "name": "Invincible Boats", "url": "https://www.brent-clark.com/games/invincible-boats/" },
           { "@type": "ListItem", "position": 7, "name": "Invincible Earth", "url": "https://www.brent-clark.com/games/invincible-earth/" },
-          { "@type": "ListItem", "position": 8, "name": "Aussie Golf Guide", "url": "https://www.brent-clark.com/tools/aussie-golf-guide/" }
+          { "@type": "ListItem", "position": 8, "name": "Aussie Golf Guide", "url": "https://www.brent-clark.com/tools/aussie-golf-guide/" },
+          { "@type": "ListItem", "position": 9, "name": "Teacher Tools", "url": "https://bclar133.github.io/TeacherTools/" }
         ]
       }
     </script>
@@ -262,6 +263,10 @@
         opacity: 0.84;
       }
 
+      .tile.teacher-tools {
+        border-color: rgba(217, 184, 95, 0.42);
+      }
+
       .kicker {
         display: inline-flex;
         color: var(--green);
@@ -293,6 +298,10 @@
 
       .earth .kicker {
         color: #76c893;
+      }
+
+      .teacher-tools .kicker {
+        color: #d9b85f;
       }
 
       .tile h3 {
@@ -329,7 +338,7 @@
       }
 
       .tools-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         margin-top: 18px;
       }
 
@@ -357,7 +366,6 @@
         .grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-
       }
 
       @media (max-width: 780px) {
@@ -490,7 +498,7 @@
           <div>
             <h2 id="tools-title">Tools</h2>
           </div>
-          <p>Simple online tools for sports, data projects, and travel planning.</p>
+          <p>Simple online tools for sports, classrooms, data projects, and travel planning.</p>
         </div>
         <div class="grid tools-grid">
           <article class="tile tools">
@@ -510,6 +518,15 @@
             </div>
             <p>Browse Australian golf courses on an interactive map with search, satellite view, course links, rankings, and price guides.</p>
             <a class="tile-link" href="/tools/aussie-golf-guide/">Open Aussie Golf Guide</a>
+          </article>
+          <article class="tile tools teacher-tools">
+            <span class="kicker">Classroom collection</span>
+            <div class="tile-title">
+              <img class="tile-icon" src="/tools/teacher-tools-icon.svg" alt="" width="58" height="58" />
+              <h3>Teacher Tools</h3>
+            </div>
+            <p>A growing collection of practical browser-based classroom tools for teachers, designed for quick use on laptops, projectors and phones.</p>
+            <a class="tile-link" href="https://bclar133.github.io/TeacherTools/">Open Teacher Tools</a>
           </article>
         </div>
       </section>
