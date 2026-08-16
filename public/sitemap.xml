@@ -2,7 +2,7 @@
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.brent-clark.com/</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-08-16</lastmod>
   </url>
   <url>
     <loc>https://www.brent-clark.com/games/nrlinvincible/</loc>
@@ -31,5 +31,13 @@
   <url>
     <loc>https://www.brent-clark.com/tools/aussie-golf-guide/</loc>
     <lastmod>2026-07-25</lastmod>
+  </url>
+  <url>
+    <loc>https://www.brent-clark.com/teacher-tools/</loc>
+    <lastmod>2026-08-16</lastmod>
+  </url>
+  <url>
+    <loc>https://www.brent-clark.com/teacher-tools/random-student-picker/</loc>
+    <lastmod>2026-08-16</lastmod>
   </url>
 </urlset>
