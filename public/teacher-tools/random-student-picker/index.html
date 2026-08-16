@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#5b4bdb">
+  <meta name="description" content="A fun, classroom-friendly random student picker with animated picker modes and random group creation.">
+  <link rel="canonical" href="https://www.brent-clark.com/teacher-tools/random-student-picker/">
+  <title>Random Student Picker | Teacher Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/teacher-tools.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <span class="tool-badge" aria-hidden="true">🎲</span>
+        <div>
+          <p class="eyebrow">Teacher Tools</p>
+          <h1>Random Student Picker</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="header-nav-link" href="/teacher-tools/" title="Back to Teacher Tools">← Teacher Tools</a>
+        <a class="header-nav-link" href="/" title="Back to brent-clark.com">🌐 brent-clark.com</a>
+        <button class="icon-button" id="muteBtn" type="button" title="Mute sounds" aria-label="Mute sounds" aria-pressed="false">🔊</button>
+        <button class="icon-button" id="themeBtn" type="button" title="Turn on dark mode" aria-label="Turn on dark mode" aria-pressed="false">🌙</button>
+        <button class="icon-button" id="fullscreenBtn" type="button" title="Presentation mode" aria-label="Enter presentation mode">⛶</button>
+        <button class="icon-button" id="settingsBtn" type="button" title="Settings" aria-label="Open settings">⚙</button>
+      </div>
+    </header>
+
+    <div id="presentationToolbar" class="presentation-toolbar" hidden>
+      <button id="presentationMuteBtn" class="presentation-tool-button" type="button" aria-label="Mute sounds">🔊</button>
+      <button id="presentationExitBtn" class="presentation-tool-button exit" type="button">↙ Exit presentation</button>
+    </div>
+
+    <nav class="workspace-tabs" aria-label="Tool mode">
+      <button class="workspace-tab active" type="button" data-workspace="picker" aria-selected="true">🎯 Picker</button>
+      <button class="workspace-tab" type="button" data-workspace="groups" aria-selected="false">👥 Random Groups</button>
+    </nav>
+
+    <section id="pickerWorkspace" class="workspace-panel active" aria-label="Random student picker">
+      <div class="layout-grid">
+        <aside class="class-panel panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Step 1</p>
+              <h2>Your class</h2>
+            </div>
+            <span class="count-pill"><strong id="studentCount">0</strong> / 28</span>
+          </div>
+
+          <label class="field-label" for="namesInput">Type or paste student names</label>
+          <textarea id="namesInput" rows="14" aria-describedby="rosterHelp rosterWarning" spellcheck="false" placeholder="Smith, John&#10;Jones, Sophie&#10;Brown, Noah&#10;Emily"></textarea>
+          <p class="helper" id="rosterHelp">Up to 28 students. One student per line works best. “Surname, Firstname” lists are supported.</p>
+          <p id="rosterWarning" class="roster-warning" role="alert" hidden></p>
+
+          <div class="saved-class-box" aria-label="Saved classes">
+            <div class="saved-class-heading">
+              <span>💾 Saved classes</span>
+              <small>Stored only in this browser</small>
+            </div>
+            <div class="saved-class-row">
+              <select id="savedClassSelect" aria-label="Choose a saved class">
+                <option value="">Choose saved class…</option>
+              </select>
+              <button id="loadClassBtn" class="soft-button" type="button">Load</button>
+              <button id="deleteClassBtn" class="soft-button danger-quiet" type="button">Delete</button>
+            </div>
+            <div class="saved-class-row save-row">
+              <input id="classNameInput" type="text" maxlength="40" placeholder="Class name, e.g. 9 STEM" aria-label="Name for saved class">
+              <button id="saveClassBtn" class="soft-button" type="button">Save class</button>
+            </div>
+          </div>
+
+          <div class="compact-actions">
+            <button class="soft-button" id="cleanBtn" type="button">✨ Clean names</button>
+            <button class="soft-button" id="sortBtn" type="button">A–Z Sort</button>
+            <button class="soft-button danger-quiet" id="clearBtn" type="button">Clear</button>
+          </div>
+          <button id="mobilePickerBtn" class="soft-button mobile-only mobile-jump" type="button">🎯 Show randomiser</button>
+
+          <div class="remaining-card">
+            <div>
+              <span class="remaining-value" id="remainingCount">0</span>
+              <span class="remaining-label">available</span>
+            </div>
+            <button class="text-button" id="resetCycleBtn" type="button">Reset class</button>
+          </div>
+
+          <section id="historySection" class="history-section" aria-labelledby="historyHeading">
+            <div class="history-header">
+              <h3 id="historyHeading">Previously selected</h3>
+              <button class="text-button" id="clearHistoryBtn" type="button">Clear</button>
+            </div>
+            <ol id="historyList" class="history-list">
+              <li class="empty-state">No selections yet.</li>
+            </ol>
+          </section>
+        </aside>
+
+        <section class="randomiser-panel panel">
+          <div class="panel-heading randomiser-heading">
+            <div>
+              <p class="eyebrow">Step 2</p>
+              <h2>Choose a randomiser</h2>
+            </div>
+            <span id="modeHint" class="mode-hint">Classic arcade reveal</span>
+            <button id="mobileNamesBtn" class="soft-button mobile-only" type="button">✏️ Names</button>
+          </div>
+
+          <div class="mode-strip" id="modeStrip" role="tablist" aria-label="Randomiser style">
+            <button class="mode-chip active" type="button" data-mode="slots" role="tab" aria-selected="true"><span>🎰</span>Slots</button>
+            <button class="mode-chip" type="button" data-mode="wheel" role="tab" aria-selected="false"><span>🎡</span>Wheel</button>
+            <button class="mode-chip" type="button" data-mode="pointer" role="tab" aria-selected="false"><span>👉</span>Pointer</button>
+            <button class="mode-chip" type="button" data-mode="shuffle" role="tab" aria-selected="false"><span>🔀</span>Shuffle</button>
+            <button class="mode-chip" type="button" data-mode="race" role="tab" aria-selected="false"><span>🏁</span>Race</button>
+            <button class="mode-chip" type="button" data-mode="duck" role="tab" aria-selected="false"><span>🦆</span>Duck Race</button>
+            <button class="mode-chip" type="button" data-mode="boxes" role="tab" aria-selected="false"><span>🎁</span>Boxes</button>
+            <button class="mode-chip" type="button" data-mode="rocket" role="tab" aria-selected="false"><span>🚀</span>Rockets</button>
+            <button class="mode-chip" type="button" data-mode="elimination" role="tab" aria-selected="false"><span>🏆</span>Elimination</button>
+          </div>
+
+          <div class="stage-wrap">
+            <div class="stage" id="stage" aria-live="polite" aria-label="Randomiser animation stage">
+              <div id="idleStage" class="idle-stage">
+                <div class="idle-icon" aria-hidden="true">🎰</div>
+                <p class="idle-title">Add your class first</p>
+                <p class="idle-copy">Paste or type student names on the left and the randomiser will appear here.</p>
+              </div>
+              <canvas id="wheelCanvas" class="stage-layer" width="1000" height="600" aria-label="Spinning student wheel"></canvas>
+              <div id="dynamicStage" class="stage-layer"></div>
+              <div id="winnerOverlay" class="winner-overlay" hidden>
+                <div id="winnerCelebration" class="winner-celebration" aria-hidden="true"></div>
+                <div class="winner-content">
+                  <p class="winner-kicker">Selected student</p>
+                  <div class="winner-name" id="winnerName">Charlotte</div>
+                  <p class="winner-sub" id="winnerSub">Nice one!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="start-zone">
+            <button id="startBtn" class="start-button" type="button"><span>▶</span> START</button>
+
+            <fieldset class="next-spin-control">
+              <legend>Next spin</legend>
+              <label class="next-spin-option">
+                <input id="nextSpinRemove" type="radio" name="nextSpin" value="remove" checked>
+                <span class="next-spin-icon" aria-hidden="true">➖</span>
+                <span><strong>Remove winner</strong><small>Pick from students who haven't won yet</small></span>
+              </label>
+              <label class="next-spin-option">
+                <input id="nextSpinKeep" type="radio" name="nextSpin" value="keep">
+                <span class="next-spin-icon" aria-hidden="true">🔄</span>
+                <span><strong>Keep whole class</strong><small>Everyone is eligible again next spin</small></span>
+              </label>
+            </fieldset>
+
+            <p id="winnerStatus" class="winner-status" aria-live="polite"></p>
+            <p class="keyboard-tip"><kbd>Space</kbd> to start · <kbd>R</kbd> to reset class</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="groupsWorkspace" class="workspace-panel" aria-label="Random groups">
+      <div class="groups-layout">
+        <aside class="groups-controls panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Group maker</p>
+              <h2>Split your class</h2>
+            </div>
+            <span class="count-pill"><strong id="groupStudentCount">0</strong> / 28</span>
+          </div>
+
+          <label class="field-label" for="groupNamesInput">Type or paste student names</label>
+          <textarea id="groupNamesInput" class="groups-names-input" rows="9" aria-describedby="groupRosterHelp groupRosterWarning" spellcheck="false" placeholder="Smith, John&#10;Jones, Sophie&#10;Brown, Noah"></textarea>
+          <p class="helper" id="groupRosterHelp">This list is shared with the Picker, so either tool can be used on its own.</p>
+          <p id="groupRosterWarning" class="roster-warning" role="alert" hidden></p>
+
+          <div class="saved-class-box compact-saved-class" aria-label="Saved classes">
+            <div class="saved-class-heading">
+              <span>💾 Saved classes</span>
+              <small>Stored only in this browser</small>
+            </div>
+            <div class="saved-class-row">
+              <select id="groupSavedClassSelect" aria-label="Choose a saved class">
+                <option value="">Choose saved class…</option>
+              </select>
+              <button id="groupLoadClassBtn" class="soft-button" type="button">Load</button>
+              <button id="groupDeleteClassBtn" class="soft-button danger-quiet" type="button">Delete</button>
+            </div>
+            <div class="saved-class-row save-row">
+              <input id="groupClassNameInput" type="text" maxlength="40" placeholder="Class name" aria-label="Name for saved class">
+              <button id="groupSaveClassBtn" class="soft-button" type="button">Save</button>
+            </div>
+          </div>
+
+          <div class="compact-actions group-name-actions">
+            <button class="soft-button" id="groupCleanBtn" type="button">✨ Clean names</button>
+            <button class="soft-button" id="groupSortBtn" type="button">A–Z Sort</button>
+          </div>
+
+          <fieldset class="group-method">
+            <legend>How should groups be made?</legend>
+            <label class="radio-row"><input type="radio" name="groupMethod" value="groups" checked> Number of groups</label>
+            <label class="radio-row"><input type="radio" name="groupMethod" value="size"> Students per group</label>
+          </fieldset>
+
+          <label class="field-label" id="groupValueLabel" for="groupValue">Number of groups</label>
+          <input id="groupValue" type="number" min="2" max="20" value="4">
+
+          <label class="checkbox-row"><input id="animateGroups" type="checkbox" checked> Animate the allocation</label>
+
+          <button id="makeGroupsBtn" class="start-button groups-start" type="button">👥 MAKE GROUPS</button>
+          <button id="reshuffleGroupsBtn" class="soft-button full-button" type="button">🔀 Reshuffle</button>
+        </aside>
+
+        <section class="groups-results panel">
+          <div class="panel-heading groups-result-heading">
+            <div>
+              <p class="eyebrow">Results</p>
+              <h2>Your groups</h2>
+            </div>
+            <div class="group-export-actions">
+              <button id="copyGroupsBtn" class="soft-button" type="button" disabled>📋 Copy</button>
+              <button id="printGroupsBtn" class="soft-button" type="button" disabled>🖨 Print</button>
+            </div>
+          </div>
+          <div id="groupsGrid" class="groups-grid" aria-live="polite">
+            <div class="groups-empty">
+              <div aria-hidden="true">👥</div>
+              <p>Make some groups and they’ll appear here.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog" class="settings-dialog">
+    <form method="dialog">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Preferences</p>
+          <h2>Picker settings</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close settings">✕</button>
+      </div>
+
+      <div class="settings-list">
+        <label class="setting-row">
+          <span><strong>Remove after selection</strong><small>Everyone gets a turn before the class resets.</small></span>
+          <input id="removeAfterPick" type="checkbox" checked>
+        </label>
+        <label class="setting-row">
+          <span><strong>Sound effects</strong><small>Mode-specific sounds for every randomiser — generated in the browser.</small></span>
+          <input id="soundEffects" type="checkbox" checked>
+        </label>
+        <label class="setting-row">
+          <span><strong>Celebration effects</strong><small>Show fireworks and confetti when a student is chosen.</small></span>
+          <input id="celebrationEffects" type="checkbox" checked>
+        </label>
+        <label class="setting-row">
+          <span><strong>Show selection history</strong><small>Keep previously selected students visible.</small></span>
+          <input id="showHistory" type="checkbox" checked>
+        </label>
+        <label class="setting-row">
+          <span><strong>Automatically start next round</strong><small>Starts another pick after a short pause.</small></span>
+          <input id="autoNext" type="checkbox">
+        </label>
+
+        <div class="setting-block">
+          <label class="field-label" for="speedSelect">Animation duration</label>
+          <select id="speedSelect">
+            <option value="quick">Quick</option>
+            <option value="normal" selected>Normal</option>
+            <option value="dramatic">Dramatic</option>
+          </select>
+        </div>
+      </div>
+      <div class="dialog-footer"><button class="soft-button" value="cancel">Done</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="confettiLayer" class="celebration-layer" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
