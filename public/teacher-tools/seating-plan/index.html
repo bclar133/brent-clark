@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#5b4bdb">
+  <meta name="description" content="A flexible drag-and-drop classroom seating plan for Teacher Tools.">
+  <link rel="canonical" href="https://www.brent-clark.com/teacher-tools/seating-plan/">
+  <title>Seating Plan | Teacher Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/teacher-tools.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="presentation-view.css">
+  <style>
+    .perimeter-rail > .fixture-card { z-index: 4; }
+    .window-fixture-card {
+      background:
+        linear-gradient(90deg, transparent 48%, rgba(54,110,145,.28) 48% 52%, transparent 52%),
+        linear-gradient(180deg, transparent 48%, rgba(54,110,145,.20) 48% 52%, transparent 52%),
+        #dff4ff;
+      color: #28506b;
+      border-color: rgba(54,110,145,.4);
+    }
+    html[data-theme="dark"] .window-fixture-card {
+      background:
+        linear-gradient(90deg, transparent 48%, rgba(180,225,255,.22) 48% 52%, transparent 52%),
+        linear-gradient(180deg, transparent 48%, rgba(180,225,255,.16) 48% 52%, transparent 52%),
+        #263f51;
+      color: #d8f2ff;
+      border-color: rgba(180,225,255,.35);
+    }
+    .window-size-controls { display:flex; align-items:center; flex-wrap:wrap; gap:7px; }
+
+    /* Keep wall-item labels readable when placed on the left or right wall. */
+    .perimeter-rail.vertical .window-fixture-card,
+    .perimeter-rail.vertical .door-fixture-card {
+      overflow: hidden;
+    }
+    .perimeter-rail.vertical .window-fixture-card .fixture-icon,
+    .perimeter-rail.vertical .door-fixture-card .fixture-icon {
+      display: none;
+    }
+    .perimeter-rail.vertical .window-fixture-card .fixture-label,
+    .perimeter-rail.vertical .door-fixture-card .fixture-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      width: auto;
+      max-width: 100%;
+      max-height: 100%;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: nowrap;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <span class="tool-badge" aria-hidden="true">🪑</span>
+        <div>
+          <p class="eyebrow">Teacher Tools</p>
+          <h1>Seating Plan</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="header-nav-link" href="../" title="Back to Teacher Tools">← Teacher Tools</a>
+        <a class="header-nav-link" href="https://www.brent-clark.com/" target="_blank" rel="noopener" title="Open brent-clark.com">🌐 brent-clark.com</a>
+        <button class="icon-button" id="printBtn" type="button" title="Print seating plan" aria-label="Print seating plan">🖨️</button>
+        <button class="icon-button" id="themeBtn" type="button" title="Turn on dark mode" aria-label="Turn on dark mode" aria-pressed="false">🌙</button>
+      </div>
+    </header>
+
+    <section class="layout-grid">
+      <aside class="class-panel panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Step 1</p>
+            <h2>Your class</h2>
+          </div>
+          <span class="count-pill"><strong id="studentCount">0</strong> / 28</span>
+        </div>
+
+        <label class="field-label" for="namesInput">Type or paste student names</label>
+        <textarea id="namesInput" rows="11" aria-describedby="rosterHelp rosterWarning" spellcheck="false" placeholder="Smith, John&#10;Jones, Sophie&#10;Brown, Noah&#10;Emily"></textarea>
+        <p class="helper" id="rosterHelp">Names appear on the plan immediately. “Surname, Firstname” lists are supported.</p>
+        <p id="rosterWarning" class="roster-warning" role="alert" hidden></p>
+
+        <div class="saved-class-box" aria-label="Saved classes">
+          <div class="saved-class-heading">
+            <span>💾 Saved classes</span>
+            <small>Shared with Student Picker</small>
+          </div>
+          <div class="saved-class-row">
+            <select id="savedClassSelect" aria-label="Choose a saved class">
+              <option value="">Choose saved class…</option>
+            </select>
+            <button id="loadClassBtn" class="soft-button" type="button">Load</button>
+            <button id="deleteClassBtn" class="soft-button danger-quiet" type="button">Delete</button>
+          </div>
+          <div class="saved-class-row save-row">
+            <input id="classNameInput" type="text" maxlength="40" placeholder="Class name, e.g. 9 STEM" aria-label="Name for saved class">
+            <button id="saveClassBtn" class="soft-button" type="button">Save class</button>
+          </div>
+          <p class="save-note">Saving a class here also saves its current seating positions and room layout.</p>
+        </div>
+
+        <div class="compact-actions">
+          <button class="soft-button" id="cleanBtn" type="button">✨ Clean names</button>
+          <button class="soft-button" id="sortBtn" type="button">A–Z Sort</button>
+          <button class="soft-button danger-quiet" id="clearBtn" type="button">Clear</button>
+        </div>
+
+        <div class="mobile-plan-jump">
+          <button id="showPlanBtn" class="soft-button" type="button">🪑 Show seating plan</button>
+        </div>
+      </aside>
+
+      <section class="plan-panel panel" id="planPanel">
+        <div class="panel-heading plan-heading">
+          <div>
+            <p class="eyebrow">Step 2</p>
+            <h2>Build the room</h2>
+          </div>
+          <div class="plan-status"><span id="placedCount">0</span> seated · <span id="gridStatus">8 × 8</span></div>
+        </div>
+
+        <div class="toolbars">
+          <div class="toolbar-group arrange-group">
+            <div class="toolbar-label">Auto arrange</div>
+            <select id="arrangementSelect" aria-label="Automatic seating arrangement">
+              <option value="rows">Rows</option>
+              <option value="pairs">Pairs + aisles</option>
+              <option value="groups">Groups</option>
+              <option value="ushape">U-shape</option>
+              <option value="random">Random</option>
+            </select>
+            <label id="groupSizeWrap" class="inline-number" hidden>Group size
+              <input id="groupSize" type="number" min="2" max="8" value="4" aria-label="Students per group">
+            </label>
+            <button id="arrangeBtn" class="primary-button" type="button">✨ Arrange</button>
+          </div>
+
+          <div class="toolbar-group grid-size-group">
+            <div class="toolbar-label">Student grid size</div>
+            <label class="inline-number">Across
+              <input id="gridCols" type="number" min="4" max="12" value="8" aria-label="Grid columns">
+            </label>
+            <span class="times-mark" aria-hidden="true">×</span>
+            <label class="inline-number">Deep
+              <input id="gridRows" type="number" min="4" max="12" value="8" aria-label="Grid rows">
+            </label>
+            <button id="applyGridBtn" class="soft-button" type="button">Resize</button>
+          </div>
+
+          <div class="toolbar-group colour-group">
+            <div class="toolbar-label">Colour scheme</div>
+            <select id="schemeSelect" aria-label="Student colour scheme">
+              <option value="pastel">Random pastels</option>
+              <option value="bright">Bright colours</option>
+              <option value="cool">Cool colours</option>
+              <option value="warm">Warm colours</option>
+              <option value="rainbow">Rainbow</option>
+              <option value="single">Single colour</option>
+            </select>
+            <input id="singleColour" class="colour-input" type="color" value="#8d7cff" aria-label="Single student colour">
+            <button id="applySchemeBtn" class="soft-button" type="button">Apply</button>
+          </div>
+        </div>
+
+        <div class="room-tools">
+          <div class="room-tool-copy">
+            <strong>Room items</strong>
+            <span>Whiteboards, doors, screens and windows live on the outside border. Teacher desks sit inside the student grid.</span>
+          </div>
+          <div class="room-tool-buttons">
+            <button class="fixture-button" type="button" data-fixture="teacher">🧑‍🏫 Teacher desk</button>
+            <button class="fixture-button" type="button" data-fixture="door">🚪 Door</button>
+            <button class="fixture-button" type="button" data-fixture="whiteboard">▭ Whiteboard</button>
+            <button class="fixture-button" type="button" data-fixture="screen">🖥️ Screen</button>
+            <button class="fixture-button" type="button" data-fixture="window">🪟 Window</button>
+            <button id="clearFixturesBtn" class="soft-button danger-quiet" type="button">Clear room items</button>
+          </div>
+        </div>
+
+        <div class="saved-room-box" aria-label="Saved classroom layouts">
+          <div class="saved-room-heading">
+            <div>
+              <strong>🏫 Saved classroom layouts</strong>
+              <span>Save the room shape and fixtures separately from a class.</span>
+            </div>
+          </div>
+          <div class="saved-room-controls">
+            <select id="savedRoomSelect" aria-label="Choose a saved classroom layout">
+              <option value="">Choose saved layout…</option>
+            </select>
+            <button id="loadRoomBtn" class="soft-button" type="button">Load</button>
+            <button id="deleteRoomBtn" class="soft-button danger-quiet" type="button">Delete</button>
+            <input id="roomNameInput" type="text" maxlength="40" placeholder="Room name, e.g. B4" aria-label="Name for classroom layout">
+            <button id="saveRoomBtn" class="soft-button" type="button">Save layout</button>
+          </div>
+        </div>
+
+        <div class="selection-bar" id="selectionBar" hidden>
+          <div>
+            <span class="selection-kicker">Selected student</span>
+            <strong id="selectedStudentName">Student</strong>
+          </div>
+          <div class="student-colours" aria-label="Student colour options">
+            <button class="colour-swatch" type="button" data-colour="#fde4ef" style="--swatch:#fde4ef" aria-label="Pink pastel"></button>
+            <button class="colour-swatch" type="button" data-colour="#fff0c9" style="--swatch:#fff0c9" aria-label="Yellow pastel"></button>
+            <button class="colour-swatch" type="button" data-colour="#dff1ff" style="--swatch:#dff1ff" aria-label="Blue pastel"></button>
+            <button class="colour-swatch" type="button" data-colour="#dff7ef" style="--swatch:#dff7ef" aria-label="Green pastel"></button>
+            <button class="colour-swatch" type="button" data-colour="#e8e0ff" style="--swatch:#e8e0ff" aria-label="Purple pastel"></button>
+            <input id="studentColour" class="colour-input" type="color" value="#8d7cff" aria-label="Custom colour for selected student">
+            <button id="closeSelectionBtn" class="text-button" type="button">Done</button>
+          </div>
+        </div>
+
+        <div class="selection-bar fixture-selection" id="fixtureSelectionBar" hidden>
+          <div>
+            <span class="selection-kicker">Selected room item</span>
+            <strong id="selectedFixtureName">Room item</strong>
+          </div>
+          <div class="fixture-selection-actions">
+            <div id="teacherSizeControls" class="teacher-size-controls" hidden>
+              <label class="inline-number">Width
+                <input id="teacherDeskWidth" type="number" min="1" max="4" value="2" aria-label="Teacher desk width in grid squares">
+              </label>
+              <label class="inline-number">Depth
+                <input id="teacherDeskHeight" type="number" min="1" max="3" value="1" aria-label="Teacher desk depth in grid squares">
+              </label>
+              <button id="applyTeacherSizeBtn" class="soft-button" type="button">Resize desk</button>
+            </div>
+            <div id="windowSizeControls" class="window-size-controls" hidden>
+              <label class="inline-number">Length
+                <input id="windowSpan" type="number" min="1" max="12" value="3" aria-label="Window length in border grid spaces">
+              </label>
+              <button id="applyWindowSizeBtn" class="soft-button" type="button">Resize window</button>
+            </div>
+            <button id="removeSelectedFixtureBtn" class="soft-button danger-quiet" type="button">Remove</button>
+            <button id="closeFixtureSelectionBtn" class="text-button" type="button">Done</button>
+          </div>
+        </div>
+
+        <div class="plan-instructions">
+          <span>↕ Drag students and the teacher desk inside the grid</span>
+          <span>↔ Drag doors, whiteboards, screens and windows around the outside border</span>
+          <span>↔ Select a window to change how many border spaces it spans</span>
+          <span>👆 On touch screens: tap an item, then tap its destination</span>
+        </div>
+
+        <div class="room-scroll" id="roomScroll">
+          <div class="room-frame">
+            <div class="front-label">FRONT OF ROOM</div>
+            <div class="room-layout" id="roomLayout">
+              <div id="topRail" class="perimeter-rail horizontal top-rail" aria-label="Front wall"></div>
+              <div id="leftRail" class="perimeter-rail vertical left-rail" aria-label="Left wall"></div>
+              <div id="classroomGrid" class="classroom-grid" role="grid" aria-label="8 by 8 classroom seating grid"></div>
+              <div id="rightRail" class="perimeter-rail vertical right-rail" aria-label="Right wall"></div>
+              <div id="bottomRail" class="perimeter-rail horizontal bottom-rail" aria-label="Back wall"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-footer-actions">
+          <button id="resetRoomBtn" class="soft-button" type="button">↺ Reset default room</button>
+          <button id="clearPositionsBtn" class="soft-button" type="button">↔ Re-seat students</button>
+          <button id="presentationBtn" class="soft-button presentation-launch" type="button" aria-pressed="false">⛶ Full screen</button>
+          <span class="autosave-note">Changes are automatically remembered in this browser.</span>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <button id="presentationExitBtn" class="presentation-exit" type="button" aria-label="Exit full screen seating view">✕ Exit full screen</button>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+  <script src="footprint-drag.js"></script>
+  <script src="group-layout-fix.js"></script>
+  <script src="presentation-view.js"></script>
+</body>
+</html>
