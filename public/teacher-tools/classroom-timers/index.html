@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d52">
+  <meta name="description" content="A classroom-friendly suite of visual countdowns, stopwatches, clocks, interval timers and lesson schedules.">
+  <link rel="canonical" href="https://www.brent-clark.com/teacher-tools/classroom-timers/">
+  <title>Classroom Timers | Teacher Tools</title>
+  <base href="https://bclar133.github.io/TeacherTools/tools/classroom-timers/">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg?v=4">
+  <link rel="shortcut icon" href="../../favicon.svg?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/teacher-tools.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <span class="tool-badge" aria-hidden="true">⏱️</span>
+        <div>
+          <p class="eyebrow">Teacher Tools</p>
+          <h1>Classroom Timers</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="header-nav-link" href="https://www.brent-clark.com/teacher-tools/" title="Back to Teacher Tools">← Teacher Tools</a>
+        <a class="header-nav-link" href="https://www.brent-clark.com/" target="_blank" rel="noopener" title="Open brent-clark.com">🌐 brent-clark.com</a>
+        <button class="icon-button" id="muteBtn" type="button" title="Mute sounds" aria-label="Mute sounds" aria-pressed="false">🔊</button>
+        <button class="icon-button" id="themeBtn" type="button" title="Turn on dark mode" aria-label="Turn on dark mode" aria-pressed="false">🌙</button>
+        <button class="icon-button" id="fullscreenBtn" type="button" title="Presentation mode" aria-label="Enter presentation mode">⛶</button>
+      </div>
+    </header>
+
+    <div id="presentationToolbar" class="presentation-toolbar" hidden>
+      <button id="presentationMuteBtn" class="presentation-tool-button" type="button" aria-label="Mute sounds">🔊</button>
+      <button id="presentationExitBtn" class="presentation-tool-button exit" type="button">↙ Exit presentation</button>
+    </div>
+
+    <nav class="workspace-tabs" aria-label="Timer type">
+      <button class="workspace-tab active" type="button" data-workspace="countdown" aria-selected="true">⏳ Countdown</button>
+      <button class="workspace-tab" type="button" data-workspace="stopwatch" aria-selected="false">⏱ Stopwatch</button>
+      <button class="workspace-tab" type="button" data-workspace="clock" aria-selected="false">🕰 Clock</button>
+      <button class="workspace-tab" type="button" data-workspace="interval" aria-selected="false">🔁 Interval</button>
+      <button class="workspace-tab" type="button" data-workspace="focus" aria-selected="false">🎯 Focus</button>
+      <button class="workspace-tab" type="button" data-workspace="schedule" aria-selected="false">📋 Schedule</button>
+    </nav>
+
+    <section id="countdownWorkspace" class="workspace-panel active" data-panel="countdown">
+      <div class="timer-layout">
+        <aside class="controls-panel panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">Countdown</p><h2>Set the timer</h2></div>
+          </div>
+
+          <div class="quick-times" aria-label="Quick countdown times">
+            <button type="button" data-seconds="60">1 min</button>
+            <button type="button" data-seconds="180">3 min</button>
+            <button type="button" data-seconds="300">5 min</button>
+            <button type="button" data-seconds="600">10 min</button>
+            <button type="button" data-seconds="900">15 min</button>
+            <button type="button" data-seconds="1200">20 min</button>
+          </div>
+
+          <div class="time-inputs">
+            <label><span>Minutes</span><input id="countdownMinutes" type="number" inputmode="numeric" min="0" max="180" value="5"></label>
+            <span class="time-colon" aria-hidden="true">:</span>
+            <label><span>Seconds</span><input id="countdownSeconds" type="number" inputmode="numeric" min="0" max="59" value="0"></label>
+          </div>
+
+          <div class="setting-block">
+            <div class="setting-heading"><span>Visual theme</span><small id="themeDescription">The whole day passes as your time runs out.</small></div>
+            <div id="themeGrid" class="theme-grid" role="listbox" aria-label="Countdown visual theme">
+              <button class="theme-card active" type="button" data-theme="sunrise" data-category="calm" role="option" aria-selected="true"><span>🌅</span><strong>Day & Night</strong></button>
+              <button class="theme-card" type="button" data-theme="racing" data-category="action" role="option"><span>🏎️</span><strong>Road Racer</strong></button>
+              <button class="theme-card" type="button" data-theme="parachute" data-category="fun" role="option"><span>🪂</span><strong>Parachute</strong></button>
+              <button class="theme-card" type="button" data-theme="ramps" data-category="action" role="option"><span>🟠</span><strong>Ramp Ball</strong></button>
+              <button class="theme-card" type="button" data-theme="rocket" data-category="action" role="option"><span>🚀</span><strong>Rocket</strong></button>
+              <button class="theme-card" type="button" data-theme="hourglass" data-category="minimal calm" role="option"><span>⌛</span><strong>Hourglass</strong></button>
+              <button class="theme-card" type="button" data-theme="plant" data-category="calm" role="option"><span>🌱</span><strong>Growing Plant</strong></button>
+              <button class="theme-card" type="button" data-theme="popcorn" data-category="fun" role="option"><span>🍿</span><strong>Popcorn</strong></button>
+              <button class="theme-card" type="button" data-theme="coaster" data-category="action" role="option"><span>🎢</span><strong>Rollercoaster</strong></button>
+              <button class="theme-card" type="button" data-theme="maze" data-category="fun" role="option"><span>🌀</span><strong>Marble Maze</strong></button>
+              <button class="theme-card" type="button" data-theme="candle" data-category="minimal calm" role="option"><span>🕯️</span><strong>Candle</strong></button>
+              <button class="theme-card" type="button" data-theme="space" data-category="calm" role="option"><span>🪐</span><strong>Space Journey</strong></button>
+            </div>
+          </div>
+
+          <label class="toggle-row"><input id="endSoundToggle" type="checkbox" checked><span><strong>End sound</strong><small>Play a clear classroom-friendly chime at zero.</small></span></label>
+        </aside>
+
+        <section class="timer-panel panel">
+          <div class="stage-header">
+            <div>
+              <p id="stageKicker" class="eyebrow">Day & Night</p>
+              <p id="stageStatus" class="stage-status">Ready</p>
+            </div>
+            <button id="resetSceneBtn" class="soft-button" type="button" title="Generate a fresh version of this scene">↻ New scene</button>
+          </div>
+          <div class="stage-wrap">
+            <div id="countdownStage" class="timer-stage theme-sunrise" aria-label="Visual countdown animation">
+              <div id="sceneLayer" class="scene-layer"></div>
+              <div class="time-display-wrap">
+                <div id="countdownDisplay" class="time-display">05:00</div>
+                <div id="countdownMessage" class="timer-message">Ready when you are</div>
+              </div>
+            </div>
+          </div>
+          <div class="timer-controls">
+            <button id="countdownResetBtn" class="control-button secondary" type="button">↺ Reset</button>
+            <button id="countdownStartBtn" class="control-button primary" type="button">▶ Start</button>
+            <button id="countdownAddBtn" class="control-button secondary" type="button">+1 min</button>
+          </div>
+          <p class="keyboard-tip"><kbd>Space</kbd> start / pause · <kbd>R</kbd> reset · <kbd>F</kbd> presentation</p>
+        </section>
+      </div>
+    </section>
+
+    <section id="stopwatchWorkspace" class="workspace-panel" data-panel="stopwatch">
+      <div class="solo-panel panel">
+        <div class="mode-toolbar">
+          <div><p class="eyebrow">Stopwatch</p><h2>Physical stopwatch</h2><p>Start, stop and lap it like the real thing.</p></div>
+          <label class="select-label">Style<select id="stopwatchStyle"><option value="classic">Classic steel</option><option value="track">Athletics</option><option value="mission">Mission control</option><option value="retro">Retro LED</option></select></label>
+        </div>
+        <div id="stopwatchStage" class="stopwatch-stage style-classic">
+          <div class="stopwatch-scene" aria-hidden="true">
+            <div id="stopwatchFinger" class="stopwatch-finger"><div class="finger-tip"></div><div class="finger-hand"></div></div>
+            <div class="stopwatch-body">
+              <div class="stopwatch-loop"></div><div class="stopwatch-crown"></div><div class="stopwatch-side side-left"></div><div class="stopwatch-side side-right"></div>
+              <div class="stopwatch-face">
+                <div class="watch-brand">TEACHER TIME</div>
+                <div id="stopwatchDisplay" class="stopwatch-display">00:00.00</div>
+                <div class="watch-track"><span></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="stopwatch-actions">
+            <button id="stopwatchResetBtn" class="control-button secondary" type="button">↺ Reset</button>
+            <button id="stopwatchStartBtn" class="control-button primary" type="button">▶ Start</button>
+            <button id="lapBtn" class="control-button secondary" type="button">⚑ Lap</button>
+          </div>
+          <ol id="lapsList" class="laps-list"><li class="empty-state">No laps yet.</li></ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="clockWorkspace" class="workspace-panel" data-panel="clock">
+      <div class="solo-panel panel">
+        <div class="mode-toolbar">
+          <div><p class="eyebrow">Clock</p><h2>Current time</h2><p>Inspired by <a href="https://www.youtube.com/watch?v=QOtuX0jL85Y&amp;pp=ygUVdGhlIG9mZmljZSBkdmQgY29ybmVy" target="_blank" rel="noopener">The Office's DVD Bouncing Logo</a> scene.</p></div>
+          <div class="segmented" id="clockStyleTabs"><button class="active" type="button" data-clock-style="digital">Digital</button><button type="button" data-clock-style="analogue">Analogue</button><button type="button" data-clock-style="flip">Flip</button><button type="button" data-clock-style="scenic">Scenic</button></div>
+        </div>
+        <div id="clockStage" class="clock-stage clock-digital">
+          <div id="digitalClock" class="clock-view digital-clock"><div id="digitalClockTime">12:00:00</div><div id="digitalClockDate">Monday 17 August</div></div>
+          <div id="analogueClock" class="clock-view analogue-clock" hidden>
+            <div class="clock-face"><div class="clock-number n12">12</div><div class="clock-number n3">3</div><div class="clock-number n6">6</div><div class="clock-number n9">9</div><div id="hourHand" class="clock-hand hour"></div><div id="minuteHand" class="clock-hand minute"></div><div id="secondHand" class="clock-hand second"></div><div class="clock-pin"></div></div>
+          </div>
+          <div id="flipClock" class="clock-view flip-clock" hidden><div id="flipHour" class="flip-unit">12</div><span>:</span><div id="flipMinute" class="flip-unit">00</div><span>:</span><div id="flipSecond" class="flip-unit">00</div></div>
+          <div id="scenicClock" class="clock-view scenic-clock" hidden><div class="scenic-orb"></div><div class="scenic-horizon"></div><div id="scenicTime" class="scenic-time">12:00</div><div id="scenicLabel" class="scenic-label">Good afternoon</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="intervalWorkspace" class="workspace-panel" data-panel="interval">
+      <div class="builder-layout">
+        <aside class="builder-controls panel">
+          <p class="eyebrow">Interval timer</p><h2>Work. Rest. Repeat.</h2>
+          <div class="form-grid">
+            <label>Work minutes<input id="intervalWork" type="number" min="0" max="60" value="5"></label>
+            <label>Rest minutes<input id="intervalRest" type="number" min="0" max="30" value="1"></label>
+            <label>Rounds<input id="intervalRounds" type="number" min="1" max="20" value="5"></label>
+          </div>
+          <button id="intervalApplyBtn" class="soft-button wide" type="button">Apply settings</button>
+        </aside>
+        <section class="builder-stage panel"><p id="intervalPhase" class="eyebrow">Work · Round 1 of 5</p><div id="intervalDisplay" class="builder-time">05:00</div><div class="round-dots" id="roundDots"></div><div class="timer-controls"><button id="intervalResetBtn" class="control-button secondary">↺ Reset</button><button id="intervalStartBtn" class="control-button primary">▶ Start</button></div></section>
+      </div>
+    </section>
+
+    <section id="focusWorkspace" class="workspace-panel" data-panel="focus">
+      <div class="solo-panel panel focus-panel">
+        <p class="eyebrow">Focus timer</p><h2>Pick a classroom rhythm</h2>
+        <div class="focus-presets">
+          <button class="focus-card active" data-focus-work="20" data-focus-break="5"><span>📚</span><strong>Deep work</strong><small>20 min work · 5 min break</small></button>
+          <button class="focus-card" data-focus-work="10" data-focus-break="2"><span>✏️</span><strong>Quick focus</strong><small>10 min work · 2 min break</small></button>
+          <button class="focus-card" data-focus-work="5" data-focus-break="1"><span>💡</span><strong>Brain burst</strong><small>5 min work · 1 min break</small></button>
+          <button class="focus-card" data-focus-work="2" data-focus-break="1"><span>💬</span><strong>Think & talk</strong><small>2 min think · 1 min discuss</small></button>
+        </div>
+        <div id="focusPhase" class="focus-phase">FOCUS</div><div id="focusDisplay" class="builder-time">20:00</div><div class="timer-controls"><button id="focusResetBtn" class="control-button secondary" type="button">↺ Reset</button><button id="focusStartBtn" class="control-button primary" type="button">▶ Start</button><button id="focusSkipBtn" class="control-button secondary" type="button">Skip →</button></div>
+      </div>
+    </section>
+
+    <section id="scheduleWorkspace" class="workspace-panel" data-panel="schedule">
+      <div class="builder-layout">
+        <aside class="builder-controls panel">
+          <p class="eyebrow">Lesson schedule</p><h2>Build your lesson flow</h2><p class="helper">Add stages and Classroom Timers will move through them automatically.</p>
+          <div id="scheduleRows" class="schedule-rows"></div>
+          <button id="addScheduleRowBtn" class="soft-button wide" type="button">＋ Add stage</button>
+        </aside>
+        <section class="builder-stage panel"><p class="eyebrow">Current stage</p><div id="scheduleStageName" class="schedule-stage-name">Starter</div><div id="scheduleDisplay" class="builder-time">05:00</div><div id="scheduleProgress" class="schedule-progress"></div><div class="timer-controls"><button id="scheduleResetBtn" class="control-button secondary" type="button">↺ Reset</button><button id="scheduleStartBtn" class="control-button primary" type="button">▶ Start</button><button id="scheduleSkipBtn" class="control-button secondary" type="button">Next →</button></div></section>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js?v=2"></script>
+  <script src="engine-audio.js"></script>
+  <script src="ramp-physics.js"></script>
+  <script src="rocket-flight.js"></script>
+  <script src="hourglass-upgrade.js"></script>
+  <script src="autumn-tree-upgrade.js"></script>
+  <script src="autumn-canopy-upgrade.js"></script>
+  <script src="autumn-vulture-fix.js"></script>
+  <script src="autumn-finishing-touches.js?v=2"></script>
+  <script src="autumn-balance-fix.js?v=2"></script>
+  <script src="stopwatch-physical-upgrade.js?v=10"></script>
+  <script src="pastel-workspace-upgrade.js?v=8"></script>
+  <script src="presentation-fullscreen-upgrade.js?v=2" data-presentation-fullscreen-upgrade="true"></script>
+  <script src="mobile-landscape-upgrade.js?v=6"></script>
+  <script src="mobile-stopwatch-layout-fix.js?v=3"></script>
+</body>
+</html>
