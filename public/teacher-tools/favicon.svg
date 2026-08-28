@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chalkbox">
+  <rect width="64" height="64" rx="14" fill="#132d29"/>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <g transform="rotate(-28 32 32)">
+      <rect x="8" y="28" width="48" height="9" rx="2.5" fill="#d8b866" stroke="#8f6d28" stroke-width="1.5"/>
+      <path d="M15 29v4M21 29v2.5M27 29v4M33 29v2.5M39 29v4M45 29v2.5" stroke="#76561d" stroke-width="1.4"/>
+    </g>
+    <g transform="rotate(13 25 35)">
+      <path d="M10 19v34h34Z" fill="#d8eee6" stroke="#6f9d91" stroke-width="2"/>
+      <path d="M17 35v11h11Z" fill="#132d29" stroke="#6f9d91" stroke-width="1.5"/>
+    </g>
+    <g transform="rotate(7 43 27)">
+      <rect x="34" y="12" width="20" height="29" rx="4" fill="#f3ede1" stroke="#9c8d76" stroke-width="2"/>
+      <rect x="38" y="16" width="12" height="6" rx="1.5" fill="#263b36"/>
+      <g fill="#70807b">
+        <rect x="38" y="26" width="4" height="4" rx="1"/>
+        <rect x="44" y="26" width="4" height="4" rx="1"/>
+        <rect x="38" y="32" width="4" height="4" rx="1"/>
+        <rect x="44" y="32" width="4" height="4" rx="1"/>
+      </g>
+    </g>
+    <g transform="rotate(-9 33 49)">
+      <rect x="14" y="45" width="39" height="7" rx="3.5" fill="#f8f7f0" stroke="#777d79" stroke-width="1.5"/>
+      <path d="M14 48.5c0-2 1.6-3.5 3.5-3.5H24v7h-6.5c-1.9 0-3.5-1.5-3.5-3.5Z" fill="#315f78"/>
+      <path d="M49 45h5c2 0 3.5 1.6 3.5 3.5S56 52 54 52h-5Z" fill="#2e3a37"/>
+    </g>
+  </g>
+</svg>
