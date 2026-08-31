@@ -2,18 +2,18 @@ name: Sync Chalkbox production
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - '.github/workflows/sync-chalkbox.yml'
-      - 'public/index.html'
-  workflow_dispatch:
+      - .github/workflows/sync-chalkbox.yml
+      - public/index.html
+  workflow_dispatch: {}
 
 permissions:
   contents: write
 
 jobs:
   sync:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check out production site
@@ -29,7 +29,6 @@ jobs:
           path: .chalkbox-source
 
       - name: Mirror Chalkbox into production
-        shell: bash
         run: |
           rm -rf public/teacher-tools
           mkdir -p public/teacher-tools
@@ -43,8 +42,8 @@ jobs:
           rm -rf .chalkbox-source
 
       - name: Update production homepage and legacy redirects
-        shell: python
         run: |
+          python3 <<'PY'
           from pathlib import Path
 
           index = Path('public/index.html')
@@ -52,27 +51,24 @@ jobs:
           old = 'A growing collection of practical browser-based classroom tools for teachers, designed for quick use on laptops, projectors and phones.'
           new = 'A growing collection of practical browser-based classroom tools for teachers, now including the visual Noise Meter alongside student picking, seating plans and classroom timers.'
           if old in text:
-              text = text.replace(old, new, 1)
-              index.write_text(text, encoding='utf-8')
+              index.write_text(text.replace(old, new, 1), encoding='utf-8')
 
           redirects = Path('public/_redirects')
           redirect_text = redirects.read_text(encoding='utf-8') if redirects.exists() else ''
-          rules = '''
-# Chalkbox legacy tool paths
-/teacher-tools/random-student-picker/* /teacher-tools/tools/random-student-picker/:splat 301
-/teacher-tools/seating-plan/* /teacher-tools/tools/seating-plan/:splat 301
-/teacher-tools/classroom-timers/* /teacher-tools/tools/classroom-timers/:splat 301
-/teacher-tools/noise-meter/* /teacher-tools/tools/noise-meter/:splat 301
-/teacher-tools/school-map/* /teacher-tools/tools/school-map/:splat 301
-'''.lstrip()
+          rules = '''# Chalkbox legacy tool paths
+          /teacher-tools/random-student-picker/* /teacher-tools/tools/random-student-picker/:splat 301
+          /teacher-tools/seating-plan/* /teacher-tools/tools/seating-plan/:splat 301
+          /teacher-tools/classroom-timers/* /teacher-tools/tools/classroom-timers/:splat 301
+          /teacher-tools/noise-meter/* /teacher-tools/tools/noise-meter/:splat 301
+          /teacher-tools/school-map/* /teacher-tools/tools/school-map/:splat 301
+          '''
           if '# Chalkbox legacy tool paths' not in redirect_text:
               if redirect_text and not redirect_text.endswith('\n'):
                   redirect_text += '\n'
-              redirect_text += '\n' + rules
-              redirects.write_text(redirect_text, encoding='utf-8')
+              redirects.write_text(redirect_text + '\n' + rules, encoding='utf-8')
+          PY
 
       - name: Commit production sync
-        shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
