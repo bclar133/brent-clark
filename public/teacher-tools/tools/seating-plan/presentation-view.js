@@ -68,3 +68,16 @@
     if (!document.fullscreenElement) exitPresentation();
   });
 })();
+
+// Load the simplified editing UI after the core seating-plan scripts have initialised.
+(() => {
+  const style = document.createElement('link');
+  style.rel = 'stylesheet';
+  style.href = 'interface-cleanup.css?v=2';
+  document.head.append(style);
+
+  const script = document.createElement('script');
+  script.src = 'interface-cleanup.js?v=2';
+  script.defer = true;
+  document.body.append(script);
+})();
