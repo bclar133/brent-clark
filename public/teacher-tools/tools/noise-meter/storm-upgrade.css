@@ -1,0 +1,34 @@
+/* Storm Cloud upgrade: smooth sky, lighter cloud, canvas rain + lightning */
+.theme-storm {
+  overflow:hidden;
+  background:linear-gradient(var(--storm-sky-top,#8fcbe8),var(--storm-sky-bottom,#d9edf7));
+  transition:background .42s linear;
+}
+
+.theme-storm .storm-scene {
+  z-index:4;
+}
+
+.theme-storm .cloud {
+  background:var(--storm-cloud-colour,#f3f7f7)!important;
+  transition:background .42s linear, filter .42s linear;
+  filter:brightness(var(--storm-cloud-brightness,1));
+}
+
+/* Hide the original symbolic effects and the first-generation upgrade layers. */
+.theme-storm .rain,
+.theme-storm .lightning,
+.storm-rain-layer,
+.storm-lightning-layer,
+.storm-sky-flash {
+  display:none!important;
+}
+
+.storm-weather-canvas {
+  position:absolute;
+  inset:0;
+  z-index:8;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}

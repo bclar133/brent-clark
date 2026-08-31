@@ -351,6 +351,8 @@
     const canvas = refs.wheelCanvas;
     const width = canvas.width;
     const height = canvas.height;
+    // Reassigning the bitmap dimensions guarantees that no previous wheel
+    // segments, transforms or clipping state can survive a roster change.
     canvas.width = width;
     canvas.height = height;
   }
@@ -670,6 +672,7 @@
     const nameCenterX = nameRect.left - overlayRect.left + nameRect.width / 2;
     const nameCenterY = nameRect.top - overlayRect.top + nameRect.height / 2;
 
+    // Fireworks burst around the actual winning name.
     const burstOffsets = [
       [-nameRect.width * .55, -nameRect.height * .75],
       [ nameRect.width * .55, -nameRect.height * .65],
@@ -711,6 +714,7 @@
       }
     });
 
+    // Confetti is created inside the winner overlay so it cannot sit behind it.
     const overlayWidth = Math.max(overlayRect.width, 320);
     const overlayHeight = Math.max(overlayRect.height, 260);
     for (let i = 0; i < 120; i++) {
@@ -739,6 +743,7 @@
       });
     }
 
+    // Add a bright expanding ring behind the winning name for extra visibility.
     for (let i = 0; i < 3; i++) {
       const ring = document.createElement('span');
       ring.className = 'winner-celebration-ring';
@@ -939,6 +944,8 @@
   }
 
   function playStartGun() {
+    // Layer a very short high-frequency crack, a body hit and a brief echo tail.
+    // This produces a starter-pistol style transient without needing an audio file.
     const ctx = getAudioContext();
     if (!ctx) return;
 
@@ -947,6 +954,7 @@
     noiseBurst(.13, { volume: .045, frequency: 520, q: .45, type: 'lowpass', attack: .001 });
     tone(118, .09, { type: 'square', volume: .025, endFrequency: 62, release: .075, attack: .001 });
 
+    // Short reflections make the crack read more like a real outdoor starter gun.
     noiseBurst(.035, { volume: .025, frequency: 3100, q: .5, type: 'highpass', when: .075, attack: .0005 });
     noiseBurst(.05, { volume: .013, frequency: 2100, q: .55, type: 'bandpass', when: .145, attack: .0005 });
   }
@@ -966,6 +974,7 @@
       output.connect(ctx.destination);
     }
 
+    // Heel impact: strong and short enough to read as a footfall, not a bass drone.
     const heel = ctx.createOscillator();
     const heelGain = ctx.createGain();
     heel.type = 'sine';
@@ -976,6 +985,7 @@
     heelGain.gain.exponentialRampToValueAtTime(.0001, start + .115);
     heel.connect(heelGain).connect(output);
 
+    // Shoe contact: a discrete track slap, much louder than the old effect.
     const contact = ctx.createBufferSource();
     contact.buffer = getNoiseBuffer(ctx);
     const contactFilter = ctx.createBiquadFilter();
@@ -988,6 +998,7 @@
     contactGain.gain.exponentialRampToValueAtTime(.0001, start + .07);
     contact.connect(contactFilter).connect(contactGain).connect(output);
 
+    // Toe-off gives a second tiny impact so each stride has a recognisable rhythm.
     const toe = ctx.createOscillator();
     const toeGain = ctx.createGain();
     toe.type = 'triangle';
@@ -1016,10 +1027,12 @@
     const step = () => {
       if (stopped) return;
       const progress = clamp((performance.now() - started) / Math.max(1, duration), 0, 1);
+      // Audible sprint cadence that builds slightly toward the finish.
       const cadence = 238 - progress * 48 + randomFloat() * 20;
       playFootstep(1.05 + randomFloat() * .30, left ? -.28 : .28);
       left = !left;
 
+      // Offset runners make it sound like a field of runners without a white-noise bed.
       if (randomFloat() > .18) {
         playFootstep(.58 + randomFloat() * .22, -.65 + randomFloat() * 1.3, .055 + randomFloat() * .035);
       }
@@ -1352,17 +1365,23 @@
     const winnerEntry = data.find(entry => entry.isWinner);
     const field = shuffled(data.filter(entry => !entry.isWinner));
 
+    // Give the field a much broader spread so the finish resembles a real race:
+    // a close challenger, a front pack, a midfield and some clear back-markers.
+    const finishBands = [];
     field.forEach((entry, index) => {
       const ratio = field.length <= 1 ? 0 : index / (field.length - 1);
       let fraction;
-      if (index === 0) fraction = .94 + randomFloat() * .025;
-      else if (ratio < .22) fraction = .83 + randomFloat() * .08;
-      else if (ratio < .58) fraction = .64 + randomFloat() * .16;
-      else fraction = .42 + randomFloat() * .19;
+      if (index === 0) fraction = .94 + randomFloat() * .025;           // runner-up
+      else if (ratio < .22) fraction = .83 + randomFloat() * .08;      // front pack
+      else if (ratio < .58) fraction = .64 + randomFloat() * .16;      // midfield
+      else fraction = .42 + randomFloat() * .19;                        // back markers
+      finishBands.push(fraction);
       entry.finalFraction = fraction;
     });
     winnerEntry.finalFraction = 1;
 
+    // Roles create visible but fluid lead changes. The eventual winner gets a
+    // late surge; other racers are deliberately favoured earlier in the race.
     const earlyLeader = field[0] || winnerEntry;
     const midLeader = field[1] || earlyLeader;
     const lateDecoy = field[2] || earlyLeader;
@@ -1377,8 +1396,11 @@
     };
 
     function speedAt(entry, t) {
+      // Always-positive velocity with gentle individual rhythm.
       let speed = .78 + .12 * Math.sin((t * Math.PI * 2 * 1.35) + entry.phase);
       speed += .08 * Math.sin((t * Math.PI * 2 * 2.15) + entry.phase * .63);
+
+      // Small individual bursts keep the entire field alive without jitter.
       speed += .32 * gaussian(t, .18 + (entry.index % 5) * .035, .105);
       speed += .26 * gaussian(t, .48 + (entry.index % 4) * .04, .13);
 
@@ -1397,6 +1419,9 @@
       return Math.max(.18, speed);
     }
 
+    // Pre-integrate each smooth velocity curve, then normalise it to that
+    // racer's chosen finishing distance. This guarantees continuous forward
+    // motion while preserving the wide finish spread above.
     const SAMPLES = 360;
     data.forEach(entry => {
       const cumulative = new Array(SAMPLES + 1).fill(0);
@@ -1493,6 +1518,8 @@
 
     const rockets = $$('.rocket-racer',board).map((racer,i) => {
       const isWinner = racer.dataset.name === winner;
+      // racer top is the rocket nose. Put the winner's nose just beyond the
+      // actual target line, rather than approximating with a percentage.
       const winnerTop = Math.max(8, targetY - 10);
       const winnerBottom = Math.max(18, boardHeight - winnerTop - racer.offsetHeight);
       const maxUsefulBottom = winnerBottom;
@@ -1697,7 +1724,7 @@
     refs.presentationToolbar.hidden = false;
     syncPresentationMuteButton();
     if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
-      try { await document.documentElement.requestFullscreen(); } catch (_) {}
+      try { await document.documentElement.requestFullscreen(); } catch (_) { /* CSS presentation still works. */ }
     }
     if (!state.busy) renderPreview();
   }

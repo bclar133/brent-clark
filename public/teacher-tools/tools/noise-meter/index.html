@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#132d29">
+  <meta name="description" content="Chalkbox Noise Meter turns your device microphone into a visual classroom noise indicator with multiple themes.">
+  <title>Noise Meter · Chalkbox</title>
+  <link rel="icon" href="../../favicon.svg?v=5" type="image/svg+xml" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Fredericka+the+Great&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="traffic-darkmode-upgrade.css">
+  <link rel="stylesheet" href="balloon-upgrade.css">
+  <link rel="stylesheet" href="storm-upgrade.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../" aria-label="Back to Chalkbox home">
+      <img src="../../assets/teacher-tools-icon.svg" alt="">
+      <span>Chalkbox</span>
+    </a>
+    <div class="title-wrap">
+      <h1>Noise Meter</h1>
+      <p>Visual classroom sound feedback</p>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-button" id="themeModeBtn" type="button" aria-label="Switch to light mode" title="Toggle dark mode">
+        <span class="mode-icon" aria-hidden="true">☀</span><span class="button-label" id="themeModeLabel">Light mode</span>
+      </button>
+      <button class="icon-button" id="fullscreenBtn" type="button" aria-label="Enter fullscreen" title="Fullscreen">
+        <span aria-hidden="true">⛶</span><span class="button-label">Fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="controls" aria-label="Noise meter settings">
+      <section class="control-section microphone-section">
+        <div class="section-heading">
+          <div>
+            <p class="kicker">Microphone</p>
+            <h2>Room listening</h2>
+          </div>
+          <span class="status-dot" id="micDot" aria-hidden="true"></span>
+        </div>
+        <button id="micBtn" class="primary-button" type="button">Start microphone</button>
+        <button id="calibrateBtn" class="secondary-button" type="button" disabled>Calibrate room</button>
+        <p class="helper" id="micStatus">Microphone access stays in this browser. Chalkbox does not record or upload audio.</p>
+      </section>
+
+      <section class="control-section">
+        <div class="section-heading compact">
+          <div>
+            <p class="kicker">Theme</p>
+            <h2>Choose a display</h2>
+          </div>
+        </div>
+        <label class="select-wrap">
+          <span class="sr-only">Noise meter theme</span>
+          <select id="themeSelect">
+            <option value="traffic">🚦 Traffic Lights</option>
+            <option value="rocket">🚀 Rocket</option>
+            <option value="balloon">🎈 Balloon</option>
+            <option value="thermometer">🌡️ Thermometer</option>
+            <option value="storm">⛈️ Storm Cloud</option>
+            <option value="emoji">🙂 Emoji Face</option>
+            <option value="pressure">⚙️ Pressure Gauge</option>
+            <option value="equaliser">🎚️ Neon Equaliser</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="control-section">
+        <div class="section-heading compact">
+          <div>
+            <p class="kicker">Noise zones</p>
+            <h2>Set your classroom</h2>
+          </div>
+        </div>
+
+        <label class="range-row quiet-control">
+          <span><b>Quiet max</b><output id="quietOutput">30</output></span>
+          <input id="quietThreshold" type="range" min="10" max="55" step="1" value="30">
+        </label>
+
+        <label class="range-row loud-control">
+          <span><b>Too loud starts</b><output id="loudOutput">68</output></span>
+          <input id="loudThreshold" type="range" min="45" max="90" step="1" value="68">
+        </label>
+
+        <label class="range-row target-control">
+          <span><b>Target max</b><output id="targetOutput">55</output></span>
+          <input id="targetLevel" type="range" min="15" max="85" step="1" value="55">
+        </label>
+      </section>
+
+      <section class="control-section">
+        <div class="section-heading compact">
+          <div>
+            <p class="kicker">Response</p>
+            <h2>Tune the meter</h2>
+          </div>
+        </div>
+
+        <label class="range-row">
+          <span><b>Sensitivity</b><output id="sensitivityOutput">1.0×</output></span>
+          <input id="sensitivity" type="range" min="0.5" max="2.0" step="0.1" value="1">
+        </label>
+
+        <label class="field-row">
+          <span><b>Averaging</b><small>Smooths short spikes</small></span>
+          <select id="averaging">
+            <option value="0.35">Fast</option>
+            <option value="0.8" selected>Balanced</option>
+            <option value="1.5">Smooth</option>
+            <option value="2.5">Very smooth</option>
+          </select>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Warning sound</b><small>One soft tone on entering red</small></span>
+          <input id="warningSound" type="checkbox">
+          <span class="toggle-ui" aria-hidden="true"></span>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Dark mode</b><small>Apply your Chalkbox theme preference</small></span>
+          <input id="darkModeToggle" type="checkbox" checked>
+          <span class="toggle-ui" aria-hidden="true"></span>
+        </label>
+      </section>
+    </aside>
+
+    <section class="meter-area" aria-live="polite">
+      <div class="meter-topline">
+        <div class="current-reading">
+          <span class="reading-number" id="levelNumber">0</span>
+          <span class="reading-label">noise level</span>
+        </div>
+        <div class="zone-summary">
+          <span class="zone-pill zone-quiet" id="quietPill">Quiet ≤ 30</span>
+          <span class="zone-pill zone-working" id="workingPill">Working 31–67</span>
+          <span class="zone-pill zone-loud" id="loudPill">Too loud ≥ 68</span>
+        </div>
+      </div>
+
+      <div class="stage" id="stage" data-zone="quiet">
+        <div class="stage-message" id="stageMessage">
+          <strong id="zoneLabel">Ready</strong>
+          <span id="zoneMessage">Start the microphone to begin.</span>
+        </div>
+
+        <div class="target-badge" id="targetBadge"><span class="target-dot"></span> Target ≤ <b id="targetBadgeValue">55</b></div>
+
+        <div class="visual theme-traffic" data-theme="traffic">
+          <div class="traffic-pole"></div>
+          <div class="traffic-arm"></div>
+          <div class="traffic-body">
+            <div class="traffic-light light-1"></div>
+            <div class="traffic-light light-2"></div>
+            <div class="traffic-light light-3"></div>
+            <div class="traffic-light light-4"></div>
+            <div class="traffic-light light-5"></div>
+          </div>
+          <div class="traffic-stand"></div>
+        </div>
+
+        <!-- Compatibility stubs for removed themes still referenced by the core visual updater. -->
+        <div class="theme-volcano" hidden aria-hidden="true"></div>
+        <div id="minecartVisual" hidden aria-hidden="true"></div>
+
+        <div class="visual theme-rocket" data-theme="rocket" hidden>
+          <div class="space-stars" aria-hidden="true"></div>
+          <div class="rocket-track">
+            <div class="moon">☾</div>
+            <div class="rocket" id="rocketVisual"><span class="rocket-window"></span><span class="rocket-flame"></span></div>
+            <div class="launch-pad"></div>
+          </div>
+          <div class="challenge-label">Keep the rocket grounded!</div>
+        </div>
+
+        <div class="visual theme-balloon" data-theme="balloon" hidden>
+          <div class="balloon-wrap" id="balloonVisual">
+            <div class="balloon-shape"><div class="balloon-shine"></div></div>
+            <div class="balloon-knot"></div>
+            <div class="balloon-string"></div>
+          </div>
+          <div class="balloon-pop" id="balloonPop">POP!</div>
+        </div>
+
+        <div class="visual theme-thermometer" data-theme="thermometer" hidden>
+          <div class="thermometer-shell">
+            <div class="thermometer-tube"><div class="mercury" id="thermometerMercury"></div></div>
+            <div class="thermometer-bulb"></div>
+            <div class="thermometer-marks"></div>
+          </div>
+        </div>
+
+        <div class="visual theme-storm" data-theme="storm" hidden>
+          <div class="storm-scene" id="stormScene">
+            <div class="cloud cloud-left"></div><div class="cloud cloud-centre"></div><div class="cloud cloud-right"></div>
+            <div class="rain" aria-hidden="true"></div>
+            <div class="lightning">ϟ</div>
+          </div>
+        </div>
+
+        <div class="visual theme-emoji" data-theme="emoji" hidden>
+          <div class="emoji-face" id="emojiFace">
+            <div class="emoji-eyes"><span></span><span></span></div>
+            <div class="emoji-mouth"></div>
+            <div class="emoji-brows"><span></span><span></span></div>
+          </div>
+          <div class="emoji-caption" id="emojiCaption">Calm classroom</div>
+        </div>
+
+        <div class="visual theme-pressure" data-theme="pressure" hidden>
+          <div class="gauge-wrap">
+            <div class="gauge-face">
+              <div class="gauge-arc quiet-arc"></div>
+              <div class="gauge-arc working-arc"></div>
+              <div class="gauge-arc loud-arc"></div>
+              <div class="gauge-needle" id="gaugeNeedle"></div>
+              <div class="gauge-pin"></div>
+              <div class="gauge-label">PRESSURE</div>
+            </div>
+            <div class="pipe left-pipe"></div><div class="pipe right-pipe"></div>
+            <div class="steam steam-left">☁</div><div class="steam steam-right">☁</div>
+          </div>
+        </div>
+
+        <div class="visual theme-equaliser" data-theme="equaliser" hidden>
+          <div class="equaliser-title">CLASSROOM SIGNAL</div>
+          <div class="equaliser" id="equaliserBars" aria-hidden="true"></div>
+          <div class="equaliser-floor"></div>
+        </div>
+      </div>
+
+      <div class="meter-bottomline">
+        <div class="target-status" id="targetStatus"><span class="target-status-dot"></span><strong>Waiting for microphone</strong></div>
+        <div class="calibration-readout" id="calibrationReadout">Default calibration</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    try {
+      const key = 'chalkbox-noise-meter-v1';
+      const saved = JSON.parse(localStorage.getItem(key) || '{}');
+      if (saved.theme === 'volcano' || saved.theme === 'minecart') {
+        saved.theme = 'traffic';
+        localStorage.setItem(key, JSON.stringify(saved));
+      }
+    } catch (_) {}
+  </script>
+  <script src="app.js"></script>
+  <script src="traffic-darkmode-upgrade.js"></script>
+  <script src="rocket-fix.js"></script>
+  <script src="balloon-upgrade.js"></script>
+  <script src="storm-upgrade.js"></script>
+</body>
+</html>

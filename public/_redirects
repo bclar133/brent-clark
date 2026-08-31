@@ -35,3 +35,10 @@
 /games/nrlinvincible/rating-calibration.html /games/nrlinvincible/ 302
 /games/nrlinvincible/rating-calibration.css /games/nrlinvincible/ 302
 /games/nrlinvincible/rating-calibration-tool.js /games/nrlinvincible/ 302
+
+# Chalkbox legacy tool paths
+/teacher-tools/random-student-picker/* /teacher-tools/tools/random-student-picker/:splat 301
+/teacher-tools/seating-plan/* /teacher-tools/tools/seating-plan/:splat 301
+/teacher-tools/classroom-timers/* /teacher-tools/tools/classroom-timers/:splat 301
+/teacher-tools/noise-meter/* /teacher-tools/tools/noise-meter/:splat 301
+/teacher-tools/school-map/* /teacher-tools/tools/school-map/:splat 301

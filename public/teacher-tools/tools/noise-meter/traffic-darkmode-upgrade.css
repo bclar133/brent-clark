@@ -1,0 +1,26 @@
+/* Noise Meter traffic-light + colour-mode upgrade */
+.topbar-actions{justify-self:end;display:flex;align-items:center;gap:10px}.mode-icon{font-size:1rem;line-height:1}
+
+/* Five-light classroom scale */
+.theme-traffic{background:radial-gradient(circle at 50% 36%,rgba(255,255,255,.11),transparent 40%),linear-gradient(#23483f,#102c27)}
+.traffic-pole{position:absolute;z-index:1;top:0;left:50%;width:22px;height:calc(15% + 14px);transform:translateX(-50%);background:linear-gradient(90deg,#25302d,#394542 55%,#202826);box-shadow:inset 3px 0 0 rgba(255,255,255,.08)}
+.traffic-arm{position:absolute;z-index:1;top:calc(15% - 1px);left:50%;width:96px;height:18px;transform:translateX(-50%);background:linear-gradient(90deg,#25302d,#3f4a47 55%,#202826);border-radius:9px}
+.traffic-body{position:absolute;z-index:2;top:15%;left:50%;width:min(27vw,190px);min-width:146px;height:min(74%,460px);padding:18px 20px;transform:translateX(-50%);display:flex;flex-direction:column-reverse;justify-content:space-between;align-items:center;border:10px solid #1c2322;border-radius:38px;background:#303b39;box-shadow:0 24px 55px rgba(0,0,0,.45),inset 8px 0 0 rgba(255,255,255,.04)}
+.traffic-light{height:calc((100% - 80px)/5);max-height:68px;aspect-ratio:1;border-radius:50%;opacity:.18;filter:saturate(.78);box-shadow:inset 0 8px 12px rgba(0,0,0,.42);transition:opacity .2s ease,filter .2s ease,box-shadow .2s ease}
+.traffic-light.light-1{background:#33d17a;color:#33d17a}.traffic-light.light-2{background:#86d530;color:#86d530}.traffic-light.light-3{background:#f0cd4e;color:#f0cd4e}.traffic-light.light-4{background:#ef9a3d;color:#ef9a3d}.traffic-light.light-5{background:#e2554f;color:#e2554f}
+.theme-traffic[data-level="1"] .light-1,.theme-traffic[data-level="2"] .light-2,.theme-traffic[data-level="3"] .light-3,.theme-traffic[data-level="4"] .light-4,.theme-traffic[data-level="5"] .light-5{opacity:1;filter:saturate(1.22);box-shadow:0 0 42px currentColor,inset 0 8px 10px rgba(255,255,255,.2)}
+.traffic-stand{display:none}
+
+/* Light mode for the complete Noise Meter interface */
+body[data-colour-mode="light"]{color:#25342f;background:radial-gradient(circle at 14% 18%,rgba(19,45,41,.06) 0 1px,transparent 2px),radial-gradient(circle at 78% 32%,rgba(19,45,41,.05) 0 1px,transparent 2px),linear-gradient(180deg,#edf3ef,#dfe9e2 45%,#cddcd4);background-size:31px 31px,43px 43px,auto}
+body[data-colour-mode="light"] .topbar{border-bottom-color:rgba(35,54,49,.12);background:rgba(255,255,255,.82)}
+body[data-colour-mode="light"] .brand,body[data-colour-mode="light"] .icon-button,body[data-colour-mode="light"] .title-wrap h1{color:#25342f}
+body[data-colour-mode="light"] .title-wrap p,body[data-colour-mode="light"] .reading-label,body[data-colour-mode="light"] .meter-bottomline{color:#5b6c65}
+body[data-colour-mode="light"] .icon-button{background:rgba(255,255,255,.72)}
+body[data-colour-mode="light"] .meter-topline,body[data-colour-mode="light"] .meter-bottomline{color:#25342f;border-color:rgba(35,54,49,.12);background:rgba(255,255,255,.72)}
+body[data-colour-mode="light"] .zone-quiet{color:#2e6850;background:rgba(77,169,129,.14)}body[data-colour-mode="light"] .zone-working{color:#7c5a18;background:rgba(224,173,79,.18)}body[data-colour-mode="light"] .zone-loud{color:#8f342d;background:rgba(220,98,88,.16)}
+body[data-colour-mode="light"] .target-badge{color:#22342f;background:rgba(255,255,255,.52);border-color:rgba(35,54,49,.12)}
+body[data-colour-mode="light"] .theme-traffic{background:radial-gradient(circle at 50% 36%,rgba(255,255,255,.35),transparent 42%),linear-gradient(#d7e6de,#b7d0c4)}
+body[data-colour-mode="light"] .traffic-pole,body[data-colour-mode="light"] .traffic-arm{background:linear-gradient(90deg,#3f4f4a,#697975 55%,#30403b)}
+body.is-fullscreen[data-colour-mode="light"] .meter-topline,body.is-fullscreen[data-colour-mode="light"] .meter-bottomline{background:rgba(255,255,255,.86)}
+@media(max-width:820px){.topbar-actions{gap:8px}}@media(max-width:560px){.traffic-body{min-width:132px;padding:14px 16px;border-width:8px}.traffic-light{height:calc((100% - 64px)/5)}}

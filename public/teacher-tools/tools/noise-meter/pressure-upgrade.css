@@ -1,0 +1,17 @@
+/* Pressure Gauge upgrade: calibrated needle + animated smoke */
+.theme-pressure {
+  overflow:hidden;
+}
+
+.theme-pressure .steam {
+  display:none!important;
+}
+
+.pressure-smoke-canvas {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:8;
+  pointer-events:none;
+}

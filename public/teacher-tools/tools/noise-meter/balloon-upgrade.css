@@ -1,0 +1,109 @@
+/* Balloon visual upgrade: smaller starting size + comic-book POP burst */
+.theme-balloon .balloon-wrap {
+  transition:transform .18s ease, opacity .12s ease;
+}
+
+.balloon-pop {
+  position:absolute;
+  left:50%;
+  top:44%;
+  width:clamp(170px,24vw,260px);
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  z-index:8;
+  isolation:isolate;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.22) rotate(-12deg);
+  font-family:Impact,"Arial Black",var(--display-font),sans-serif;
+  font-size:clamp(3.2rem,7vw,5.8rem);
+  font-weight:900;
+  line-height:1;
+  letter-spacing:.015em;
+  color:#f24b42;
+  -webkit-text-stroke:3px #111;
+  paint-order:stroke fill;
+  text-shadow:3px 3px 0 #fff5b8, 6px 7px 0 rgba(0,0,0,.18);
+  filter:drop-shadow(0 13px 13px rgba(0,0,0,.24));
+  pointer-events:none;
+}
+
+.balloon-pop::before,
+.balloon-pop::after {
+  content:"";
+  position:absolute;
+  z-index:-2;
+  clip-path:polygon(
+    50% 0%,58% 16%,72% 5%,72% 23%,91% 15%,81% 34%,100% 38%,84% 50%,100% 62%,81% 66%,91% 85%,72% 77%,72% 95%,58% 84%,50% 100%,42% 84%,28% 95%,28% 77%,9% 85%,19% 66%,0% 62%,16% 50%,0% 38%,19% 34%,9% 15%,28% 23%,28% 5%,42% 16%
+  );
+}
+
+.balloon-pop::before {
+  inset:-8%;
+  background:#101010;
+}
+
+.balloon-pop::after {
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(135deg,#ffe66a 0 52%,#ffc43d 52% 100%);
+}
+
+.theme-balloon.popped .balloon-wrap,
+.theme-balloon.manual-pop .balloon-wrap {
+  opacity:0;
+  transform:translate(-50%,-47%) scale(.12) rotate(8deg);
+}
+
+/* Live microphone pop: brief comic burst. */
+.theme-balloon.popped .balloon-pop {
+  animation:balloonComicPop .9s cubic-bezier(.16,.9,.26,1) both;
+}
+
+/* Manual test pop: enter quickly, then stay visible while the slider remains
+   in the Too Loud zone so the visual can be inspected without racing an animation. */
+.theme-balloon.manual-pop .balloon-pop {
+  animation:balloonManualPop .38s cubic-bezier(.16,.9,.26,1) both;
+}
+
+@keyframes balloonComicPop {
+  0% {
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.16) rotate(-16deg);
+  }
+  18% {
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.16) rotate(5deg);
+  }
+  36% {
+    opacity:1;
+    transform:translate(-50%,-50%) scale(.96) rotate(-3deg);
+  }
+  72% {
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.04) rotate(1deg);
+  }
+  100% {
+    opacity:0;
+    transform:translate(-50%,-50%) scale(1.32) rotate(5deg);
+  }
+}
+
+@keyframes balloonManualPop {
+  0% {
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.18) rotate(-14deg);
+  }
+  65% {
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.12) rotate(4deg);
+  }
+  100% {
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1) rotate(-2deg);
+  }
+}
+
+@media (max-width:560px) {
+  .balloon-pop { width:170px; -webkit-text-stroke-width:2px; }
+}
