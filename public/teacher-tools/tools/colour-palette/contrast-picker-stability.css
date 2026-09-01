@@ -1,0 +1,58 @@
+/* Hard fallback styling for the contrast-checker mini picker. */
+#contrastMiniColourDialog #contrastBasicColourGrid {
+  display:grid !important;
+  grid-template-columns:repeat(8, 38px) !important;
+  grid-auto-rows:38px !important;
+  gap:8px !important;
+  align-content:start;
+  justify-content:start;
+  min-height:268px;
+}
+
+#contrastMiniColourDialog #contrastBasicColourGrid .basic-colour {
+  display:block !important;
+  width:38px !important;
+  height:38px !important;
+  min-width:38px !important;
+  min-height:38px !important;
+  aspect-ratio:auto !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:2px solid rgba(255,255,255,.9) !important;
+  border-radius:8px !important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.22) !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  cursor:pointer !important;
+}
+
+#contrastMiniColourDialog #contrastBasicColourGrid .basic-colour:hover,
+#contrastMiniColourDialog #contrastBasicColourGrid .basic-colour.selected {
+  transform:scale(1.08);
+  box-shadow:0 0 0 2px #26332f,0 3px 8px rgba(0,0,0,.2) !important;
+}
+
+body[data-colour-mode="dark"] #contrastMiniColourDialog #contrastBasicColourGrid .basic-colour {
+  border-color:#24443d !important;
+  box-shadow:0 0 0 1px rgba(245,240,223,.3) !important;
+}
+
+body[data-colour-mode="dark"] #contrastMiniColourDialog #contrastBasicColourGrid .basic-colour:hover,
+body[data-colour-mode="dark"] #contrastMiniColourDialog #contrastBasicColourGrid .basic-colour.selected {
+  box-shadow:0 0 0 2px #f5f0df,0 3px 9px rgba(0,0,0,.4) !important;
+}
+
+@media (max-width:720px) {
+  #contrastMiniColourDialog #contrastBasicColourGrid {
+    grid-template-columns:repeat(8, minmax(28px,1fr)) !important;
+    grid-auto-rows:auto !important;
+    min-height:0;
+  }
+  #contrastMiniColourDialog #contrastBasicColourGrid .basic-colour {
+    width:100% !important;
+    height:auto !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    aspect-ratio:1 !important;
+  }
+}

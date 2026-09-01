@@ -1,0 +1,82 @@
+/* Final layout polish for contrast checker controls and WCAG cards. */
+
+/* Keep the clickable colour swatch in its own column so it never overlaps the HEX field. */
+.contrast-colour-row {
+  grid-template-columns:58px minmax(0,1fr) auto !important;
+  column-gap:12px !important;
+  row-gap:8px;
+  align-items:center;
+}
+.contrast-swatch,
+.contrast-picker-v2-trigger {
+  box-sizing:border-box;
+  width:58px !important;
+  height:58px !important;
+  min-width:58px;
+  min-height:58px;
+  margin:0 !important;
+  position:relative;
+  z-index:1;
+  justify-self:start;
+}
+.contrast-hex {
+  width:100%;
+  min-width:0;
+  min-height:58px;
+  box-sizing:border-box;
+}
+.use-current-button {
+  min-height:58px;
+}
+
+/* Give every WCAG result the same internal geometry. */
+.contrast-result {
+  position:relative;
+  display:grid !important;
+  grid-template-rows:minmax(26px,auto) 1fr;
+  align-items:center;
+  justify-items:center;
+  min-height:108px;
+  padding:14px 10px 12px !important;
+  box-sizing:border-box;
+}
+.contrast-result strong {
+  display:block;
+  width:100%;
+  padding:0 27px 0 2px;
+  box-sizing:border-box;
+  font-size:.8rem;
+  line-height:1.25;
+  text-align:center;
+}
+.contrast-result > span {
+  align-self:center;
+  margin-top:6px !important;
+  line-height:1.25;
+  text-align:center;
+}
+.contrast-result .wcag-help {
+  position:absolute !important;
+  top:10px;
+  right:10px;
+  margin:0 !important;
+}
+
+@media (max-width:560px) {
+  .contrast-colour-row {
+    grid-template-columns:52px minmax(0,1fr) !important;
+  }
+  .contrast-swatch,
+  .contrast-picker-v2-trigger {
+    width:52px !important;
+    height:52px !important;
+    min-width:52px;
+    min-height:52px;
+  }
+  .contrast-hex { min-height:52px; }
+  .use-current-button {
+    grid-column:1 / -1;
+    width:100%;
+    min-height:44px;
+  }
+}

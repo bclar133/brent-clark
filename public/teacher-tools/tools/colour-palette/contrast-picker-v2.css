@@ -1,0 +1,246 @@
+.contrast-picker-v2-trigger {
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.contrast-picker-v2-trigger:hover {
+  transform:scale(1.04);
+  box-shadow:0 0 0 2px rgba(169,93,69,.52),0 4px 13px rgba(0,0,0,.12);
+}
+.contrast-picker-v2-trigger:focus-visible {
+  outline:3px solid #d8b866;
+  outline-offset:3px;
+}
+
+.contrast-picker-v2 {
+  width:min(820px, calc(100% - 24px));
+  max-height:calc(100vh - 30px);
+  padding:0;
+  border:1px solid rgba(80,93,86,.28);
+  border-radius:22px;
+  color:#26332f;
+  background:#f7f0df;
+  box-shadow:0 28px 90px rgba(0,0,0,.38);
+}
+.contrast-picker-v2::backdrop {
+  background:rgba(8,20,17,.64);
+  backdrop-filter:blur(3px);
+}
+.contrast-picker-v2-shell {
+  padding:22px;
+}
+.contrast-picker-v2-header {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+}
+.contrast-picker-v2-header h3 {
+  margin:0;
+  font-family:var(--display-font);
+  font-size:1.9rem;
+  line-height:1;
+}
+.contrast-picker-v2-header p {
+  margin:7px 0 0;
+  color:#66746e;
+  font-size:.9rem;
+  font-weight:700;
+}
+.contrast-picker-v2-close {
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  border:1px solid rgba(60,74,68,.18);
+  border-radius:11px;
+  color:#596762;
+  background:#eee5d2;
+  font-size:1.3rem;
+  font-weight:900;
+  cursor:pointer;
+}
+.contrast-picker-v2-grid {
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  gap:28px;
+  align-items:start;
+}
+.contrast-picker-v2-wheel-column {
+  display:grid;
+  justify-items:center;
+}
+.contrast-picker-v2-wheel {
+  position:relative;
+  width:240px;
+  aspect-ratio:1;
+  border-radius:50%;
+  cursor:crosshair;
+  touch-action:none;
+  user-select:none;
+  box-shadow:0 12px 26px rgba(42,38,24,.18),0 0 0 5px rgba(255,255,255,.65),0 0 0 6px rgba(92,75,36,.18);
+}
+.contrast-picker-v2-colours {
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,1) 0%, rgba(255,255,255,.95) 3%, rgba(255,255,255,0) 100%),
+    conic-gradient(from 90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+  box-shadow:inset 0 0 15px rgba(0,0,0,.12),inset 0 0 0 1px rgba(0,0,0,.15);
+}
+.contrast-picker-v2-marker {
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:22px;
+  height:22px;
+  border:3px solid #fff;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 2px rgba(0,0,0,.42),0 2px 8px rgba(0,0,0,.3);
+  pointer-events:none;
+}
+.contrast-picker-v2-brightness {
+  width:240px;
+  margin-top:18px;
+}
+.contrast-picker-v2-brightness > span {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:7px;
+  color:#5e6b66;
+  font-size:.82rem;
+  font-weight:900;
+}
+.contrast-picker-v2-brightness input {
+  width:100%;
+}
+.contrast-picker-v2-value {
+  width:240px;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  margin-top:15px;
+}
+.contrast-picker-v2-preview {
+  width:48px;
+  height:48px;
+  border:2px solid #fff;
+  border-radius:11px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.2);
+}
+.contrast-picker-v2-value input {
+  min-width:0;
+  min-height:48px;
+  padding:0 12px;
+  border:1px solid rgba(53,71,64,.22);
+  border-radius:11px;
+  color:#27352f;
+  background:#fffdf7;
+  font-size:1.05rem;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.contrast-picker-v2-basic-panel h4 {
+  margin:0 0 4px;
+  font-family:var(--display-font);
+  font-size:1.35rem;
+}
+.contrast-picker-v2-basic-panel p {
+  margin:0 0 14px;
+  color:#738079;
+  font-size:.82rem;
+  font-weight:700;
+}
+.contrast-picker-v2-basic-grid {
+  display:grid;
+  grid-template-columns:repeat(8, 42px);
+  gap:9px;
+  align-content:start;
+}
+.contrast-picker-v2-basic {
+  width:42px;
+  height:42px;
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border:2px solid #fff;
+  border-radius:8px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.22);
+  cursor:pointer;
+}
+.contrast-picker-v2-basic:hover,
+.contrast-picker-v2-basic.selected {
+  transform:scale(1.08);
+  box-shadow:0 0 0 2px #26332f,0 3px 8px rgba(0,0,0,.2);
+}
+.contrast-picker-v2-footer {
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:22px;
+  padding-top:17px;
+  border-top:1px solid rgba(70,84,77,.15);
+}
+
+body[data-colour-mode="dark"] .contrast-picker-v2 {
+  color:#f5f0df;
+  border-color:rgba(216,184,102,.34);
+  background:#0c211d;
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-header p,
+body[data-colour-mode="dark"] .contrast-picker-v2-basic-panel p,
+body[data-colour-mode="dark"] .contrast-picker-v2-brightness > span {
+  color:#b8c8c1;
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-close {
+  color:#f5f0df;
+  border-color:rgba(234,225,199,.16);
+  background:#1d3b35;
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-value input {
+  color:#f5f0df;
+  border-color:rgba(234,225,199,.16);
+  background:#0a201c;
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-wheel {
+  box-shadow:0 12px 28px rgba(0,0,0,.35),0 0 0 5px rgba(16,40,36,.95),0 0 0 6px rgba(216,184,102,.26);
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-basic {
+  border-color:#24443d;
+  box-shadow:0 0 0 1px rgba(245,240,223,.22);
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-basic:hover,
+body[data-colour-mode="dark"] .contrast-picker-v2-basic.selected {
+  box-shadow:0 0 0 2px #f5f0df,0 3px 9px rgba(0,0,0,.4);
+}
+body[data-colour-mode="dark"] .contrast-picker-v2-footer {
+  border-top-color:rgba(234,225,199,.16);
+}
+
+@media (max-width:760px) {
+  .contrast-picker-v2-grid {
+    grid-template-columns:1fr;
+  }
+  .contrast-picker-v2-basic-grid {
+    grid-template-columns:repeat(8, minmax(30px,1fr));
+  }
+  .contrast-picker-v2-basic {
+    width:100%;
+    min-width:30px;
+    height:auto;
+    aspect-ratio:1;
+  }
+}
+
+@media (max-width:460px) {
+  .contrast-picker-v2-shell { padding:16px; }
+  .contrast-picker-v2-basic-grid { gap:6px; }
+  .contrast-picker-v2-wheel,
+  .contrast-picker-v2-brightness,
+  .contrast-picker-v2-value {
+    width:min(240px, 76vw);
+  }
+}

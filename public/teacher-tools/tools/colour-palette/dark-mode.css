@@ -1,0 +1,216 @@
+/* Proper dark mode for Colour Palette. Loaded after all component styles. */
+body[data-colour-mode="dark"] {
+  --dark-bg:#071916;
+  --dark-surface:#102824;
+  --dark-surface-2:#17332e;
+  --dark-surface-3:#1d3b35;
+  --dark-border:rgba(234,225,199,.16);
+  --dark-border-strong:rgba(216,184,102,.34);
+  --dark-text:#f5f0df;
+  --dark-muted:#b8c8c1;
+  --dark-soft:#91a49b;
+  color:var(--dark-text);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255,255,255,.025) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 32%, rgba(255,255,255,.018) 0 1px, transparent 2px),
+    linear-gradient(180deg,#12302b 0%,#0b211e 44%,var(--dark-bg) 100%);
+}
+
+body[data-colour-mode="dark"] .topbar {
+  background:rgba(5,22,19,.92);
+  border-bottom-color:var(--dark-border);
+}
+
+body[data-colour-mode="dark"] .brand,
+body[data-colour-mode="dark"] .title-wrap h1,
+body[data-colour-mode="dark"] .panel h2,
+body[data-colour-mode="dark"] .panel h3,
+body[data-colour-mode="dark"] .panel h4 {
+  color:var(--dark-text);
+}
+
+body[data-colour-mode="dark"] .title-wrap p,
+body[data-colour-mode="dark"] .helper,
+body[data-colour-mode="dark"] .scheme-description,
+body[data-colour-mode="dark"] .palette-empty,
+body[data-colour-mode="dark"] .gradient-picker-header p,
+body[data-colour-mode="dark"] .basic-colours-panel p,
+body[data-colour-mode="dark"] .palette-meta span {
+  color:var(--dark-muted);
+}
+
+body[data-colour-mode="dark"] .kicker {
+  color:#e5b991;
+}
+
+body[data-colour-mode="dark"] .panel {
+  color:var(--dark-text);
+  border-color:var(--dark-border-strong);
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.025),transparent 36%),
+    var(--dark-surface);
+  box-shadow:0 18px 48px rgba(0,0,0,.3);
+}
+
+body[data-colour-mode="dark"] .current-colour,
+body[data-colour-mode="dark"] .scheme-generator-controls,
+body[data-colour-mode="dark"] .gradient-stop,
+body[data-colour-mode="dark"] .palette-swatch,
+body[data-colour-mode="dark"] .readout-grid {
+  border-color:var(--dark-border);
+  background:var(--dark-surface-2);
+}
+
+body[data-colour-mode="dark"] .palette-empty {
+  border-color:rgba(216,184,102,.3);
+  background:rgba(255,255,255,.015);
+}
+
+body[data-colour-mode="dark"] .format-row > label,
+body[data-colour-mode="dark"] .css-output-wrap > label,
+body[data-colour-mode="dark"] .rgb-fieldset legend,
+body[data-colour-mode="dark"] .rgb-fieldset label,
+body[data-colour-mode="dark"] .slider-label,
+body[data-colour-mode="dark"] .field-row,
+body[data-colour-mode="dark"] .scheme-base-field > span,
+body[data-colour-mode="dark"] .gradient-stop-topline,
+body[data-colour-mode="dark"] .mini-brightness-label {
+  color:var(--dark-muted);
+}
+
+body[data-colour-mode="dark"] .readout-grid span {
+  color:var(--dark-soft);
+}
+body[data-colour-mode="dark"] .readout-grid strong,
+body[data-colour-mode="dark"] .palette-meta strong {
+  color:var(--dark-text);
+}
+
+body[data-colour-mode="dark"] input[type="text"],
+body[data-colour-mode="dark"] input[type="number"],
+body[data-colour-mode="dark"] select,
+body[data-colour-mode="dark"] .scheme-base-input,
+body[data-colour-mode="dark"] .mini-picker-value input {
+  color:var(--dark-text);
+  border-color:var(--dark-border);
+  background:#0a201c;
+}
+body[data-colour-mode="dark"] input[readonly] {
+  color:#e8dfc7;
+  background:#0c2520;
+}
+body[data-colour-mode="dark"] select option {
+  color:var(--dark-text);
+  background:#0a201c;
+}
+
+body[data-colour-mode="dark"] .scheme-base-input-wrap {
+  color:var(--dark-text);
+}
+
+body[data-colour-mode="dark"] .secondary-button,
+body[data-colour-mode="dark"] .ghost-button,
+body[data-colour-mode="dark"] .copy-button,
+body[data-colour-mode="dark"] .scheme-tab,
+body[data-colour-mode="dark"] .gradient-stop-remove,
+body[data-colour-mode="dark"] .gradient-picker-close {
+  color:var(--dark-text);
+  border-color:var(--dark-border);
+  background:var(--dark-surface-3);
+  box-shadow:none;
+}
+
+body[data-colour-mode="dark"] .secondary-button:hover,
+body[data-colour-mode="dark"] .ghost-button:hover,
+body[data-colour-mode="dark"] .copy-button:hover,
+body[data-colour-mode="dark"] .scheme-tab:hover,
+body[data-colour-mode="dark"] .gradient-picker-close:hover {
+  color:#fff8e9;
+  border-color:rgba(216,184,102,.56);
+  background:#274b43;
+}
+
+body[data-colour-mode="dark"] .primary-button,
+body[data-colour-mode="dark"] .scheme-tab.active {
+  color:#fff9ed;
+  border-color:#b76c53;
+  background:#9e563f;
+}
+
+body[data-colour-mode="dark"] .primary-button:hover,
+body[data-colour-mode="dark"] .scheme-tab.active:hover {
+  background:#b66247;
+}
+
+body[data-colour-mode="dark"] .icon-button {
+  color:var(--dark-text);
+  border-color:var(--dark-border-strong);
+  background:#0b241f;
+}
+body[data-colour-mode="dark"] .icon-button:hover {
+  background:#173630;
+  border-color:rgba(216,184,102,.65);
+}
+
+body[data-colour-mode="dark"] .gradient-colour-dialog {
+  color:var(--dark-text);
+  border-color:var(--dark-border-strong);
+  background:#0c211d;
+}
+body[data-colour-mode="dark"] .gradient-picker-shell {
+  background:#0c211d;
+}
+body[data-colour-mode="dark"] .gradient-picker-footer {
+  border-top-color:var(--dark-border);
+}
+
+body[data-colour-mode="dark"] .mini-colour-wheel {
+  box-shadow:0 12px 28px rgba(0,0,0,.35),0 0 0 5px rgba(16,40,36,.95),0 0 0 6px rgba(216,184,102,.26);
+}
+
+body[data-colour-mode="dark"] .colour-wheel {
+  box-shadow:0 24px 48px rgba(0,0,0,.34),0 0 0 8px rgba(16,40,36,.96),0 0 0 9px rgba(216,184,102,.22);
+}
+
+body[data-colour-mode="dark"] .basic-colour,
+body[data-colour-mode="dark"] .gradient-colour-button,
+body[data-colour-mode="dark"] .scheme-base-swatch,
+body[data-colour-mode="dark"] .mini-picker-preview {
+  border-color:#24443d;
+  box-shadow:0 0 0 1px rgba(245,240,223,.22);
+}
+
+body[data-colour-mode="dark"] .basic-colour:hover,
+body[data-colour-mode="dark"] .basic-colour.selected {
+  box-shadow:0 0 0 2px #f5f0df,0 3px 9px rgba(0,0,0,.4);
+}
+
+body[data-colour-mode="dark"] .scheme-swatches,
+body[data-colour-mode="dark"] .gradient-preview {
+  border-color:rgba(245,240,223,.18);
+}
+
+body[data-colour-mode="dark"] #brightnessSlider,
+body[data-colour-mode="dark"] .mini-brightness input {
+  border-color:rgba(245,240,223,.2);
+}
+
+body[data-colour-mode="dark"] button:disabled {
+  color:#7d9087;
+  border-color:rgba(245,240,223,.08);
+  background:#10231f;
+  opacity:.72;
+}
+
+body[data-colour-mode="dark"] ::placeholder {
+  color:#71857c;
+  opacity:1;
+}
+
+body[data-colour-mode="dark"] input:focus-visible,
+body[data-colour-mode="dark"] select:focus-visible,
+body[data-colour-mode="dark"] button:focus-visible,
+body[data-colour-mode="dark"] .colour-wheel:focus-visible,
+body[data-colour-mode="dark"] .mini-colour-wheel:focus-visible {
+  outline-color:#e1bc67;
+}
