@@ -30,7 +30,7 @@
     noiseMeterCopy.textContent = 'Use your device microphone to monitor relative classroom noise with adjustable targets, calibration and seven animated visual themes.';
   }
 
-  /* Add the Randomiser card on the Chalkbox homepage. */
+  /* Add tools that were introduced after the original homepage markup. */
   const tools = document.querySelector('.tools');
   if (tools && !tools.querySelector('a[href="tools/randomiser/"]')) {
     const card = document.createElement('a');
@@ -40,6 +40,19 @@
       <div class="tool-icon" aria-hidden="true">🔢</div>
       <h3>Randomiser</h3>
       <p>Generate random numbers, roll standard or custom dice, and flip one or multiple coins with presentation-friendly animations and sound.</p>
+      <span class="open">Open tool <span aria-hidden="true">→</span></span>
+    `;
+    tools.append(card);
+  }
+
+  if (tools && !tools.querySelector('a[href="tools/colour-palette/"]')) {
+    const card = document.createElement('a');
+    card.className = 'tool-card';
+    card.href = 'tools/colour-palette/';
+    card.innerHTML = `
+      <div class="tool-icon" aria-hidden="true">🎨</div>
+      <h3>Colour Palette</h3>
+      <p>Pick colours from a large interactive wheel, convert HEX and RGB instantly, build colour schemes, save palettes and generate CSS gradients.</p>
       <span class="open">Open tool <span aria-hidden="true">→</span></span>
     `;
     tools.append(card);
