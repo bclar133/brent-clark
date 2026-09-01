@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#132d29">
+  <meta name="description" content="Chalkbox Colour Palette is an interactive colour wheel, converter, scheme generator and gradient builder.">
+  <title>Colour Palette · Chalkbox</title>
+  <link rel="icon" href="../../favicon.svg?v=5" type="image/svg+xml" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Fredericka+the+Great&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../" aria-label="Back to Chalkbox home">
+      <img src="../../assets/teacher-tools-icon.svg" alt="">
+      <span>Chalkbox</span>
+    </a>
+    <div class="title-wrap">
+      <h1>Colour Palette</h1>
+      <p>Pick, convert, combine and build</p>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-button" type="button" data-site-theme-toggle aria-label="Switch to light mode" title="Switch to light mode">
+        <span data-theme-icon aria-hidden="true">☀</span><span class="button-label" data-theme-label>Light mode</span>
+      </button>
+      <button class="icon-button" id="fullscreenBtn" type="button" aria-label="Enter fullscreen" title="Fullscreen">
+        <span aria-hidden="true">⛶</span><span class="button-label">Fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="wheel-panel panel" aria-labelledby="wheelHeading">
+      <div class="panel-heading wheel-heading">
+        <div>
+          <p class="kicker">Colour picker</p>
+          <h2 id="wheelHeading">Choose a colour</h2>
+        </div>
+        <div class="wheel-actions">
+          <button class="secondary-button" id="randomColourBtn" type="button">🎲 Random colour</button>
+          <button class="primary-button" id="addPaletteBtn" type="button">＋ Add to palette</button>
+        </div>
+      </div>
+
+      <div class="wheel-layout">
+        <div class="wheel-column">
+          <div class="colour-wheel" id="colourWheel" role="application" aria-label="Interactive colour wheel. Click or drag to choose hue and saturation.">
+            <div class="wheel-colours" id="wheelColours" aria-hidden="true"></div>
+            <div class="wheel-marker-layer" id="markerLayer" aria-hidden="true"></div>
+            <div class="selection-marker" id="selectionMarker" aria-hidden="true"><span></span></div>
+          </div>
+          <div class="brightness-control">
+            <div class="slider-label"><b>Brightness</b><output id="brightnessOutput">100%</output></div>
+            <input id="brightnessSlider" type="range" min="0" max="100" value="100" step="1" aria-label="Colour brightness">
+          </div>
+        </div>
+
+        <aside class="current-colour" aria-label="Selected colour details">
+          <div class="current-preview" id="currentPreview">
+            <span class="preview-label">Selected colour</span>
+            <strong id="previewHex">#2F80ED</strong>
+          </div>
+
+          <div class="format-row">
+            <label for="hexInput">HEX</label>
+            <div class="input-with-action">
+              <input id="hexInput" type="text" value="#2F80ED" maxlength="7" spellcheck="false" autocomplete="off">
+              <button class="copy-button" type="button" data-copy="hexInput" aria-label="Copy HEX value">Copy</button>
+            </div>
+          </div>
+
+          <fieldset class="rgb-fieldset">
+            <legend>RGB</legend>
+            <label>R<input id="redInput" type="number" min="0" max="255" value="47" inputmode="numeric"></label>
+            <label>G<input id="greenInput" type="number" min="0" max="255" value="128" inputmode="numeric"></label>
+            <label>B<input id="blueInput" type="number" min="0" max="255" value="237" inputmode="numeric"></label>
+          </fieldset>
+
+          <div class="readout-grid">
+            <div><span>RGB</span><strong id="rgbReadout">47, 128, 237</strong></div>
+            <div><span>HSL</span><strong id="hslReadout">214°, 84%, 56%</strong></div>
+            <div><span>HSV</span><strong id="hsvReadout">214°, 80%, 93%</strong></div>
+          </div>
+
+          <p class="helper">HEX and RGB update each other instantly. You can also type a colour directly to move the wheel.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="palette-panel panel" aria-labelledby="paletteHeading">
+      <div class="panel-heading compact-heading">
+        <div>
+          <p class="kicker">Your palette</p>
+          <h2 id="paletteHeading">Saved colours</h2>
+        </div>
+        <div class="panel-actions">
+          <button class="secondary-button" id="surprisePaletteBtn" type="button">✨ Generate palette</button>
+          <button class="ghost-button" id="clearPaletteBtn" type="button">Clear</button>
+        </div>
+      </div>
+      <div class="palette-empty" id="paletteEmpty">Add colours from the wheel or generate a ready-made scheme.</div>
+      <div class="palette-strip" id="paletteStrip" aria-live="polite"></div>
+    </section>
+
+    <div class="lower-grid">
+      <section class="scheme-panel panel" aria-labelledby="schemeHeading">
+        <div class="panel-heading compact-heading">
+          <div>
+            <p class="kicker">Colour schemes</p>
+            <h2 id="schemeHeading">Build a harmony</h2>
+          </div>
+        </div>
+        <div class="scheme-tabs" id="schemeTabs" role="group" aria-label="Colour harmony type">
+          <button class="scheme-tab active" type="button" data-scheme="analogous">Analogous</button>
+          <button class="scheme-tab" type="button" data-scheme="complementary">Complementary</button>
+          <button class="scheme-tab" type="button" data-scheme="triadic">Triadic</button>
+          <button class="scheme-tab" type="button" data-scheme="split">Split</button>
+          <button class="scheme-tab" type="button" data-scheme="tetradic">Tetradic</button>
+          <button class="scheme-tab" type="button" data-scheme="monochromatic">Monochromatic</button>
+        </div>
+        <p class="scheme-description" id="schemeDescription"></p>
+        <div class="scheme-swatches" id="schemeSwatches"></div>
+        <button class="primary-button full-width" id="addSchemeBtn" type="button">Add scheme to palette</button>
+      </section>
+
+      <section class="gradient-panel panel" aria-labelledby="gradientHeading">
+        <div class="panel-heading compact-heading">
+          <div>
+            <p class="kicker">Gradient builder</p>
+            <h2 id="gradientHeading">Blend your colours</h2>
+          </div>
+          <button class="secondary-button small-button" id="loadPaletteBtn" type="button">Use palette</button>
+        </div>
+
+        <div class="gradient-preview" id="gradientPreview" aria-label="Gradient preview"></div>
+
+        <div class="gradient-settings">
+          <label class="field-row">
+            <span>Type</span>
+            <select id="gradientType">
+              <option value="linear">Linear</option>
+              <option value="radial">Radial</option>
+            </select>
+          </label>
+          <label class="field-row" id="angleRow">
+            <span>Angle <output id="angleOutput">90°</output></span>
+            <input id="gradientAngle" type="range" min="0" max="360" value="90" step="1">
+          </label>
+        </div>
+
+        <div class="gradient-stops" id="gradientStops"></div>
+        <button class="ghost-button add-stop-button" id="addStopBtn" type="button">＋ Add colour stop</button>
+
+        <div class="css-output-wrap">
+          <label for="cssOutput">CSS</label>
+          <div class="input-with-action css-output-row">
+            <input id="cssOutput" type="text" readonly>
+            <button class="copy-button" type="button" data-copy="cssOutput">Copy</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../../assets/js/site-colour-mode.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
