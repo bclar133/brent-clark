@@ -3,6 +3,8 @@
 
   const bgInput = document.getElementById('contrastBgHex');
   const textInput = document.getElementById('contrastTextHex');
+  const bgSwatch = document.getElementById('contrastBgSwatch');
+  const textSwatch = document.getElementById('contrastTextSwatch');
   const preview = document.getElementById('contrastPreview');
   const gradientBadge = document.getElementById('contrastGradientBadge');
 
@@ -18,12 +20,17 @@
   }
 
   function syncPreview() {
+    const bg = normaliseHex(bgInput.value);
     const text = normaliseHex(textInput.value);
+
+    // The swatches should always mirror their HEX fields, including after
+    // "Use current", the mini picker, swapping colours, or manual typing.
+    if (bg && bgSwatch) bgSwatch.style.setProperty('background-color', bg, 'important');
+    if (text && textSwatch) textSwatch.style.setProperty('background-color', text, 'important');
+
     if (text) preview.style.setProperty('color', text, 'important');
 
     if (gradientIsActive()) return;
-
-    const bg = normaliseHex(bgInput.value);
     if (!bg) return;
 
     // Solid mode must explicitly clear any stale gradient/background-image state.
