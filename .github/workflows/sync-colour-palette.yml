@@ -40,21 +40,21 @@ jobs:
           index = Path('public/teacher-tools/index.html')
           text = index.read_text()
           if 'tools/colour-palette/' not in text:
-              marker = '''        <a class="tool-card" href="tools/noise-meter/">
-          <div class="tool-icon" aria-hidden="true">🎤</div>
-          <h3>Noise Meter</h3>
-          <p>Use your device microphone to monitor relative classroom noise with adjustable targets, calibration and ten animated visual themes.</p>
-          <span class="open">Open tool <span aria-hidden="true">→</span></span>
-        </a>'''
-              card = '''\n\n        <a class="tool-card" href="tools/colour-palette/">
-          <div class="tool-icon" aria-hidden="true">🎨</div>
-          <h3>Colour Palette</h3>
-          <p>Pick colours from an interactive wheel, convert HEX and RGB, build colour schemes and gradients, check contrast, export palettes, and play the named-colour game.</p>
-          <span class="open">Open tool <span aria-hidden="true">→</span></span>
-        </a>'''
-              if marker not in text:
-                  raise SystemExit('Could not find Noise Meter card insertion point')
-              text = text.replace(marker, marker + card, 1)
+              needle = '        </a>\n      </div>\n    </section>'
+              card = (
+                  '        </a>\n\n'
+                  '        <a class="tool-card" href="tools/colour-palette/">\n'
+                  '          <div class="tool-icon" aria-hidden="true">🎨</div>\n'
+                  '          <h3>Colour Palette</h3>\n'
+                  '          <p>Pick colours from an interactive wheel, convert HEX and RGB, build colour schemes and gradients, check contrast, export palettes, and play the named-colour game.</p>\n'
+                  '          <span class="open">Open tool <span aria-hidden="true">→</span></span>\n'
+                  '        </a>\n'
+                  '      </div>\n'
+                  '    </section>'
+              )
+              if needle not in text:
+                  raise SystemExit('Could not find Chalkbox tools card insertion point')
+              text = text.replace(needle, card, 1)
               index.write_text(text)
 
           redirects = Path('public/_redirects')
