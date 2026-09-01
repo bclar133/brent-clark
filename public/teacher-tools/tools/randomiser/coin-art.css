@@ -1,0 +1,75 @@
+/* HD generated artwork for the two coin faces.
+   Each face is assembled from four source tiles. */
+.coin-face {
+  overflow:hidden !important;
+  border:0 !important;
+  border-radius:50% !important;
+  background-color:#d9a62f !important;
+  background-repeat:no-repeat !important;
+  background-size:50.2% 50.2% !important;
+  box-shadow:none !important;
+  color:transparent !important;
+  image-rendering:auto;
+}
+
+.coin-front {
+  background-image:
+    url("coin-heads-tl.svg"),
+    url("coin-heads-tr.svg"),
+    url("coin-heads-bl.svg"),
+    url("coin-heads-br.svg") !important;
+  background-position:
+    left top,
+    right top,
+    left bottom,
+    right bottom !important;
+}
+
+.coin-back {
+  background-image:
+    url("coin-tails-tl.svg"),
+    url("coin-tails-tr.svg"),
+    url("coin-tails-bl.svg"),
+    url("coin-tails-br.svg") !important;
+  background-position:
+    left top,
+    right top,
+    left bottom,
+    right bottom !important;
+}
+
+/* The generated artwork already contains the HEADS / TAILS lettering. */
+.coin-face .lizard-art,
+.coin-face > small {
+  display:none !important;
+}
+
+/* Use the exact same artwork in the two-way-choice preview. */
+.coin-choice-note .mini-coin {
+  font-size:0 !important;
+  line-height:0 !important;
+  overflow:hidden;
+  border:1px solid #ad8326 !important;
+  background-color:#d9a62f !important;
+  background-repeat:no-repeat !important;
+  background-size:50.2% 50.2% !important;
+  box-shadow:0 2px 6px rgba(76,58,15,.18);
+}
+
+.coin-choice-note .mini-coin.heads {
+  background-image:
+    url("coin-heads-tl.svg"),
+    url("coin-heads-tr.svg"),
+    url("coin-heads-bl.svg"),
+    url("coin-heads-br.svg") !important;
+  background-position:left top,right top,left bottom,right bottom !important;
+}
+
+.coin-choice-note .mini-coin.tails {
+  background-image:
+    url("coin-tails-tl.svg"),
+    url("coin-tails-tr.svg"),
+    url("coin-tails-bl.svg"),
+    url("coin-tails-br.svg") !important;
+  background-position:left top,right top,left bottom,right bottom !important;
+}

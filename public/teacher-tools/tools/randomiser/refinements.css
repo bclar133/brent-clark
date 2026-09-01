@@ -1,0 +1,325 @@
+@import url("coin-art.css?v=3");
+
+.tab-emoji {
+  display:inline-block;
+  margin-right:8px;
+  font-size:1.25rem;
+  line-height:1;
+  vertical-align:-0.12em;
+}
+
+.dice-total {
+  align-items:flex-start;
+}
+
+.dice-total span {
+  padding-top:0;
+  line-height:1;
+  margin-top:.12rem;
+}
+
+.dice-total strong {
+  line-height:.88;
+}
+
+.custom-sides-field {
+  transition:opacity .18s ease;
+}
+
+.custom-sides-field.disabled {
+  opacity:.48;
+}
+
+.custom-sides-field.disabled input {
+  cursor:not-allowed;
+  filter:grayscale(.65);
+  background:color-mix(in srgb,var(--panel-strong) 76%,#c9cec9);
+}
+
+.presentation-toolbar[hidden],
+body:not(.presentation-mode) .presentation-toolbar {
+  display:none !important;
+}
+
+body.presentation-mode .presentation-toolbar:not([hidden]) {
+  display:flex !important;
+}
+
+.controls-panel .field-label {
+  font-size:1rem;
+  line-height:1.35;
+}
+
+#dieSides,
+#customSides,
+#diceCount,
+#coinCount {
+  min-height:60px;
+  font-size:1.18rem;
+  font-weight:900;
+  padding-left:16px;
+}
+
+#dieSides {
+  padding-right:46px;
+}
+
+.custom-sides-field .field-help {
+  font-size:.88rem;
+  line-height:1.45;
+}
+
+.dice-count-stepper,
+.coin-count-stepper {
+  position:relative;
+  display:block;
+  width:100%;
+}
+
+.dice-count-stepper #diceCount,
+.coin-count-stepper #coinCount {
+  width:100%;
+  padding-right:68px;
+  appearance:textfield;
+  -moz-appearance:textfield;
+}
+
+.dice-count-stepper #diceCount::-webkit-inner-spin-button,
+.dice-count-stepper #diceCount::-webkit-outer-spin-button,
+.coin-count-stepper #coinCount::-webkit-inner-spin-button,
+.coin-count-stepper #coinCount::-webkit-outer-spin-button {
+  appearance:none;
+  margin:0;
+}
+
+.dice-step-buttons,
+.coin-step-buttons {
+  position:absolute;
+  top:4px;
+  right:4px;
+  bottom:4px;
+  width:54px;
+  display:grid;
+  grid-template-rows:1fr 1fr;
+  overflow:hidden;
+  border-left:1px solid var(--line);
+  border-radius:0 10px 10px 0;
+}
+
+.dice-step-button,
+.coin-step-button {
+  min-width:50px;
+  min-height:0;
+  padding:0;
+  border:0;
+  background:color-mix(in srgb,var(--panel-strong) 88%,var(--gold-soft));
+  color:var(--ink);
+  font-size:1.3rem;
+  font-weight:900;
+  line-height:1;
+  cursor:pointer;
+}
+
+.dice-step-button + .dice-step-button,
+.coin-step-button + .coin-step-button {
+  border-top:1px solid var(--line);
+}
+
+.dice-step-button:hover,
+.coin-step-button:hover {
+  background:var(--gold-soft);
+}
+
+.coin-step-button:disabled {
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.coin-count-field {
+  margin-top:2px !important;
+  margin-bottom:16px !important;
+}
+
+.die[data-sides="8"] {
+  --poly-shape:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+
+.die[data-sides="10"] {
+  --poly-shape:polygon(50% 0,92% 24%,100% 66%,70% 100%,30% 100%,0 66%,8% 24%);
+}
+
+.die[data-sides="12"] {
+  --poly-shape:polygon(50% 0,79% 9%,97% 35%,97% 65%,79% 91%,50% 100%,21% 91%,3% 65%,3% 35%,21% 9%);
+}
+
+.die[data-sides="20"] {
+  --poly-shape:polygon(50% 0,76% 8%,94% 28%,100% 52%,91% 78%,68% 97%,39% 100%,15% 85%,1% 60%,5% 31%,24% 9%);
+}
+
+.die:is([data-sides="8"],[data-sides="10"],[data-sides="12"],[data-sides="20"]) {
+  position:relative;
+  border:0;
+  clip-path:var(--poly-shape);
+  background:#a97f2d;
+  box-shadow:none;
+  filter:drop-shadow(0 15px 15px rgba(68,52,15,.2));
+  isolation:isolate;
+}
+
+.die:is([data-sides="8"],[data-sides="10"],[data-sides="12"],[data-sides="20"])::before {
+  content:"";
+  position:absolute;
+  inset:3px;
+  clip-path:var(--poly-shape);
+  background:linear-gradient(145deg,#fff8dc,#e8cb76);
+  z-index:-1;
+}
+
+.die:is([data-sides="8"],[data-sides="10"],[data-sides="12"],[data-sides="20"]) > * {
+  position:relative;
+  z-index:1;
+}
+
+#diceResults .die {
+  animation:none !important;
+  transform-style:flat !important;
+  transition:transform 140ms ease-out;
+}
+
+#diceResults .die.shaking {
+  transition:transform 45ms linear;
+  will-change:transform;
+}
+
+.coin-scene {
+  perspective:1100px;
+}
+
+.coin {
+  transform-style:preserve-3d !important;
+  transform-origin:50% 50%;
+  will-change:transform;
+}
+
+.coin-face {
+  backface-visibility:hidden !important;
+  -webkit-backface-visibility:hidden !important;
+}
+
+.coin-back {
+  transform:rotateX(180deg) !important;
+}
+
+/* Do not use !important here: app.js and multi-coin.js animate inline transforms. */
+.coin.show-heads {
+  transform:rotateX(0deg);
+}
+
+.coin.show-tails {
+  transform:rotateX(180deg);
+}
+
+.coin-results {
+  --coin-size:172px;
+  width:100%;
+  max-width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:10px 14px;
+  padding:4px 6px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+
+.coin-results[data-count="2"] { --coin-size:160px; }
+.coin-results[data-count="3"],
+.coin-results[data-count="4"] { --coin-size:145px; }
+.coin-results[data-count="5"],
+.coin-results[data-count="6"] { --coin-size:125px; }
+.coin-results[data-count="7"],
+.coin-results[data-count="8"] { --coin-size:110px; }
+.coin-results[data-count="9"],
+.coin-results[data-count="10"] { --coin-size:96px; }
+
+.coin-results .coin-scene {
+  width:calc(var(--coin-size) + 22px) !important;
+  height:calc(var(--coin-size) + 46px) !important;
+  min-width:0;
+  display:grid;
+  place-items:center;
+}
+
+.coin-results .coin {
+  width:var(--coin-size) !important;
+  height:var(--coin-size) !important;
+}
+
+.coin-results .coin-shadow {
+  bottom:7px;
+  width:calc(var(--coin-size) * .58);
+  height:clamp(10px, calc(var(--coin-size) * .10), 22px);
+}
+
+.multi-coin-stage .coin-result {
+  max-width:96%;
+  margin-top:4px;
+  padding:0 8px;
+  text-align:center;
+  font-size:clamp(1.35rem,3.2vw,2.45rem);
+  line-height:1.05;
+}
+
+body.presentation-mode .coin-results {
+  gap:8px 12px;
+  padding:6px 12px 42px;
+}
+
+body.presentation-mode .coin-results[data-count="1"] { --coin-size:240px; }
+body.presentation-mode .coin-results[data-count="2"] { --coin-size:220px; }
+body.presentation-mode .coin-results[data-count="3"] { --coin-size:200px; }
+body.presentation-mode .coin-results[data-count="4"] { --coin-size:180px; }
+body.presentation-mode .coin-results[data-count="5"] { --coin-size:165px; }
+body.presentation-mode .coin-results[data-count="6"] { --coin-size:150px; }
+body.presentation-mode .coin-results[data-count="7"],
+body.presentation-mode .coin-results[data-count="8"] { --coin-size:135px; }
+body.presentation-mode .coin-results[data-count="9"],
+body.presentation-mode .coin-results[data-count="10"] { --coin-size:120px; }
+
+body.presentation-mode .coin-results .coin {
+  width:var(--coin-size) !important;
+  height:var(--coin-size) !important;
+}
+
+body.presentation-mode .coin-results .coin-scene {
+  width:calc(var(--coin-size) + 24px) !important;
+  height:calc(var(--coin-size) + 50px) !important;
+}
+
+body.presentation-mode .multi-coin-stage .coin-result {
+  font-size:clamp(1.8rem,4vw,3rem);
+  margin-bottom:42px;
+}
+
+/* The base button hover rule uses transform:translateY(), which replaces the
+   translateX() used to centre fixed presentation buttons. Keep the button
+   anchored while still allowing its hover colour/brightness effect. */
+body.presentation-mode .result-action,
+body.presentation-mode .result-action:hover,
+body.presentation-mode .result-action:focus,
+body.presentation-mode .result-action:active {
+  transform:translateX(-50%) !important;
+}
+
+@media(max-width:660px) {
+  .coin-results[data-count="3"],
+  .coin-results[data-count="4"] { --coin-size:126px; }
+  .coin-results[data-count="5"],
+  .coin-results[data-count="6"] { --coin-size:105px; }
+  .coin-results[data-count="7"],
+  .coin-results[data-count="8"],
+  .coin-results[data-count="9"],
+  .coin-results[data-count="10"] { --coin-size:88px; }
+}

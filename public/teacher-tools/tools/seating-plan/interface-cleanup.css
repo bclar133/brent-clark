@@ -68,8 +68,10 @@
   border-color: var(--accent);
 }
 
+/* The original three-row setup toolbar is now distributed into dialogs. */
 #planPanel > .toolbars { display: none !important; }
 
+/* Class actions should sit immediately under the names field. */
 .class-panel .compact-actions {
   margin-top: 11px;
   margin-bottom: 10px;
@@ -88,6 +90,7 @@
 
 .class-library-launch:hover { border-color: var(--accent); }
 
+/* Native dialogs for setup options. */
 .ui-cleanup-dialog {
   width: min(720px, calc(100vw - 28px));
   max-height: min(82vh, 760px);
@@ -186,6 +189,7 @@
   line-height: 1.45;
 }
 
+/* Selection controls become contextual floating popovers rather than full-width bars. */
 #selectionBar.ui-context-popover,
 #fixtureSelectionBar.ui-context-popover {
   position: fixed;
@@ -200,6 +204,8 @@
   gap: 10px;
 }
 
+/* Explicitly honour hidden state. The base seating-plan CSS uses display:flex
+   on these components, so this needs to win whenever no item is selected. */
 #selectionBar.ui-context-popover[hidden],
 #fixtureSelectionBar.ui-context-popover[hidden],
 #fixtureSelectionBar.ui-context-popover .teacher-size-controls[hidden],
@@ -226,14 +232,21 @@
   width: 100%;
 }
 
+/* Re-seat is duplicated by Arrange. Reset room moves into Room setup. Full screen moves to quick bar. */
 #clearPositionsBtn { display: none !important; }
 .plan-footer-actions { display: none !important; }
+
+/* Instructions live behind the Help button. */
 #planPanel > .plan-instructions { display: none !important; }
 
 @media (max-width: 900px) {
-  .ui-cleanup-quickbar { flex-wrap: wrap; }
+  .ui-cleanup-quickbar {
+    flex-wrap: wrap;
+  }
   .ui-cleanup-quickbar .quick-label { width: 100%; }
-  .ui-cleanup-quickbar #arrangementSelect { max-width: none; }
+  .ui-cleanup-quickbar #arrangementSelect {
+    max-width: none;
+  }
 }
 
 @media (max-width: 650px) {
