@@ -196,6 +196,14 @@
         border-radius: 8px;
         background: var(--panel);
         box-shadow: 0 20px 55px var(--shadow);
+        cursor: pointer;
+        transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      }
+
+      .tile:hover {
+        transform: translateY(-3px);
+        border-color: var(--line-strong);
+        box-shadow: 0 24px 62px var(--shadow);
       }
 
       .tile::before {
@@ -319,6 +327,7 @@
       }
 
       .tile-link {
+        position: static;
         display: inline-flex;
         margin-top: 24px;
         padding: 11px 14px;
@@ -327,6 +336,19 @@
         color: var(--text);
         font-weight: 800;
         background: rgba(255, 255, 255, 0.055);
+      }
+
+      .tile-link::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        border-radius: 8px;
+      }
+
+      .tile-link:focus-visible::before {
+        outline: 3px solid var(--green);
+        outline-offset: 3px;
       }
 
       .tile-link:hover {
