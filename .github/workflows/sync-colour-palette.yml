@@ -1,0 +1,84 @@
+name: Publish Colour Palette
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-colour-palette.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Chalkbox development source
+        uses: actions/checkout@v4
+        with:
+          repository: bclar133/TeacherTools
+          ref: main
+          path: teacher-tools-source
+
+      - name: Copy Colour Palette
+        run: |
+          rm -rf public/teacher-tools/tools/colour-palette
+          mkdir -p public/teacher-tools/tools
+          cp -R teacher-tools-source/tools/colour-palette public/teacher-tools/tools/colour-palette
+          rm -rf teacher-tools-source
+
+      - name: Add Chalkbox card and friendly redirect
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('public/teacher-tools/index.html')
+          text = index.read_text()
+          if 'tools/colour-palette/' not in text:
+              marker = '''        <a class="tool-card" href="tools/noise-meter/">
+          <div class="tool-icon" aria-hidden="true">🎤</div>
+          <h3>Noise Meter</h3>
+          <p>Use your device microphone to monitor relative classroom noise with adjustable targets, calibration and ten animated visual themes.</p>
+          <span class="open">Open tool <span aria-hidden="true">→</span></span>
+        </a>'''
+              card = '''\n\n        <a class="tool-card" href="tools/colour-palette/">
+          <div class="tool-icon" aria-hidden="true">🎨</div>
+          <h3>Colour Palette</h3>
+          <p>Pick colours from an interactive wheel, convert HEX and RGB, build colour schemes and gradients, check contrast, export palettes, and play the named-colour game.</p>
+          <span class="open">Open tool <span aria-hidden="true">→</span></span>
+        </a>'''
+              if marker not in text:
+                  raise SystemExit('Could not find Noise Meter card insertion point')
+              text = text.replace(marker, marker + card, 1)
+              index.write_text(text)
+
+          redirects = Path('public/_redirects')
+          r = redirects.read_text()
+          lines = [
+              '/teacher-tools/colour-palette /teacher-tools/colour-palette/ 301',
+              '/teacher-tools/colour-palette/* /teacher-tools/tools/colour-palette/:splat 301',
+          ]
+          missing = [line for line in lines if line not in r]
+          if missing:
+              if not r.endswith('\n'):
+                  r += '\n'
+              r += '\n'.join(missing) + '\n'
+              redirects.write_text(r)
+          PY
+
+      - name: Commit production files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/teacher-tools/tools/colour-palette public/teacher-tools/index.html public/_redirects
+          if git diff --cached --quiet; then
+            echo "No production changes needed."
+            exit 0
+          fi
+          git commit -m "Publish Colour Palette to Chalkbox"
+          git push origin main
