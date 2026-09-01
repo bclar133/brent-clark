@@ -48,10 +48,16 @@ jobs:
 
           index = Path('public/index.html')
           text = index.read_text(encoding='utf-8')
-          old = 'A growing collection of practical browser-based classroom tools for teachers, designed for quick use on laptops, projectors and phones.'
-          new = 'A growing collection of practical browser-based classroom tools for teachers, now including the visual Noise Meter alongside student picking, seating plans and classroom timers.'
-          if old in text:
-              index.write_text(text.replace(old, new, 1), encoding='utf-8')
+          replacements = [
+              'A growing collection of practical browser-based classroom tools for teachers, designed for quick use on laptops, projectors and phones.',
+              'A growing collection of practical browser-based classroom tools for teachers, now including the visual Noise Meter alongside student picking, seating plans and classroom timers.',
+          ]
+          new = 'A growing collection of practical browser-based classroom tools for teachers, now including Randomiser, Noise Meter, student picking, seating plans and classroom timers.'
+          for old in replacements:
+              if old in text:
+                  text = text.replace(old, new, 1)
+                  break
+          index.write_text(text, encoding='utf-8')
 
           redirects = Path('public/_redirects')
           redirect_text = redirects.read_text(encoding='utf-8') if redirects.exists() else ''
@@ -60,12 +66,18 @@ jobs:
           /teacher-tools/seating-plan/* /teacher-tools/tools/seating-plan/:splat 301
           /teacher-tools/classroom-timers/* /teacher-tools/tools/classroom-timers/:splat 301
           /teacher-tools/noise-meter/* /teacher-tools/tools/noise-meter/:splat 301
+          /teacher-tools/randomiser/* /teacher-tools/tools/randomiser/:splat 301
           /teacher-tools/school-map/* /teacher-tools/tools/school-map/:splat 301
           '''
           if '# Chalkbox legacy tool paths' not in redirect_text:
               if redirect_text and not redirect_text.endswith('\n'):
                   redirect_text += '\n'
-              redirects.write_text(redirect_text + '\n' + rules, encoding='utf-8')
+              redirect_text += '\n' + rules
+          elif '/teacher-tools/randomiser/*' not in redirect_text:
+              if redirect_text and not redirect_text.endswith('\n'):
+                  redirect_text += '\n'
+              redirect_text += '/teacher-tools/randomiser/* /teacher-tools/tools/randomiser/:splat 301\n'
+          redirects.write_text(redirect_text, encoding='utf-8')
           PY
 
       - name: Commit production sync
