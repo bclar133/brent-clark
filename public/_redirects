@@ -45,3 +45,5 @@
 /teacher-tools/randomiser/* /teacher-tools/tools/randomiser/:splat 301
 /teacher-tools/colour-palette /teacher-tools/colour-palette/ 301
 /teacher-tools/colour-palette/* /teacher-tools/tools/colour-palette/:splat 301
+/teacher-tools/label-maker /teacher-tools/label-maker/ 301
+/teacher-tools/label-maker/* /teacher-tools/tools/label-maker/:splat 301

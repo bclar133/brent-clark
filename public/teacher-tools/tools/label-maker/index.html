@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6f55d9">
+  <meta name="description" content="Create colourful printable student name labels with twenty illustrated themes.">
+  <title>Student Label Maker | Chalkbox</title>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg?v=5">
+  <link rel="shortcut icon" href="../../favicon.svg?v=5">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/teacher-tools.css">
+  <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar no-print">
+      <div class="brand-lockup">
+        <span class="tool-badge" aria-hidden="true">🏷️</span>
+        <div>
+          <p class="eyebrow">Chalkbox</p>
+          <h1>Student Label Maker</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="header-nav-link" href="../../" title="Back to Chalkbox">← Chalkbox</a>
+        <a class="header-nav-link site-link" href="https://www.brent-clark.com/" target="_blank" rel="noopener">🌐 brent-clark.com</a>
+        <button class="icon-button" id="themeModeBtn" type="button" title="Turn on dark mode" aria-label="Turn on dark mode">🌙</button>
+      </div>
+    </header>
+
+    <div class="workspace no-print">
+      <aside class="setup-panel panel">
+        <section aria-labelledby="namesHeading">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Step 1</p>
+              <h2 id="namesHeading">Add student names</h2>
+            </div>
+            <span class="count-pill"><strong id="studentCount">0</strong> labels</span>
+          </div>
+
+          <label class="field-label" for="namesInput">Type or paste a class list</label>
+          <textarea id="namesInput" rows="10" spellcheck="false" placeholder="Smith, John&#10;Jones, Sophie&#10;Brown, Noah&#10;Emily"></textarea>
+          <p class="helper">One student per line works best. “Surname, Firstname” lists are supported.</p>
+
+          <div class="format-row">
+            <label class="field-label" for="nameFormat">Names shown on labels</label>
+            <select id="nameFormat">
+              <option value="first">First name</option>
+              <option value="initial">First name + surname initial</option>
+              <option value="full">Full name</option>
+            </select>
+          </div>
+
+          <div class="compact-actions">
+            <button class="soft-button" id="cleanBtn" type="button">✨ Clean names</button>
+            <button class="soft-button" id="sortBtn" type="button">A–Z Sort</button>
+            <button class="soft-button danger-quiet" id="clearBtn" type="button">Clear</button>
+          </div>
+        </section>
+
+        <section class="print-setup" aria-labelledby="printHeading">
+          <div class="section-heading">
+            <p class="eyebrow">Step 2</p>
+            <h2 id="printHeading">Set up the page</h2>
+          </div>
+
+          <label class="field-label" for="sheetLayout">A4 label layout</label>
+          <select id="sheetLayout">
+            <optgroup label="Simple sizes">
+              <option value="cutout10">Large · 2 per row (10 per page)</option>
+              <option value="address21" selected>Medium · 3 per row (21 per page)</option>
+              <option value="mini40">Small · 4 per row (40 per page)</option>
+            </optgroup>
+            <optgroup label="Common label sheets">
+              <option value="standard24">Standard 24 · 64 × 33.9 mm (3 × 8)</option>
+              <option value="shipping14">Wide 14 · 99.1 × 38.1 mm (2 × 7)</option>
+              <option value="large8">Extra large 8 · 99.1 × 67.7 mm (2 × 4)</option>
+            </optgroup>
+          </select>
+
+          <div class="two-up">
+            <label>
+              <span class="field-label">Start at label</span>
+              <input id="startPosition" type="number" min="1" value="1" inputmode="numeric">
+            </label>
+            <label>
+              <span class="field-label">Name size</span>
+              <select id="fontSize">
+                <option value="auto">Automatic</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </label>
+          </div>
+          <div class="format-row">
+            <label class="field-label" for="extraBlankLabels">Extra blank labels</label>
+            <input id="extraBlankLabels" type="number" min="0" max="50" value="0" inputmode="numeric">
+          </div>
+          <p class="helper">Blank labels are added after the student names using the same theme. Use “Start at label” when the first sheet is partly used.</p>
+        </section>
+
+        <button class="print-button" id="printBtn" type="button"><span aria-hidden="true">🖨️</span> Print / Save as PDF</button>
+        <p class="print-tip">In the print window, choose <strong>A4</strong>, <strong>100% scale</strong>, <strong>no margins</strong> and turn on <strong>background graphics</strong>.</p>
+      </aside>
+
+      <section class="preview-panel panel" aria-labelledby="themesHeading">
+        <div class="preview-toolbar">
+          <div>
+            <p class="eyebrow">Step 3</p>
+            <h2 id="themesHeading">Choose a theme</h2>
+          </div>
+          <div class="page-summary" id="pageSummary" aria-live="polite">Add names to begin</div>
+        </div>
+
+        <div class="theme-picker" id="themePicker" role="radiogroup" aria-label="Label theme"></div>
+
+        <div class="preview-heading">
+          <h2>Print preview</h2>
+          <span>Each white page represents one A4 sheet.</span>
+        </div>
+        <div class="sheet-stage" id="sheetStage">
+          <div class="empty-state" id="emptyState">
+            <span aria-hidden="true">🏷️</span>
+            <strong>Your labels will appear here</strong>
+            <p>Paste student names, choose a theme, then print or save the sheets as a PDF.</p>
+          </div>
+          <div id="printPages"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="print-only" id="printOutput" aria-hidden="true"></div>
+  <div class="toast no-print" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js?v=3"></script>
+</body>
+</html>
