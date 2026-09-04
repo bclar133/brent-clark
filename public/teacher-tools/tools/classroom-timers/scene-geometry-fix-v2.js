@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  if (window.__sceneGeometryFixV2) return;
-  window.__sceneGeometryFixV2 = true;
+  if (window.__sceneGeometryFixV3) return;
+  window.__sceneGeometryFixV3 = true;
 
   const sceneLayer = document.getElementById('sceneLayer');
   if (!sceneLayer) return;
@@ -47,16 +47,16 @@
     });
   }
 
-  function branchBase(branch, sceneRect) {
-    const marker = document.createElement('i');
-    marker.style.cssText = 'position:absolute;left:0;top:50%;width:1px;height:1px;opacity:0;pointer-events:none;';
-    branch.appendChild(marker);
-    const r = marker.getBoundingClientRect();
-    marker.remove();
-    return {
-      x: r.left - sceneRect.left,
-      y: r.top - sceneRect.top
-    };
+  function branchBase(branch, scene) {
+    let x = 0;
+    let y = 0;
+    let node = branch;
+    while (node && node !== scene) {
+      x += node.offsetLeft || 0;
+      y += node.offsetTop || 0;
+      node = node.offsetParent;
+    }
+    return { x, y: y + branch.offsetHeight / 2 };
   }
 
   function addBranchConnector(scene, trunk, branch, key) {
@@ -64,7 +64,7 @@
     const trunkRect = trunk.getBoundingClientRect();
     if (!sceneRect.width || !sceneRect.height || !trunkRect.width) return;
 
-    const base = branchBase(branch, sceneRect);
+    const base = branchBase(branch, scene);
     const trunkLeft = trunkRect.left - sceneRect.left;
     const trunkRight = trunkRect.right - sceneRect.left;
     const trunkTop = trunkRect.top - sceneRect.top;
@@ -95,7 +95,7 @@
       left: `${base.x.toFixed(1)}px`,
       top: `${base.y.toFixed(1)}px`,
       width: `${(length + 10).toFixed(1)}px`,
-      height: `${Math.max(13, branch.getBoundingClientRect().height * 0.72).toFixed(1)}px`,
+      height: `${Math.max(12, branch.offsetHeight).toFixed(1)}px`,
       transform: `translateY(-50%) rotate(${angle.toFixed(2)}deg)`,
       transformOrigin: '0 50%',
       borderRadius: '999px',
@@ -116,7 +116,7 @@
       const trunkRect = trunk.getBoundingClientRect();
       if (sceneRect.width && sceneRect.height && trunkRect.width) {
         const trunkCenterX = trunkRect.left - sceneRect.left + trunkRect.width / 2;
-        const joinY = trunkRect.top - sceneRect.top + Math.max(8, Math.min(16, trunkRect.height * 0.05));
+        const joinY = trunkRect.top - sceneRect.top + Math.max(10, Math.min(18, trunkRect.height * 0.055));
         b4.style.left = `${trunkCenterX.toFixed(1)}px`;
         b4.style.top = `${(joinY - b4.offsetHeight / 2).toFixed(1)}px`;
         b4.style.bottom = 'auto';
