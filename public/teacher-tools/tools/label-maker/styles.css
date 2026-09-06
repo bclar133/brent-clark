@@ -254,6 +254,7 @@ textarea:focus,select:focus,input:focus { border-color:var(--accent); box-shadow
 .label-slot[data-label-theme="space"] { --label-bg:#111e58; --label-ink:#fff4a8; --label-border:#667ce5; --label-overlay:radial-gradient(circle at 12% 20%,rgba(255,255,255,.23) 0 1px,transparent 1.5px),linear-gradient(115deg,#172766 0 58%,#24125a 100%); --label-font:"Bungee",sans-serif; --label-radius:8px; }
 .label-slot[data-label-theme="space"] .label-name { text-shadow:0 2px 0 #172766,0 0 8px rgba(45,220,255,.55); }
 .label-slot[data-label-theme="ocean"] { --label-bg:#dff8fb; --label-ink:#0b6380; --label-border:#6bc7d7; --label-overlay:linear-gradient(115deg,#effdff 0 58%,rgba(84,202,222,.34) 100%); --label-font:"Fredoka",sans-serif; --label-radius:18px; }
+.label-slot[data-label-theme="ocean"] .label-frame { border-image-slice:94 90; }
 .label-slot[data-label-theme="dino"] { --label-bg:#f3f4d8; --label-ink:#3e5f24; --label-border:#91ad50; --label-overlay:linear-gradient(115deg,#fbfce9 0 58%,rgba(143,180,79,.35) 100%); --label-font:"Bungee",sans-serif; --label-radius:7px; }
 .label-slot[data-label-theme="sports"] { --label-bg:#e9f2ff; --label-ink:#163e7d; --label-border:#6698df; --label-overlay:linear-gradient(115deg,#f7fbff 0 58%,rgba(63,124,209,.3) 100%); --label-font:"Bungee",sans-serif; --label-radius:5px; }
 .label-slot[data-label-theme="celebration"] { --label-bg:#fff3d4; --label-ink:#8a326d; --label-border:#e28abc; --label-overlay:linear-gradient(115deg,#fffaf0 0 58%,rgba(255,174,210,.34) 100%); --label-font:"Fredoka",sans-serif; --label-radius:16px; }
