@@ -132,7 +132,7 @@ verts=new MeshBuilder();geometryDetail='crowd';spectatorGeometry(0,0,0,0,3);cons
 const instanceBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,instanceBuffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(crowdInstances),gl.STATIC_DRAW);geometryDetail=true;
 const rainAttrs=gl.getAttribLocation(rainProgram,'pos'),rainUniforms=Object.fromEntries(['clock','storm','aspect'].map(name=>[name,gl.getUniformLocation(rainProgram,name)]));
 const dynamicBuffer=gl.createBuffer();verts=new MeshBuilder(1048576);
-const keys=new Set();let mode='menu',tries=0,player={x:0,z:0},defenders=[],time=0,previous=0,runTime=0,burstUntil=0,burstCD=0,fendUntil=0,fendCD=0,stepUntil=0,stepCD=0,stepDir=1,diveUntil=0,diveCD=0,noticeUntil=0,heading=0,cam=[-14,10,-16],audio,nextFootstep=0;
+const keys=new Set();let mode='menu',tries=0,player={x:0,z:0},defenders=[],time=0,previous=0,runTime=0,burstUntil=0,burstCD=0,fendUntil=0,fendCD=0,stepUntil=0,stepCD=0,stepDir=1,diveUntil=0,diveCD=0,noticeUntil=0,heading=0,cam=[-14,10,-16],audio;
 
 // Fictional gameplay attributes, tuned to the requested playing styles.
 const attackers=[
@@ -209,66 +209,11 @@ function selectAttacker(index){
 }
 attackers.forEach((a,i)=>{$('pick-'+i).onclick=()=>{if(mode==='menu')selectAttacker(i)}});
 
-const soundDefaults={footstep:0,tackle:0,score:1,burst:0,step:0,fend:0,button:0,tackleBreak:0};
-const soundSelection={...soundDefaults};
-function audioEngine(){
- const AudioEngine=window.AudioContext||window.webkitAudioContext||globalThis.AudioContext;
- audio??=new AudioEngine();if(audio.state==='suspended')audio.resume();return audio;
-}
-function tone(ctx,freq,start,duration,gain=.04,type='sine',endFreq=freq){
- const oscillator=ctx.createOscillator(),volume=ctx.createGain();oscillator.type=type;
- oscillator.frequency.setValueAtTime(Math.max(20,freq),start);oscillator.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),start+duration);
- volume.gain.setValueAtTime(.0001,start);volume.gain.linearRampToValueAtTime(gain,start+.008);volume.gain.exponentialRampToValueAtTime(.0001,start+duration);
- oscillator.connect(volume);volume.connect(ctx.destination);oscillator.start(start);oscillator.stop(start+duration+.02);
-}
-function noise(ctx,start,duration,frequency=220,gain=.025,filterType='lowpass'){
- const frames=Math.max(1,Math.floor(ctx.sampleRate*duration)),buffer=ctx.createBuffer(1,frames,ctx.sampleRate),data=buffer.getChannelData(0);
- for(let i=0;i<frames;i++)data[i]=(Math.random()*2-1)*(1-i/frames*.35);
- const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),volume=ctx.createGain();source.buffer=buffer;filter.type=filterType;filter.frequency.value=frequency;
- volume.gain.setValueAtTime(.0001,start);volume.gain.linearRampToValueAtTime(gain,start+.012);volume.gain.exponentialRampToValueAtTime(.0001,start+duration);
- source.connect(filter);filter.connect(volume);volume.connect(ctx.destination);source.start(start);source.stop(start+duration+.02);
-}
-function say(word,variant=0){
- try{
-  const synth=window.speechSynthesis;if(!synth||typeof SpeechSynthesisUtterance==='undefined')return;
-  const utterance=new SpeechSynthesisUtterance(word),voices=synth.getVoices?.()||[];
-  utterance.voice=voices.find(v=>/^en-AU/i.test(v.lang))||voices.find(v=>/^en-(GB|US)/i.test(v.lang))||null;
-  const styles=[{rate:1.02,pitch:.82,volume:.72},{rate:.82,pitch:.62,volume:.82},{rate:1.20,pitch:1.05,volume:.74}][variant]||{};
-  Object.assign(utterance,styles);synth.speak(utterance);
- }catch{}
-}
-function gameSound(kind,choice=soundSelection[kind]??0){
- if(kind==='tackle')say('Oof!',choice);else if(kind==='fend')say('Booyah!',choice);else if(kind==='tackleBreak')say('Oh yeah!',choice);
- try{
-  const ctx=audioEngine(),now=ctx.currentTime+.005;
-  if(kind==='footstep'){
-   const profiles=[[105,.018,.038],[150,.014,.034],[205,.012,.029]],p=profiles[choice];noise(ctx,now,.07,p[0],p[2]);tone(ctx,p[0],now,.075,p[1],'sine',p[0]*.7);
-  }else if(kind==='step'){
-   const profiles=[[150,.075,.08],[100,.09,.11],[240,.065,.065]],p=profiles[choice];noise(ctx,now,.12,p[0]*2,p[2],'bandpass');tone(ctx,p[0],now,.13,p[1],'triangle',p[0]*.55);
-  }else if(kind==='tackle'){
-   const profiles=[[75,.11,.12],[58,.14,.16],[46,.16,.20]],p=profiles[choice];noise(ctx,now,.22,150,p[2]);tone(ctx,p[0],now,.24,p[1],'sine',32);
-  }else if(kind==='score'){
-   const profiles=[[1.15,.045,720],[1.55,.065,950],[2.0,.085,1250]],p=profiles[choice];noise(ctx,now,p[0],p[2],p[1],'bandpass');
-   for(let i=0;i<7+choice*4;i++){const at=now+.05+i*.095;noise(ctx,at,.05,1800,.018+choice*.004,'highpass')}
-   tone(ctx,392,now+.04,.55,.022,'sawtooth',523);tone(ctx,523,now+.18,.65,.018,'sawtooth',784);
-  }else if(kind==='burst'){
-   const sets=[[220,330,494],[130,260,520],[330,554,880]],notes=sets[choice];notes.forEach((freq,i)=>tone(ctx,freq,now+i*.085,.24,.04,'sawtooth',freq*1.08));noise(ctx,now,.35,900,.018,'highpass');
-  }else if(kind==='fend'){
-   tone(ctx,[180,120,260][choice],now,.16,.035,'square',[260,170,390][choice]);
-  }else if(kind==='tackleBreak'){
-   tone(ctx,[330,220,440][choice],now,.18,.04,'triangle',[495,330,660][choice]);
-  }else if(kind==='button'){
-   const profiles=[[620,860,.065],[980,710,.045],[440,1320,.08]],p=profiles[choice];tone(ctx,p[0],now,p[2],.022,'square',p[1]);
-  }
- }catch{}
-}
-function sound(freq,duration=.1){try{const ctx=audioEngine();tone(ctx,freq,ctx.currentTime+.005,duration,.04,'sine',freq)}catch{}}
-document.addEventListener('pointerdown',event=>{if(event.target?.closest?.('button'))gameSound('button')});
-document.addEventListener('click',event=>{if(event.detail===0&&event.target?.closest?.('button'))gameSound('button')});
+function sound(freq,duration=.1){try{audio??=new AudioContext();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.055,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch{}}
 function notice(s){$('message').textContent=s;noticeUntil=time+1.6}
 function setupRun(){if(portraitBlocked())return;
  stopCelebration();
- player={x:0,z:0,gait:0,runBlend:0};tackle=null;heading=0;runTime=0;nextFootstep=0;keys.clear();resetTouch();
+ player={x:0,z:0,gait:0,runBlend:0};tackle=null;heading=0;runTime=0;keys.clear();resetTouch();
  burstUntil=burstCD=fendUntil=fendCD=stepUntil=stepCD=diveUntil=diveCD=0;contactUntil=0;burstsLeft=selected.burstsPerRun;
  activeTeam=teams[tries];lineZ=43;defenders=[];
  const count=activeTeam.count, hasFullback=tries>=3, lineCount=count-(hasFullback?1:0);
@@ -328,8 +273,8 @@ function overlay(label,title,body,button,victory=false){
  $('victory-banner').hidden=!victory;
  if(victory){$('victory-runner').textContent=selected.name.toUpperCase();startCelebration();}else stopCelebration();
 }
-function lose(reason){mode='over';let scored=tries;tries=0;$('tries').textContent='0';overlay('RUN OVER',reason,`${scored} of 10 consecutive tries. Your streak has reset. Find a gap and have another run.`,'TRY AGAIN');if(reason!=='Tackled.')sound(110,.35)}
-function score(){tries++;$('tries').textContent=tries;mode=tries===10?'won':'scored';overlay(tries===10?'CHALLENGE COMPLETE':'TRY CONFIRMED',tries===10?'UNTOUCHABLE!':'TRY!',tries===10?`${selected.name} has beaten all ten teams without being tackled.`:`${tries} / 10 tries. Next up: ${teams[tries]?.name}. Sharper, faster defending.`,tries===10?'PLAY AGAIN':'NEXT RUN',tries===10);gameSound('score')}
+function lose(reason){mode='over';let scored=tries;tries=0;$('tries').textContent='0';overlay('RUN OVER',reason,`${scored} of 10 consecutive tries. Your streak has reset. Find a gap and have another run.`,'TRY AGAIN');sound(110,.35)}
+function score(){tries++;$('tries').textContent=tries;mode=tries===10?'won':'scored';overlay(tries===10?'CHALLENGE COMPLETE':'TRY CONFIRMED',tries===10?'UNTOUCHABLE!':'TRY!',tries===10?`${selected.name} has beaten all ten teams without being tackled.`:`${tries} / 10 tries. Next up: ${teams[tries]?.name}. Sharper, faster defending.`,tries===10?'PLAY AGAIN':'NEXT RUN',tries===10);sound(740,.35)}
 function pause(){if(mode==='play'||mode==='tackling'){resumeMode=mode;mode='paused';keys.clear();resetTouch();overlay('TIME OUT','Paused','Your run is safe. Press Escape or resume when you’re ready.','RESUME')}else if(mode==='paused'){if(portraitBlocked())return;landscape();mode=resumeMode;$('overlay').hidden=true}}
 $('start').onclick=()=>{landscape();if(portraitBlocked())return;tries=0;setupRun()};$('again').onclick=()=>{if(mode==='paused')pause();else{if(mode==='won')tries=0;setupRun()}};$('choose').onclick=()=>{stopCelebration();mode='menu';tackle=null;tries=0;$('overlay').hidden=true;$('hud').hidden=true;$('menu').hidden=false};$('pause').onclick=pause;
 const touchInput={x:0,z:0,pointer:null};
@@ -337,7 +282,7 @@ const touchDevice=()=>window.matchMedia('(any-pointer: coarse)').matches;
 const portraitBlocked=()=>touchDevice()&&innerHeight>innerWidth;
 function resetTouch(){touchInput.x=touchInput.z=0;touchInput.pointer=null;$('stick-knob').style.transform='translate(0px,0px)';}
 function performSkill(k){if(mode!=='play'||portraitBlocked())return;
-if(k==='shift'&&time>=burstCD&&burstsLeft>0){burstsLeft--;burstUntil=time+selected.burstDuration;burstCD=time+selected.burstRecovery;updateBurstHUD();notice('BURST · '+burstsLeft+' LEFT');gameSound('burst')}if(k==='f'&&time>=fendCD){fendUntil=time+.65;fendCD=time+selected.fendRecovery;notice('FEND');gameSound('fend')}if(k==='e'&&time>=stepCD){stepDir=touchInput.x>.1?1:touchInput.x<-.1?-1:keys.has('a')?1:keys.has('d')?-1:-stepDir;stepUntil=time+selected.stepDuration;stepCD=time+selected.stepRecovery;notice('STEP');gameSound('step')}if(k==='q'&&time>=diveCD){if(player.z>=100){score();return}diveUntil=time+.65;diveCD=time+1.5;notice(player.z>=95?'REACH FOR THE LINE':'DIVE')}
+if(k==='shift'&&time>=burstCD&&burstsLeft>0){burstsLeft--;burstUntil=time+selected.burstDuration;burstCD=time+selected.burstRecovery;updateBurstHUD();notice('BURST · '+burstsLeft+' LEFT');sound(500)}if(k==='f'&&time>=fendCD){fendUntil=time+.65;fendCD=time+selected.fendRecovery;notice('FEND');sound(220)}if(k==='e'&&time>=stepCD){stepDir=touchInput.x>.1?1:touchInput.x<-.1?-1:keys.has('a')?1:keys.has('d')?-1:-stepDir;stepUntil=time+selected.stepDuration;stepCD=time+selected.stepRecovery;notice('STEP');sound(360)}if(k==='q'&&time>=diveCD){if(player.z>=100){score();return}diveUntil=time+.65;diveCD=time+1.5;notice(player.z>=95?'REACH FOR THE LINE':'DIVE')}
 }
 window.addEventListener('keydown',e=>{const k=e.key.toLowerCase(),canContinue=(k===' '||k==='enter')&&['paused','over','scored','won'].includes(mode);if(['w','a','s','d','q','e','f','shift','escape',' '].includes(k)||canContinue)e.preventDefault();if(e.repeat)return;if(canContinue){$('again').onclick();return}keys.add(k);if(k==='escape')pause();else performSkill(k);});
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
@@ -399,7 +344,7 @@ function beginTackle(defender){
  mode='tackling';keys.clear();resetTouch();burstUntil=fendUntil=stepUntil=diveUntil=0;
  player.fall=0;player.fallHeading=heading;player.runBlend=0;
  involved.forEach(d=>{d.wrapping=true;d.fall=0;d.fallHeading=heading;d.runBlend=0;});
- $('message').textContent='TACKLE';
+ $('message').textContent='TACKLE';sound(150,.13);
 }
 function tickTackle(dt){
  tackle.elapsed+=dt;
@@ -415,7 +360,7 @@ function tickTackle(dt){
   d.angle=start.angle+Math.atan2(Math.sin(target-start.angle),Math.cos(target-start.angle))*wrap;
   d.fall=fall;d.wrap=wrap;d.moving=false;
  });
- if(fall>.96&&!tackle.impactPlayed){tackle.impactPlayed=true;gameSound('tackle');}
+ if(fall>.96&&!tackle.impactPlayed){tackle.impactPlayed=true;sound(85,.2);}
  // Give the grounded pose a moment before showing the result.
  if(t>=1.65)lose('Tackled.');
 }
@@ -592,7 +537,6 @@ function footballer(p,attacker,phase,speed){
 function tick(dt){if(portraitBlocked())return;if(mode==='tackling'){tickTackle(dt);return;}if(mode!=='play')return;time+=dt;runTime+=dt;let dx=(keys.has('a')?1:0)-(keys.has('d')?1:0)+touchInput.x,dz=(keys.has('w')?1:0)-(keys.has('s')?1:0)+touchInput.z,l=Math.hypot(dx,dz);if(l>1){dx/=l;dz/=l}let speed=time<burstUntil?selected.burstSpeed:selected.speed;if(time<stepUntil)dx=stepDir*selected.stepSpeed/speed;if(time<diveUntil){dz=1;speed=9.5;dx*=.3}const oldX=player.x,oldZ=player.z;player.x+=dx*speed*dt;player.z=Math.max(-2,player.z+dz*speed*dt);const travel=Math.hypot(player.x-oldX,player.z-oldZ);
  player.runBlend=(player.runBlend||0)+((travel>.001?1:0)-(player.runBlend||0))*Math.min(1,dt*14);
  player.gait=(player.gait||0)+travel*(Math.PI*2/2.25);
- if(travel>.001&&time>=nextFootstep){gameSound('footstep');nextFootstep=time+(time<burstUntil?.22:.32)}
  if(travel>.001){const target=Math.atan2(player.x-oldX,player.z-oldZ);heading+=Math.atan2(Math.sin(target-heading),Math.cos(target-heading))*Math.min(1,dt*18);}if(Math.abs(player.x)>34||player.z>110){lose('Into touch.');return}if(player.z>=100&&time<diveUntil){score();return}
 // Higher levels advance together, slide across, and release nearby tacklers.
 const pace=4.4+tries*.32,structured=tries>=3;
@@ -627,7 +571,7 @@ for(let d of defenders){
   if(fending)fendUntil=0;
   if(evade||fend){d.stun=time+(evade?1.5+selected.stepSuccess:2.1);d.cool=d.stun+.7;contactUntil=time+.18;d.x+=vx>0?-1:1;notice(evade?'BEATEN WITH FOOTWORK':'FENDED OFF');sound(300);}
   else if(rand()<tackleBreakChance(selected,tries,time<burstUntil)){
-   d.stun=time+1.65;d.cool=time+2.5;contactUntil=time+.25;notice('TACKLE BROKEN');gameSound('tackleBreak');
+   d.stun=time+1.65;d.cool=time+2.5;contactUntil=time+.25;notice('TACKLE BROKEN');sound(180);
   }else{beginTackle(d);return;}
  }
 }
