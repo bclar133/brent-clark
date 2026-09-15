@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10100f">
+  <meta name="description" content="Explore chords, play a full fretboard, practise tabs and tune your instrument.">
+  <title>Fretboard Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
+  <link rel="apple-touch-icon" href="./guitar-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img class="logo-mark" src="./guitar-icon.png" alt="">
+        <div>
+          <h1>Fretboard <em>Studio</em></h1>
+          <p>Learn it. Hear it. Play it.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-button" id="audioToggle" aria-label="Mute audio" title="Mute audio">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Zm4.5 4.5a4 4 0 0 1 0 5m2.8-7.8a8 8 0 0 1 0 10.6"/></svg>
+        </button>
+        <button class="icon-button" id="helpButton" aria-label="Open quick guide" title="Quick guide">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.3 2.1c-.8.4-1.1.9-1.1 1.9m0 3.2h.01"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="control-rack" aria-label="Instrument controls">
+      <label class="field instrument-field">
+        <span>Instrument</span>
+        <select id="instrumentSelect">
+          <option value="acoustic">Acoustic guitar</option>
+          <option value="electric">Electric guitar</option>
+          <option value="classical">Classical guitar</option>
+          <option value="twelve">12-string guitar</option>
+          <option value="bass">Bass guitar</option>
+          <option value="ukulele">Ukulele</option>
+          <option value="baritone">Baritone ukulele</option>
+          <option value="mandolin">Mandolin</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Tuning</span>
+        <select id="tuningSelect"></select>
+      </label>
+      <label class="field capo-field">
+        <span>Capo <b id="capoValue">Off</b></span>
+        <input id="capoSlider" type="range" min="0" max="12" value="0" aria-label="Capo fret">
+      </label>
+      <label class="switch-field">
+        <input id="leftHanded" type="checkbox">
+        <span class="switch"></span>
+        <span>Left-handed</span>
+      </label>
+    </section>
+
+    <section class="workspace">
+      <div class="mode-heading">
+        <div class="mode-tabs" role="tablist" aria-label="Learning mode">
+          <button class="mode-tab active" data-panel="chords" role="tab" aria-selected="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16M10 4v16M15 4v16M20 4v16M3 8h19M3 14h19"/></svg>
+            Chords
+          </button>
+          <button class="mode-tab" data-panel="progressions" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h11m0 0-3-3m3 3-3 3M19 17H8m0 0 3-3m-3 3 3 3"/></svg>
+            Progressions
+          </button>
+          <button class="mode-tab" data-panel="tabs" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 3v18m8-18v18"/></svg>
+            Tabs
+          </button>
+          <button class="mode-tab" data-panel="tuner" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v5a5 5 0 0 0 10 0V4M5 4h4m6 0h4M12 14v6m-4 0h8"/></svg>
+            Tuner
+          </button>
+        </div>
+        <div class="legend">
+          <span><i class="dot root-dot"></i>Root</span>
+          <span><i class="dot chord-dot"></i>Chord tone</span>
+          <span><i class="dot ghost-dot"></i>Open</span>
+        </div>
+      </div>
+
+      <div class="chord-panel panel active" id="chordsPanel">
+        <div class="chord-picker">
+          <label class="field compact search-field">
+            <span>Find a chord</span>
+            <input id="chordSearch" list="chordLibrary" placeholder="Try F♯ minor 7" autocomplete="off">
+            <datalist id="chordLibrary"></datalist>
+          </label>
+          <label class="field compact">
+            <span>Root note</span>
+            <select id="rootSelect">
+              <option>C</option><option>C♯</option><option>D</option><option>E♭</option>
+              <option>E</option><option>F</option><option>F♯</option><option>G</option>
+              <option>A♭</option><option>A</option><option>B♭</option><option>B</option>
+            </select>
+          </label>
+          <label class="field compact chord-type-field">
+            <span>Chord type</span>
+            <select id="chordTypeSelect">
+              <option value="major">Major</option>
+              <option value="minor">Minor</option>
+              <option value="7">Dominant 7</option>
+              <option value="maj7">Major 7</option>
+              <option value="min7">Minor 7</option>
+              <option value="sus2">Suspended 2</option>
+              <option value="sus4">Suspended 4</option>
+              <option value="dim">Diminished</option>
+              <option value="aug">Augmented</option>
+              <option value="6">Major 6</option>
+              <option value="min6">Minor 6</option>
+              <option value="9">Dominant 9</option>
+              <option value="add9">Add 9</option>
+              <option value="5">Power chord</option>
+            </select>
+          </label>
+          <button class="primary-button" id="playChord">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>
+            Strum chord
+          </button>
+          <div class="variation-wrap">
+            <span>Position</span>
+            <div class="variation-pills">
+              <button class="variation active" data-variation="open">Open</button>
+              <button class="variation" data-variation="low">Low neck</button>
+              <button class="variation" data-variation="high">High neck</button>
+            </div>
+          </div>
+        </div>
+        <div class="current-chord">
+          <div class="chord-symbol" id="chordSymbol">C</div>
+          <div>
+            <strong id="chordNotes">C · E · G</strong>
+            <span id="chordDescription">Bright, resolved and familiar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-panel panel" id="progressionsPanel">
+        <div class="progression-controls">
+          <label class="tempo-field progression-tempo">Tempo <input type="range" min="50" max="180" value="90" id="progressionTempo"><b id="progressionTempoValue">90</b></label>
+          <label class="field beats-field">
+            <span>Beats per chord</span>
+            <select id="progressionBeats"><option value="1">1</option><option value="2" selected>2</option><option value="4">4</option></select>
+          </label>
+          <label class="loop-field"><input type="checkbox" id="progressionLoop"> Loop</label>
+          <button class="primary-button" id="playProgression">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>
+            Play progression
+          </button>
+        </div>
+        <div class="custom-progression-entry">
+          <div class="progression-typeahead">
+            <label class="field" for="customProgressionInput">
+              <span>Type your progression</span>
+              <input type="text" id="customProgressionInput" value="C, G, Am, F" placeholder="C, G, Am, F" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="progressionSuggestions">
+            </label>
+            <div class="progression-suggestions" id="progressionSuggestions" role="listbox" aria-label="Chord suggestions" hidden></div>
+          </div>
+          <button class="secondary-button" id="applyCustomProgression">Use these chords</button>
+          <div class="progression-library-add">
+            <label class="field">
+              <span>Or choose a chord</span>
+              <select id="progressionChordPicker" aria-label="Choose a chord to add"></select>
+            </label>
+            <button class="secondary-button" id="addProgressionChord">Add chord</button>
+            <button class="text-button" id="clearProgressionChords">Clear</button>
+          </div>
+          <span>Start typing a chord and choose from the list. Add a comma to begin the next chord (2–8 chords).</span>
+        </div>
+        <div class="progression-chords" id="progressionChords" aria-label="Chords in progression"></div>
+      </div>
+
+      <div class="tab-panel panel" id="tabsPanel">
+        <div class="tab-tools">
+          <div>
+            <strong>Tab player</strong>
+            <span>Paste standard ASCII tab, then press play.</span>
+          </div>
+          <label class="tempo-field">Tempo <input type="range" min="50" max="180" value="90" id="tempoSlider"><b id="tempoValue">90</b></label>
+          <button class="secondary-button" id="loadDemo">Load demo</button>
+          <button class="secondary-button" id="loadProgressionTab">Load progression</button>
+          <button class="primary-button" id="playTab">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>
+            Play tab
+          </button>
+        </div>
+        <textarea id="tabInput" aria-label="Guitar tablature" spellcheck="false"></textarea>
+        <div class="tab-status" id="tabStatus">Ready to play</div>
+      </div>
+
+      <div class="tuner-panel panel" id="tunerPanel">
+        <div class="tuner-readout">
+          <div class="tuner-note" id="tunerNote">—</div>
+          <div class="tuner-data">
+            <strong id="tunerFrequency">Play a string</strong>
+            <span id="tunerTarget">Chromatic detection</span>
+          </div>
+          <div class="meter">
+            <div class="meter-scale"><i>-50</i><i>-25</i><i>0</i><i>+25</i><i>+50</i></div>
+            <div class="meter-track"><span class="meter-center"></span><span class="meter-needle" id="tunerNeedle"></span></div>
+            <div class="meter-label" id="meterLabel">Waiting for microphone</div>
+          </div>
+          <label class="reference-field">Reference A4 <input id="referencePitch" type="number" min="432" max="446" value="440"> Hz</label>
+          <button class="primary-button" id="startTuner">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+            Start microphone
+          </button>
+        </div>
+        <div class="tuning-strings" id="tuningStrings"></div>
+      </div>
+
+      <div class="fretboard-card">
+        <div class="fretboard-topline">
+          <div>
+            <span class="eyebrow" id="neckLabel">Acoustic · Standard tuning</span>
+            <strong id="interactionHint">Tap a string or drag across to strum</strong>
+          </div>
+          <div class="view-options">
+            <label for="markerLabels">Marker labels</label>
+            <select id="markerLabels" aria-label="Choose what chord markers display">
+              <option value="fingers">Finger numbers</option>
+              <option value="notes">Note names</option>
+              <option value="intervals">Intervals</option>
+            </select>
+          </div>
+        </div>
+        <div class="guitar-stage">
+          <div class="headstock" aria-hidden="true">
+            <span class="peg p1"></span><span class="peg p2"></span><span class="peg p3"></span>
+            <span class="peg p4"></span><span class="peg p5"></span><span class="peg p6"></span>
+            <div class="headstock-word">FS</div>
+          </div>
+          <div class="fretboard" id="fretboard" aria-label="Interactive instrument fretboard"></div>
+        </div>
+        <div class="fret-numbers" id="fretNumbers" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <footer>
+      <span id="footerInstrument">Acoustic guitar · 6 strings</span>
+      <span>Recorded instrument samples · <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noreferrer">FluidR3 + Musyng Kite</a></span>
+    </footer>
+  </main>
+
+  <dialog id="helpDialog">
+    <button class="dialog-close" id="closeHelp" aria-label="Close guide">×</button>
+    <p class="eyebrow">Quick guide</p>
+    <h2>Your fretboard, made simple.</h2>
+    <ol>
+      <li><strong>Choose a chord.</strong> Coloured markers show exactly what to play. × means mute; ○ means play open.</li>
+      <li><strong>Hear it.</strong> Press “Strum chord”, click a string, or sweep your pointer across the strings.</li>
+      <li><strong>Follow tabs.</strong> Paste ordinary tab and the fretboard will light up as it plays.</li>
+      <li><strong>Play progressions.</strong> Choose a key and pattern, then follow each highlighted chord or load it as tab.</li>
+      <li><strong>Tune up.</strong> Allow microphone access and play one clear string at a time.</li>
+    </ol>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
