@@ -156,7 +156,7 @@ const els = {
   progressionChords:$("progressionChords"), progressionChordPicker:$("progressionChordPicker"), customProgressionInput:$("customProgressionInput"),
   progressionSuggestions:$("progressionSuggestions"),
   tunerTarget:$("tunerTarget"), tunerNeedle:$("tunerNeedle"), meterLabel:$("meterLabel"), tuningStrings:$("tuningStrings"),
-  referencePitch:$("referencePitch"), startTuner:$("startTuner")
+  referencePitch:$("referencePitch"), startTuner:$("startTuner"), setupToggle:$("setupToggle"), controlRack:$("controlRack")
 };
 
 function init() {
@@ -798,13 +798,31 @@ function updateTuner(hz){
 function showToast(message){els.toast.textContent=message;els.toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>els.toast.classList.remove("show"),2400);}
 
 function setMode(name){
+  document.body.dataset.mode=name;
   document.querySelectorAll(".mode-tab").forEach(b=>{const active=b.dataset.panel===name;b.classList.toggle("active",active);b.setAttribute("aria-selected",String(active));});
   document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));$(name+"Panel").classList.add("active");
+  closeMobileSetup();
   if(name!=="tabs")stopTab();
   if(name!=="progressions")stopProgression();
 }
 
+function closeMobileSetup(){
+  document.body.classList.remove("setup-open");
+  els.setupToggle.setAttribute("aria-expanded","false");
+  els.setupToggle.setAttribute("aria-label","Open instrument setup");
+}
+
+function toggleMobileSetup(){
+  const open=document.body.classList.toggle("setup-open");
+  els.setupToggle.setAttribute("aria-expanded",String(open));
+  els.setupToggle.setAttribute("aria-label",open?"Close instrument setup":"Open instrument setup");
+}
+
 function bindEvents(){
+  els.setupToggle.addEventListener("click",toggleMobileSetup);
+  document.addEventListener("pointerdown",event=>{
+    if(document.body.classList.contains("setup-open")&&!els.controlRack.contains(event.target)&&!els.setupToggle.contains(event.target))closeMobileSetup();
+  });
   els.instrument.addEventListener("change",()=>{state.instrument=els.instrument.value;renderTunings();renderFretboard();updateChord();renderProgression(true);primeInstrument();});
   els.tuning.addEventListener("change",()=>{state.tuningName=els.tuning.value;state.tuning=INSTRUMENTS[state.instrument].tunings[state.tuningName];renderFretboard();updateChord();renderProgression(true);});
   els.capo.addEventListener("input",()=>{state.capo=Number(els.capo.value);els.capoValue.textContent=state.capo?`Fret ${state.capo}`:"Off";updateChord();});
