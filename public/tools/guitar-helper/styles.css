@@ -61,7 +61,7 @@ button { color: inherit; }
 }
 
 .header-actions { display: flex; gap: 8px; }
-.setup-toggle { display:none; }
+.icon-button.setup-toggle { display:none; }
 .icon-button {
   width: 42px; height: 42px; border-radius: 50%;
   display: grid; place-items: center;
@@ -322,7 +322,7 @@ dialog strong { color:var(--ink); }
   .header-actions { gap:5px; }
   .icon-button { width:36px; height:36px; }
   .icon-button svg { width:17px; }
-  .setup-toggle { display:grid; }
+  .icon-button.setup-toggle { display:grid; }
   body.setup-open::before { content:""; position:fixed; z-index:45; inset:0; background:rgba(0,0,0,.66); backdrop-filter:blur(2px); }
   .control-rack {
     display:none; position:fixed; z-index:50; top:calc(50px + env(safe-area-inset-top)); left:8px; right:8px;
