@@ -489,7 +489,7 @@ function showRacePause(){
  el('skipRace').classList.add('hidden');
  el('leaderBadge').classList.remove('is-leader');el('leaderBadge').textContent='QUALIFYING COMPLETE';
  el('raceBug').innerHTML='GRID CONFIRMED · <strong>WAITING FOR LIGHTS OUT</strong>';
- addMarkers(qualResult.grid);qualResult.grid.forEach((c,i)=>moveMarker(c,.13+(qualResult.grid.length-1-i)*.012));
+ addMarkers(qualResult.grid);qualResult.grid.forEach((c,i)=>moveMarker(c,.13+(qualResult.grid.length-1-i)*RACE_GRID_GAP));
  updateTrackOrder(qualResult.grid,true);timingRender(qualResult.grid.map(c=>({...c,qualifying:true})));
  el('startFromGrid').onclick=beginRace;
 }
@@ -500,7 +500,7 @@ function startGrandPrix(){
  raceAnim={...sim,start:performance.now(),duration,lastBucket:-1,rank,startRank,checkpoints:makeRaceCheckpoints(sim,qualResult)};
  el('leaderBadge').classList.add('is-leader');el('leaderBadge').textContent='RACE LIVE';el('raceBtn').textContent='RACING…';
  addMarkers(qualResult.grid);
- qualResult.grid.forEach((c,i)=>moveMarker(c,.13+(qualResult.grid.length-1-i)*.012));
+ qualResult.grid.forEach((c,i)=>moveMarker(c,.13+(qualResult.grid.length-1-i)*RACE_GRID_GAP));
  updateTrackOrder(qualResult.grid);timingRender(qualResult.grid);
  raceFrame=requestAnimationFrame(tickRace);
 }
@@ -574,12 +574,25 @@ function makeRaceCheckpoints(sim,qual){
  }
  checkpoints.push(finish);return checkpoints;
 }
+// Race-car coordinates are always measured as increasing distance along the circuit.
+// Every checkpoint may shuffle the order, but speed must never become zero or negative.
+// With 22 cars, at most 12 checkpoint intervals, and a 0.013-lap grid gap,
+// the worst possible rank change contributes -12 * 21 * 0.013 * 1.5 = -4.914 laps
+// per unit time (smoothstep's maximum slope is 1.5). The 5.7-lap forward
+// baseline guarantees at least 0.786 laps of FORWARD movement per unit time.
+const RACE_ANIMATION_LAPS=5.7, RACE_GRID_GAP=.013;
 function interpolatedRaceRank(r,id,t){if(t>=1)return r.rank.get(id);const order=r.checkpoints;const at=Math.min(order.length-2,Math.floor(t*(order.length-1)));const local=t*(order.length-1)-at;const k=local*local*(3-2*local);return order[at].indexOf(id)*(1-k)+order[at+1].indexOf(id)*k}
+function raceForwardDistance(r,id,t){
+ const rank=interpolatedRaceRank(r,id,clamp(t,0,1));
+ return .13+RACE_ANIMATION_LAPS*clamp(t,0,1)+(r.entries.length-1-rank)*RACE_GRID_GAP;
+}
 
 function tickRace(now){if(!raceAnim)return;let r=raceAnim,frac=clamp((now-r.start)/r.duration,0,1);let lap=Math.min(100,Math.floor(frac*100));el('raceBug').innerHTML=`RACE <strong>${lap}%</strong> · ${Math.max(0,Math.ceil((1-frac)*r.duration/1000))}s`;
- const standings=r.entries.map((c,i)=>{
- const effectiveRank=interpolatedRaceRank(r,c.id,frac);
- const p=.13+frac*3.65+(r.entries.length-1-effectiveRank)*(.012+.024*clamp(frac*10,0,1))+Math.sin(frac*26+i*1.72)*.0012;
+ const standings=r.entries.map(c=>{
+ // Smooth, monotonically increasing unwrapped lap distance: no stopping or
+ // reversing when a car gains or loses positions. Modulo is used only in
+ // moveMarker() to convert distance onto the closed circuit drawing.
+ const p=raceForwardDistance(r,c.id,frac);
  moveMarker(c,p);return {...c,progress:p};
  }).sort((a,b)=>b.progress-a.progress);
  updateTrackOrder(standings);
@@ -640,7 +653,7 @@ function showModal(html){modal=true;el('modalHost').innerHTML=`<div class="modal
 function closeModal(){modal=false;el('modalHost').innerHTML=''}
 function showEnd(){let pts=pointsTables();let f=field().sort((a,b)=>(pts.values[b.id]||0)-(pts.values[a.id]||0));let teams=Object.entries(pts.teams).sort((a,b)=>b[1]-a[1]);let champ=f[0],construct=teams[0]?.[0],winD=!!champ?.own,winC=construct==='Invincible Racing';state.done=true;save();showModal(`<div class="eyebrow">2026 World Championship complete</div><h2>${winD&&winC?'DOUBLE WORLD CHAMPIONS!':winD||winC?'WORLD TITLE SECURED':'THE SEASON IS OVER'}</h2><p class="muted">${winD&&winC?'Your team conquered both championships. Invincible!':'Every season creates a new legacy. Try a different driver-and-car combination.'}</p><div class="end-titles"><div>DRIVERS' CHAMPION<strong>${safe(champ?.name)}</strong><span class="small muted">${pts.values[champ?.id]||0} POINTS</span></div><div>CONSTRUCTORS' CHAMPION<strong>${safe(construct)}</strong><span class="small muted">${pts.teams[construct]||0} POINTS</span></div></div><button class="btn" id="endRestart">START ANOTHER SEASON →</button><button class="btn secondary" id="endClose" style="margin-left:8px">VIEW TABLES</button>`)}
 function reset(){if(racing)return;if(state.stage!=='home'&&!confirm('Start a brand-new season? This will replace your current progress.'))return;try{localStorage.removeItem('f1-invincible-save-v2')}catch(e){}state={stage:'driversPage',drivers:[null,null],rerolls:1,rerollTarget:0,car:null,rivals:[],invest:{...START_INVEST},style:'balanced',pit:'balanced',qualStyle:'balanced',mode:'20000',driverStrategies:DEFAULT_STRATEGIES(),tyrePlans:['M-H-S','M-H-S'],weatherSeed:0,tyrePreparedFor:-1,pendingQuali:null,round:0,results:[],halftime:false,theme:'laser',done:false};driverCache.clear();carCache.clear();rivals=[];photoCache.clear();closeModal();renderDrivers();renderCar();renderHQ();qualResult=null;raceFinish=null;qualAnim=null;show('driversPage')}
-function wire(){el('startGame').onclick=()=>{if(state.stage!=='home'){show(state.stage)}else{state.stage='driversPage';renderDrivers();show('driversPage')}};el('rulesBtn').onclick=()=>showModal(`<div class="eyebrow">Rules of the game</div><h2>HOW TO WIN</h2><p>Spin two driver/year combinations (1950–2026), with one shared re-roll. Spin one historical car, with no re-roll. 2026 driver and car ratings are provisional until the season finishes.</p><p>Driver and car ratings reflect <strong>how they performed in that particular season</strong> using real historical standings. Develop your car with a total of $10m across six departments including qualifying, race all 23 rounds of the updated 2026 calendar against five modern 2026 and five legendary historical teams, then add $2.5m of upgrades at halfway.</p><p>Every Grand Prix begins with a <strong>quick Q1/Q2/Q3 qualifying sequence</strong> for all 22 cars. Full Race and Highlights pause after qualifying until you click Start Race; Quick Race continues automatically. Track labels and live timing show current race positions, with the leader highlighted. Qualifying engineering and setup change one-lap pace; grid position significantly affects the race, particularly where overtaking is hard. Choose one locked-in mode at season start: <strong>Full Race (20s)</strong>, <strong>Highlights (10s)</strong>, <strong>Quick Race (5s)</strong>, or <strong>Whole Season (26s)</strong>. Choose a separate driver strategy for both drivers. Set wet or dry tyre sequences race by race in Full Race and Highlights. Simulated live weather and overtake mode affect racing. Track positions animate around authentic circuits. Results are simulated, not actual historical race results.</p><p>Points: 25–18–15–12–10–8–6–4–2–1 in Grands Prix, plus 8–7–6–5–4–3–2–1 for six Sprint weekends. Your goal is to win both World Championships.</p><button class="btn" id="rulesClose">LET'S RACE →</button>`);el('resetTop').onclick=reset;el('spinFirst').onclick=()=>spinDriverAt(0);el('spinSecond').onclick=()=>spinDriverAt(1);
+function wire(){el('startGame').onclick=()=>{if(state.stage!=='home'){show(state.stage)}else{state.stage='driversPage';renderDrivers();show('driversPage')}};el('rulesBtn').onclick=()=>showModal(`<div class="eyebrow">Rules of the game</div><h2>HOW TO WIN</h2><p>Spin two driver/year combinations (1950–2026), with one shared re-roll. Spin one historical car, with no re-roll. 2026 driver and car ratings are provisional until the season finishes.</p><p>Driver and car ratings reflect <strong>how they performed in that particular season</strong> using real historical standings. Develop your car with a total of $10m across six departments including qualifying, race all 23 rounds of the updated 2026 calendar against five modern 2026 and five legendary historical teams, then add $2.5m of upgrades at halfway.</p><p>Every Grand Prix begins with a <strong>quick Q1/Q2/Q3 qualifying sequence</strong> for all 22 cars. Full Race and Highlights pause after qualifying until you click Start Race; Quick Race continues automatically. Track labels and live timing show current race positions, with the leader highlighted. Qualifying engineering and setup change one-lap pace; grid position significantly affects the race, particularly where overtaking is hard. Choose one locked-in mode at season start: <strong>Full Race (20s)</strong>, <strong>Highlights (10s)</strong>, <strong>Quick Race (5s)</strong>, or <strong>Whole Season (26s)</strong>. Choose a separate driver strategy for both drivers. Set wet or dry tyre sequences race by race in Full Race and Highlights. Simulated live weather and overtake mode affect racing. All cars travel continuously forwards around authentic circuits, with smooth on-track overtakes and live positions. Results are simulated, not actual historical race results.</p><p>Points: 25–18–15–12–10–8–6–4–2–1 in Grands Prix, plus 8–7–6–5–4–3–2–1 for six Sprint weekends. Your goal is to win both World Championships.</p><button class="btn" id="rulesClose">LET'S RACE →</button>`);el('resetTop').onclick=reset;el('spinFirst').onclick=()=>spinDriverAt(0);el('spinSecond').onclick=()=>spinDriverAt(1);
  el('swapDrivers').onclick=()=>{state.drivers.reverse();renderDrivers();save()};el('rerollBtn').onclick=()=>showModal(`<div class="eyebrow">One chance only</div><h2>CHOOSE YOUR RE-ROLL</h2><p>You have one re-roll to use on either driver. The new result must be kept.</p><div class="split-actions"><button class="btn" id="reroll0">DRIVER #1</button><button class="btn" id="reroll1">DRIVER #2</button><button class="btn secondary" id="cancelReroll">CANCEL</button></div>`);
  el('confirmDrivers').onclick=()=>{if(state.drivers.every(Boolean)){renderCar();show('carPage')}};
  el('spinCar').onclick=async()=>{const b=el('spinCar');b.disabled=true;b.textContent='SPINNING…';el('carStatus').textContent='Spinning through famous F1 cars…';const card=document.querySelector('.car-reveal');card.classList.add('spinning');const startAt=performance.now();const spins=['McLaren','Ferrari','Mercedes','Red Bull','Lotus','Williams','Renault','Haas','Brawn'];const timer=setInterval(()=>{const a=spins[Math.floor(Math.random()*spins.length)],yr=1950+Math.floor(Math.random()*77);el('carInfo').innerHTML=`<div class="eyebrow">THE MACHINE ROULETTE</div><h2>${a.toUpperCase()}</h2><div class="bigscore">${yr}</div><p class="muted">SPINNING…</p>`},105);try{const car=await spin('car');await new Promise(r=>setTimeout(r,Math.max(0,1500-(performance.now()-startAt))));state.car=car;el('carStatus').textContent=car.demo?'Demo selection — live historic standings unavailable.':'Car secured. No re-rolls!';b.textContent='CAR LOCKED'}finally{clearInterval(timer);card.classList.remove('spinning');renderCar();save()}};
