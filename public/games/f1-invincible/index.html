@@ -458,6 +458,14 @@ function pitSelectHtml(seat,pit,plan,laps,disabled){
 
 // F1 Invincible: a team has one pit box. The second seat waits when both stop
 // on the same lap, losing real simulation score points rather than just text.
+function defaultTeamTyrePlans(weather,race){
+ const first=defaultTyrePlan(weather,race),second=defaultTyrePlan(weather,race);
+ // If players cannot choose pit laps (Quick / Whole Season), avoid giving
+ // the second seat an unavoidable double-stack penalty by default.
+ const laps=ESTIMATED_RACE_LAPS[Math.min(race.round-1,22)]||55;
+ second.pits=second.pits.map(lap=>Math.min(laps-1,lap+2));
+ return [first,second];
+}
 function pitStackLapClashes(race,plans=state.tyrePlans){
  const weather=forecastFor(race);
  const first=normalisePlan(plans?.[0],weather,race),second=normalisePlan(plans?.[1],weather,race);
@@ -494,7 +502,7 @@ function paintTyres(){
 function modeLabel(){return SEASON_MODES.find(x=>x[0]===state.mode)?.[1]||SEASON_MODES[0][1]}
 function prepareRoundPlans(){
  const race=CAL[Math.min(state.round,22)],weather=forecastFor(race);
- if(state.tyrePreparedFor!==state.round){state.tyrePlans=[defaultTyrePlan(weather,race),defaultTyrePlan(weather,race)];state.tyrePreparedFor=state.round;save();}
+ if(state.tyrePreparedFor!==state.round){state.tyrePlans=defaultTeamTyrePlans(weather,race);state.tyrePreparedFor=state.round;save();}
  state.tyrePlans=[0,1].map(i=>normalisePlan(state.tyrePlans[i],weather,race));
  paintWeather(weather);paintTyres();
 }
@@ -823,7 +831,7 @@ async function runBlitzSeason(){
  for(let i=startRound;i<23&&blitzRun;i++){
   const pace=(i-startRound)*1100;
   const wait=Math.max(0,started+pace-performance.now());await new Promise(resolve=>setTimeout(resolve,wait));if(!blitzRun)break;
-  state.round=i;const race=CAL[i],weather=forecastFor(race);state.tyrePlans=[defaultTyrePlan(weather,race),defaultTyrePlan(weather,race)];
+  state.round=i;const race=CAL[i],weather=forecastFor(race);state.tyrePlans=defaultTeamTyrePlans(weather,race);
   if(i===12&&!state.halftime){state.halftime=true;state.invest.power+=.5;state.invest.aero+=.5;state.invest.tyres+=.5;state.invest.pits+=.5;state.invest.qualifying+=.5;pushEvent('HALFWAY: $2.5m automatically invested across power, aero, tyres, pit crew and qualifying.');}
   const q=runQualifying(race);const res=simulateRace(race,q);let finishes=res.entries.map(({id,team,own,dnf,short,name})=>({id,team,own,dnf,short,name}));let sprint=res.sprint?.map(({id,team,own})=>({id,team,own}))||null;
   state.results.push({round:i,finishes,sprint,grid:q.grid.map(c=>c.id),pole:q.poleId});state.round=i+1;state.pendingQuali=null;
