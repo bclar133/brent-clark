@@ -98,7 +98,29 @@ body[data-theme="country"]{--accent:#ffd36b;--accent2:#54a2ff}body[data-theme="i
 @media(max-width:1200px){.tyre-plans{grid-template-columns:1fr}}
 @media(max-width:560px){.tyre-head h4{font-size:20px}.tyre-panel{padding:12px}.stint-control{grid-template-columns:42px minmax(80px,1fr) 48px;gap:5px}.pit-lap-label,.to-finish{grid-column:2 / span 2}.next-race-cta{width:100%;font-size:16px}.tyre-driver-head{flex-direction:column;align-items:start}}
 @media(prefers-reduced-motion:reduce){.next-race-cta{animation:none}}
+
+/* F1 Invincible: accessible circuit palette selector on Windows, macOS and Firefox. */
+#trackTheme {
+  color-scheme: dark;
+  color: #f7fbff;
+  background: #152538;
+  border: 1px solid #a7d84b;
+  font-weight: 700;
+}
+#trackTheme option, #trackTheme optgroup {
+  color: #f7fbff;
+  background-color: #152538;
+}
+#trackTheme option:checked {
+  color: #d4ff7b;
+  background-color: #29445c;
+}
+#trackTheme:focus-visible {
+  outline: 2px solid #c2ff48;
+  outline-offset: 2px;
+}
 </style>
+<link rel="icon" type="image/svg+xml" href="/games/f1-invincible/favicon.svg?v=20261019">
 </head>
 <body data-theme="laser">
 <header class="topbar"><div class="topin"><div class="logo">F1 <em>INVINCIBLE</em></div><a href="/" style="color:#c5d5e4;text-decoration:none;font-size:12px;white-space:nowrap">← ALL GAMES</a><div class="bar-right"><span class="pill">BRENT CLARK <b>GAMES</b></span><span id="progress-pill" class="pill">THE ULTIMATE F1 MIX-UP</span><button id="resetTop" class="ghost hidden" type="button">↺ New game</button></div></div></header>
