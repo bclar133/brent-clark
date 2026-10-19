@@ -140,6 +140,32 @@ body[data-theme="country"]{--accent:#ffd36b;--accent2:#54a2ff}body[data-theme="i
 .restart-danger:not(:disabled):hover{background:#ff9183}
 .restart-danger:disabled{opacity:.46}
 @media(max-width:560px){.restart-sheet{padding:21px}.restart-actions .btn{flex:1 1 100%}}
+
+/* Keep the authentic circuit separate from the Q1/Q2/Q3 timing overlay. */
+.track-stage.qualifying-layout #circuitSvg{
+ position:absolute;left:0;top:0;width:calc(100% - 310px);
+ height:100%;max-width:none;margin:0;
+}
+.track-stage.qualifying-layout .qual-overlay{
+ position:absolute;top:10px;right:10px;
+ width:286px;max-width:calc(100% - 20px);min-width:0;box-sizing:border-box;
+}
+@media(max-width:700px){
+ .track-stage.qualifying-layout{height:590px}
+ .track-stage.qualifying-layout #circuitSvg{width:100%;height:315px;top:0;left:0}
+ .track-stage.qualifying-layout .qual-overlay{
+  top:auto;bottom:10px;left:10px;right:10px;width:auto;
+  max-width:none;max-height:260px;overflow-y:auto;
+ }
+}
+.tyre-stack-alert{
+ margin:12px 0 14px;padding:12px 14px;background:#4c321e88;
+ border:1px solid #e8a148;border-left:4px solid #ffb65a;
+ border-radius:10px;color:#ffdda8;font-size:12px;line-height:1.55
+}
+.tyre-stack-alert strong{color:#fff3d0}
+.timing-row.pit-stacking{border-left-color:#ffb65a;background:#403122}
+.timing-row.pit-stacking .tname{color:#ffdb9b}
 </style>
 <link rel="icon" type="image/svg+xml" href="/games/f1-invincible/favicon.svg?v=20261019">
 </head>
@@ -429,11 +455,29 @@ function pitSelectHtml(seat,pit,plan,laps,disabled){
  const options=[];for(let lap=Math.max(1,min);lap<=Math.max(min,max);lap++)options.push(`<option value="${lap}" ${lap===plan.pits[pit]?'selected':''}>Lap ${lap}</option>`);
  return `<select aria-label="Pit stop ${pit+1} on lap" data-plan-seat="${seat}" data-plan-pit="${pit}" ${disabled?'disabled':''}>${options.join('')}</select>`;
 }
+
+// F1 Invincible: a team has one pit box. The second seat waits when both stop
+// on the same lap, losing real simulation score points rather than just text.
+function pitStackLapClashes(race,plans=state.tyrePlans){
+ const weather=forecastFor(race);
+ const first=normalisePlan(plans?.[0],weather,race),second=normalisePlan(plans?.[1],weather,race);
+ return [...new Set(first.pits.filter(lap=>second.pits.includes(lap)))].sort((a,b)=>a-b);
+}
+function pitStackDelays(race,plans=state.tyrePlans){
+ const laps=ESTIMATED_RACE_LAPS[Math.min(race.round-1,22)]||55;
+ return pitStackLapClashes(race,plans).map(lap=>{
+  const waitingSeconds=+(Math.max(2.7,4.9-(Number(state.invest?.pits)||0)*.28)+Math.random()*.65).toFixed(1);
+  return {lap,at:lap/laps,seat:1,driver:state.drivers[1]?.name||'Driver #2',waitingSeconds,
+   scorePenalty:waitingSeconds*1.75};
+ });
+}
+
 function paintTyres(){
  const panel=el('tyrePanel');const planning=isManualTyres()&&state.pendingQuali?.round===CAL[state.round]?.round&&!racing&&state.round<23;
  panel.classList.toggle('hidden',!planning);
  if(!planning){panel.innerHTML='';return;}
  const weather=forecastFor(CAL[state.round]),race=CAL[state.round],laps=raceLaps();
+ const stackLaps=pitStackLapClashes(race);
  panel.innerHTML=`<div class="tyre-head"><div><div class="eyebrow">AFTER QUALIFYING · BEFORE LIGHTS OUT</div><h4>BUILD YOUR RACE TYRE STRATEGY</h4><p>Choose your compounds and pit laps. Your decisions affect race pace, wear and pit-stop costs.</p></div><span class="tyre-lapbadge">${laps} RACE LAPS</span></div>
  <div class="tyre-life-guide"><strong>ESTIMATED USABLE LIFE</strong>${COMPOUNDS.map(([c,label,color])=>`<span><i style="background:${color}"></i>${label} ${tyreLife(c,race,weather).join('–')} laps</span>`).join('')}</div>
  <div class="tyre-plans">${[0,1].map(seat=>{
@@ -445,7 +489,7 @@ function paintTyres(){
   <div class="stint-controls">${plan.compounds.map((c,stint)=>`<div class="stint-control"><span class="stint-label">STINT ${stint+1}</span>${tyreSelectHtml(seat,'compound',stint,c,false)}<span class="stint-laps">${lengths[stint]} laps</span>${stint<plan.stops?`<label class="pit-lap-label">PIT AFTER ${pitSelectHtml(seat,stint,plan,laps,false)}</label>`:`<span class="to-finish">TO FINISH 🏁</span>`}</div>`).join('')}</div>
   <div class="stint-timeline" aria-label="${safe(driver)} tyre stints">${plan.compounds.map((c,i)=>`<div title="${compoundInfo(c)[1]} · ${lengths[i]} laps" class="stint-segment" style="width:${lengths[i]/laps*100}%;background:${compoundInfo(c)[2]};color:${c==='H'||c==='M'?'#101726':'#ffffff'}">${c} <span>${lengths[i]}L</span></div>`).join('')}</div>
   <div class="tyre-feedback">${review.warnings.length?`<span class="tyre-warning">⚠ ${safe(review.warnings[0])}${review.warnings.length>1?' (+'+(review.warnings.length-1)+' more)':''}</span>`:`<span class="tyre-good">✓ Stint lengths within expected range</span>`}</div></div>`;
- }).join('')}</div><div class="tyre-start-actions"><button class="btn tyre-start-cta" id="startWithTyres" type="button">▶ START RACE WITH THESE TYRES</button><span>Changes are saved automatically.</span></div><p class="tyre-note">Tyre life is an approximate in-game estimate affected by circuit and temperature, not a real-world tyre guarantee. The weather can change mid-race. Wet or Intermediate tyres may finish the race; in dry conditions, use two different dry compounds.</p>`;
+ }).join('')}</div>${stackLaps.length?`<div class="tyre-stack-alert" role="status">⚠ <strong>DOUBLE STACK — LAP ${stackLaps.join(' &amp; ')}</strong><br>Both cars are scheduled to use the same pit box. Driver #1 is serviced first; <strong>${safe(state.drivers[1]?.name||'Driver #2')} must wait</strong>, losing roughly 3–5 seconds and potentially positions. Change a pit lap to avoid the queue.</div>`:''}<div class="tyre-start-actions"><button class="btn tyre-start-cta" id="startWithTyres" type="button">▶ START RACE WITH THESE TYRES</button><span>Changes are saved automatically.</span></div><p class="tyre-note">Tyre life is an approximate in-game estimate affected by circuit and temperature, not a real-world tyre guarantee. The weather can change mid-race. Wet or Intermediate tyres may finish the race; in dry conditions, use two different dry compounds.</p>`;
 }
 function modeLabel(){return SEASON_MODES.find(x=>x[0]===state.mode)?.[1]||SEASON_MODES[0][1]}
 function prepareRoundPlans(){
@@ -600,6 +644,7 @@ function qualifyingRows(entries,limit=5){
 }
 function showQualSession(stage,entries){
  el('qualOverlay').classList.remove('hidden');
+ el('circuitSvg').parentElement.classList.add('qualifying-layout');
  el('qualOverlay').innerHTML=`<div class="eyebrow">F1 INVINCIBLE QUALIFYING</div><div class="stage">${stage}</div><div class="sub">${stage==='Q1'?'22 cars · fastest 16 progress':stage==='Q2'?'16 cars · fastest 10 progress':'Top 10 shootout for POLE'}</div>${qualifyingRows(entries,5)}`;
  el('raceBug').innerHTML=`${stage} · <strong>ONE-LAP PACE</strong>`;
  el('leaderBadge').textContent=stage+' IN PROGRESS';
@@ -609,6 +654,7 @@ function showGridSummary(result){
  const you=result.grid.filter(c=>c.own).map(c=>`P${c.gridPos} ${safe(c.short)}`).join(' · ');
  el('qualSummary').innerHTML=`<span>🏁 <strong>POLE: ${safe(result.poleName)}</strong> · ${you}</span><span class="qual-small">Starting grid changes your race prospects, especially at Monaco and Singapore.</span>`;
  el('qualOverlay').classList.add('hidden');
+ el('circuitSvg').parentElement.classList.remove('qualifying-layout');
  timingRender(result.grid.map(c=>({...c,qualifying:true})));
 }
 function tickQualifying(now){
@@ -648,17 +694,18 @@ function startGrandPrix(){
  updateTrackOrder(qualResult.grid);timingRender(qualResult.grid);
  raceFrame=requestAnimationFrame(tickRace);
 }
-function simulateRace(race, qualifying){let gridMap=new Map(qualifying.grid.map((c,i)=>[c.id,i]));let n=qualifying.grid.length;let overtakingDifficulty=clamp(.38+.42*(race.corner-race.straight),.17,.94);let gridEffect=4.0+overtakingDifficulty*6.0;let entries=field().map(c=>{let gridPos=gridMap.get(c.id)??n-1;return {...c,gridPos:gridPos+1,score:grade(c,race)+gridEffect*(1-2*gridPos/Math.max(1,n-1)),dnf:false}});let dnfs=[];for(let c of entries){let chance=c.own?Math.max(.006,.048-state.invest.reliability*.0055):.02;if(Math.random()<chance){c.dnf=true;c.score=-100-Math.random()*20;dnfs.push(c)}}entries.sort((a,b)=>b.score-a.score);const points=[25,18,15,12,10,8,6,4,2,1];let ev=[];
+function simulateRace(race, qualifying){let gridMap=new Map(qualifying.grid.map((c,i)=>[c.id,i]));let n=qualifying.grid.length;let overtakingDifficulty=clamp(.38+.42*(race.corner-race.straight),.17,.94);let gridEffect=4.0+overtakingDifficulty*6.0;let entries=field().map(c=>{let gridPos=gridMap.get(c.id)??n-1;return {...c,gridPos:gridPos+1,score:grade(c,race)+gridEffect*(1-2*gridPos/Math.max(1,n-1)),dnf:false}});const stacks=pitStackDelays(race);const waiting=entries.find(c=>c.own&&c.seat===1);if(waiting)waiting.score-=stacks.reduce((sum,x)=>sum+x.scorePenalty,0);let dnfs=[];for(let c of entries){let chance=c.own?Math.max(.006,.048-state.invest.reliability*.0055):.02;if(Math.random()<chance){c.dnf=true;c.score=-100-Math.random()*20;dnfs.push(c)}}entries.sort((a,b)=>b.score-a.score);const points=[25,18,15,12,10,8,6,4,2,1];let ev=[];
  ev.push({at:.07,msg:`LIGHTS OUT: ${qualifying.poleName} leads from pole at ${race.city}.`});
  ev.push({at:.06,msg:`LIGHTS OUT: places change rapidly at the start as the field attacks the opening corners.`});
  ev.push({at:.2,msg:`${entries[Math.floor(Math.random()*Math.min(8,entries.length))].short} makes a bold opening-lap overtake.`});
  ev.push({at:.27,msg:`OVERTAKE MODE: extra electrical power is available to cars close behind their rivals.`});
  ev.push({at:.37,msg:`PIT WINDOW: teams switch strategies as tyre wear increases.`});
+ for(const stack of stacks)ev.push({at:stack.at,msg:`DOUBLE STACK · LAP ${stack.lap}: ${stack.driver} waits ${stack.waitingSeconds.toFixed(1)}s behind Driver #1. The delay may cost positions.`});
  ev.push({at:.6,msg:`OVERTAKE: ${entries[Math.floor(Math.random()*Math.min(8,entries.length))].short} fights for track position.`});
  if(dnfs.length)ev.push({at:.69,msg:`RETIREMENT: ${dnfs[0].short} is out of the Grand Prix.`});
  ev.push({at:.84,msg:`FINAL LAPS: ${entries[0].short} leads the chase to the chequered flag.`});
  let sprint=null;if(race.sprint){sprint=[...entries].sort((a,b)=>(b.score+randomNormal()*5)-(a.score+randomNormal()*5));}
- return {entries,points,sprint,ev};}
+ return {entries,points,sprint,ev,stacks};}
 function countryColors(c){const palette={Australia:['#0033a0','#ffffff','#e22736'],China:['#e72529','#ffe45a','#ffffff'],Japan:['#ffffff','#dc304a','#ffffff'],Canada:['#d72b3f','#ffffff','#d72b3f'],Monaco:['#ed2939','#ffffff','#ed2939'],Spain:['#c92229','#f5d148','#c92229'],Austria:['#ef3146','#ffffff','#ed3146'],'United Kingdom':['#1c4f9f','#ffffff','#e73f4c'],Belgium:['#101010','#fae25d','#e73947'],Hungary:['#c43a47','#ffffff','#3aa65b'],Netherlands:['#f47338','#ffffff','#195cad'],Italy:['#33b56d','#ffffff','#ef4545'],Azerbaijan:['#26a2d1','#e9455b','#5bbd70'],Malaysia:['#1765aa','#f8df42','#f14956'],Singapore:['#d72c45','#ffffff','#d72c45'],'United States':['#df526b','#ffffff','#3075ba'],Mexico:['#3ab36d','#ffffff','#ef4444'],Brazil:['#38ba75','#ffe562','#2785c1'],Qatar:['#9b3062','#ffffff','#9b3062'],'United Arab Emirates':['#24b772','#ffffff','#db4848']};return palette[c]||['#bdff3a','#37d9ff','#b994ff']}
 function currentColors(){if(state.theme==='country'){return countryColors(CAL[Math.min(state.round,22)].country)}return state.theme==='ice'?['#7bdfff','#a591ff','#eef9ff']:['#bdff3a','#37d9ff','#e4ff8e']}
 async function loadTrack(race){el('raceEvents').innerHTML='<div class="race-event">Loading the real circuit outline…</div>';let url=race.slug==='madring'||race.slug==='sepang'?`https://cdn.jsdelivr.net/gh/f1db/f1db@main/src/assets/circuits/white/${race.slug==='madring'?'madring-1':'sepang-1'}.svg`:`https://cdn.jsdelivr.net/gh/MasterPlay007/F1-Track-Layouts-SVG@main/${race.slug}.svg`;
@@ -723,9 +770,9 @@ function resetMarkers(){let entries=field();addMarkers(entries);entries.forEach(
 function pointsTables(){let values={},teams={};for(let r of state.results){let ranks=r.finishes;for(let [ix,c] of ranks.entries()){let pts=[25,18,15,12,10,8,6,4,2,1][ix]||0;if(c.dnf)pts=0;values[c.id]=(values[c.id]||0)+pts;teams[c.team]=(teams[c.team]||0)+pts}if(r.sprint){r.sprint.forEach((c,ix)=>{let pts=[8,7,6,5,4,3,2,1][ix]||0;values[c.id]=(values[c.id]||0)+pts;teams[c.team]=(teams[c.team]||0)+pts})}}
  return {values,teams}}
 function standingsRender(){const {values,teams}=pointsTables();const all=field();all.sort((a,b)=>(values[b.id]||0)-(values[a.id]||0));el('driversStandings').innerHTML=all.map((x,i)=>`<div class="standing-row ${x.own?'you':''}"><span class="pos">${i+1}</span><span class="name">${safe(x.name)} ${x.own?'★':''}</span><span class="pts">${values[x.id]||0}</span></div>`).join('');const ts=[...new Set(field().map(x=>x.team))].sort((a,b)=>(teams[b]||0)-(teams[a]||0));el('constructorsStandings').innerHTML=ts.map((x,i)=>`<div class="standing-row ${x==='Invincible Racing'?'you':''}"><span class="pos">${i+1}</span><span class="name">${safe(x)} ${x==='Invincible Racing'?'★':''}</span><span class="pts">${teams[x]||0}</span></div>`).join('');const posD=all.findIndex(x=>x.own),posT=ts.indexOf('Invincible Racing');el('seasonIntro').textContent=state.results.length?`Your highest driver: P${posD+1} · Invincible Racing: P${posT+1} · ${state.results.length} of 23 rounds completed`:'The title fight starts now. Every point counts.'}
-function timingRender(entries){el('liveTiming').innerHTML=entries.map((c,i)=>`<div class="timing-row ${c.own?'you':''} ${c.leader?'leader':''}"><span class="pos">${i+1}</span><div><div class="dname">${safe(c.short||c.name)} ${c.own?'★':''}${c.leader?'<span class="leader-icon">● LEADER</span>':''}</div><div class="tname">${safe(c.team)}${c.driverYear?' · '+c.driverYear:''}${c.gridPos?' · START P'+c.gridPos:''}</div></div><span style="text-align:right;color:${c.dnf?'#ff8294':'#96acc1'}">${c.dnf?'OUT':c.qualifying?'GRID':'LIVE'}</span></div>`).join('')}
+function timingRender(entries){el('liveTiming').innerHTML=entries.map((c,i)=>`<div class="timing-row ${c.own?'you':''} ${c.leader?'leader':''} ${c.pitStacking?'pit-stacking':''}"><span class="pos">${i+1}</span><div><div class="dname">${safe(c.short||c.name)} ${c.own?'★':''}${c.leader?'<span class="leader-icon">● LEADER</span>':''}</div><div class="tname">${safe(c.team)}${c.driverYear?' · '+c.driverYear:''}${c.gridPos?' · START P'+c.gridPos:''}</div></div><span style="text-align:right;color:${c.dnf?'#ff8294':'#96acc1'}">${c.dnf?'OUT':c.qualifying?'GRID':c.pitStacking?'⏳ PIT QUEUE':'LIVE'}</span></div>`).join('')}
 function roundsRender(){el('roundCards').innerHTML=CAL.map((x,i)=>`<div class="round ${i<state.round?'complete':''} ${i===state.round?'now':''}"><b>${String(i+1).padStart(2,'0')}</b><div><strong>${x.flag} ${safe(x.city)}</strong><br><em>${safe(x.name)} GP${x.sprint?' · SPRINT':''}</em></div></div>`).join('')}
-async function renderSeason({skipTrack=false}={}){const race=CAL[Math.min(state.round,22)];el('raceMode').textContent=modeLabel();el('blitzStage').classList.toggle('hidden',state.mode!=='blitz');if(state.mode==='blitz')el('blitzStage').innerHTML='<div class="flash-round">THE 2026 WORLD TOUR</div><div class="flash-venue">23 RACES · 26 SECONDS</div><div class="flash-sub">Press START for one uninterrupted season</div>';prepareRoundPlans();el('roundBadge').textContent=`ROUND ${String(race.round).padStart(2,'0')} / 23${race.sprint?' · SPRINT WEEKEND':''}`;el('venueName').textContent=(race.name==='Bahrain in Malaysia'?'BAHRAIN GP':race.name.toUpperCase()+' GP');el('venueInfo').textContent=`${race.flag} ${race.city} · ${race.country}`;el('leaderBadge').textContent=state.round>=23?'SEASON COMPLETE':'QUALIFYING UP NEXT';el('raceBug').innerHTML='READY · <strong>Q1 → Q2 → Q3</strong>';el('qualOverlay').classList.add('hidden');el('gridPause').classList.add('hidden');el('leaderBadge').classList.remove('is-leader');el('nextRace').classList.add('hidden');el('skipRace').classList.add('hidden');el('raceBtn').classList.remove('hidden');el('raceBtn').disabled=state.round>=23;el('raceBtn').textContent=state.pendingQuali?.round===race.round?'▶ START RACE':'▶ QUALIFY + RACE';roundsRender();standingsRender();renderOpposition();resetMarkers();timingRender(field());if(state.pendingQuali?.round===race.round){qualResult=state.pendingQuali;showGridSummary(qualResult)}else el('qualSummary').innerHTML='<span>🏁 <b>QUALIFYING FIRST</b> · Q1 → Q2 → Q3 before lights out</span><span class="qual-small">22 cars · 6 out in Q1 · 6 out in Q2 · 10 fight for pole</span>';if(state.round<23&&!skipTrack)await loadTrack(race);if(state.pendingQuali?.round===race.round){qualResult=state.pendingQuali;showGridSummary(qualResult);showRacePause()}}
+async function renderSeason({skipTrack=false}={}){const race=CAL[Math.min(state.round,22)];el('raceMode').textContent=modeLabel();el('blitzStage').classList.toggle('hidden',state.mode!=='blitz');if(state.mode==='blitz')el('blitzStage').innerHTML='<div class="flash-round">THE 2026 WORLD TOUR</div><div class="flash-venue">23 RACES · 26 SECONDS</div><div class="flash-sub">Press START for one uninterrupted season</div>';prepareRoundPlans();el('roundBadge').textContent=`ROUND ${String(race.round).padStart(2,'0')} / 23${race.sprint?' · SPRINT WEEKEND':''}`;el('venueName').textContent=(race.name==='Bahrain in Malaysia'?'BAHRAIN GP':race.name.toUpperCase()+' GP');el('venueInfo').textContent=`${race.flag} ${race.city} · ${race.country}`;el('leaderBadge').textContent=state.round>=23?'SEASON COMPLETE':'QUALIFYING UP NEXT';el('raceBug').innerHTML='READY · <strong>Q1 → Q2 → Q3</strong>';el('qualOverlay').classList.add('hidden');el('circuitSvg').parentElement.classList.remove('qualifying-layout');el('gridPause').classList.add('hidden');el('leaderBadge').classList.remove('is-leader');el('nextRace').classList.add('hidden');el('skipRace').classList.add('hidden');el('raceBtn').classList.remove('hidden');el('raceBtn').disabled=state.round>=23;el('raceBtn').textContent=state.pendingQuali?.round===race.round?'▶ START RACE':'▶ QUALIFY + RACE';roundsRender();standingsRender();renderOpposition();resetMarkers();timingRender(field());if(state.pendingQuali?.round===race.round){qualResult=state.pendingQuali;showGridSummary(qualResult)}else el('qualSummary').innerHTML='<span>🏁 <b>QUALIFYING FIRST</b> · Q1 → Q2 → Q3 before lights out</span><span class="qual-small">22 cars · 6 out in Q1 · 6 out in Q2 · 10 fight for pole</span>';if(state.round<23&&!skipTrack)await loadTrack(race);if(state.pendingQuali?.round===race.round){qualResult=state.pendingQuali;showGridSummary(qualResult);showRacePause()}}
 
 function makeRaceCheckpoints(sim,qual){
  const base=qual.grid.map(c=>c.id),finish=sim.entries.map(c=>c.id),ids=new Set(base);if(finish.some(id=>!ids.has(id)))return [base,finish];
@@ -750,6 +797,7 @@ function raceForwardDistance(r,id,t){
 }
 
 function tickRace(now){if(!raceAnim)return;let r=raceAnim,frac=clamp((now-r.start)/r.duration,0,1);let lap=Math.min(100,Math.floor(frac*100));el('raceBug').innerHTML=`RACE <strong>${lap}%</strong> · ${Math.max(0,Math.ceil((1-frac)*r.duration/1000))}s`;
+ const stackNow=r.stacks?.find(x=>Math.abs(frac-x.at)<.024);
  const standings=r.entries.map(c=>{
  // Smooth, monotonically increasing unwrapped lap distance: no stopping or
  // reversing when a car gains or loses positions. Modulo is used only in
@@ -761,7 +809,7 @@ function tickRace(now){if(!raceAnim)return;let r=raceAnim,frac=clamp((now-r.star
  if(Math.floor(frac*45)!==r.lastBucket){
   r.lastBucket=Math.floor(frac*45);
   const leader=standings[0];el('leaderBadge').textContent=`🏆 LEADER · ${leader.short||leader.name}`;
-  timingRender(standings.map((c,i)=>({...c,leader:i===0})));paintWeather(forecastFor(CAL[state.round]),frac);
+  timingRender(standings.map((c,i)=>({...c,leader:i===0,pitStacking:!!stackNow&&c.own&&c.seat===1})));paintWeather(forecastFor(CAL[state.round]),frac);
  }
  for(let e of r.ev)if(frac>=e.at&&!e.shown){e.shown=true;pushEvent(e.msg)}
  if(frac>=1){finaliseRace();return}raceFrame=requestAnimationFrame(tickRace)
@@ -806,9 +854,10 @@ function beginRace(){
  if(previous){showGridSummary(qualResult);pushEvent(`Grid ready. ${qualResult.poleName} starts on pole.`);startGrandPrix()}
  else {addMarkers(qualResult.q1);qualAnim={start:performance.now(),phase:-1};raceFrame=requestAnimationFrame(tickQualifying)}
 }
-function finaliseRace(){if(!racing)return;cancelAnimationFrame(raceFrame);racing=false;qualAnim=null;el('qualOverlay').classList.add('hidden');const race=CAL[state.round];let finishes=raceFinish.entries.map(({id,team,own,dnf,short,name})=>({id,team,own,dnf,short,name}));let sprint=raceFinish.sprint?.map(({id,team,own})=>({id,team,own}))||null;
+function finaliseRace(){if(!racing)return;cancelAnimationFrame(raceFrame);racing=false;qualAnim=null;el('qualOverlay').classList.add('hidden');const race=CAL[state.round];const completedStacks=raceFinish.stacks||[];let finishes=raceFinish.entries.map(({id,team,own,dnf,short,name})=>({id,team,own,dnf,short,name}));let sprint=raceFinish.sprint?.map(({id,team,own})=>({id,team,own}))||null;
  state.results.push({round:state.round,finishes,sprint,grid:qualResult?.grid.map(c=>c.id)||[],pole:qualResult?.poleId||null});state.round++;state.pendingQuali=null;raceAnim=null;raceFinish=null;qualResult=null;save();timingRender(finishes);el('raceBug').innerHTML=`🏁 CHEQUERED FLAG · <strong>${safe(finishes[0].short)} WINS</strong>`;
  el('leaderBadge').classList.remove('is-leader');el('leaderBadge').textContent='RACE FINISHED';updateTrackOrder(finishes);el('raceBtn').classList.add('hidden');paintTyres();el('skipRace').classList.add('hidden');el('nextRace').classList.remove('hidden');el('nextRace').textContent=state.round===23?'SEE FINAL CHAMPIONSHIP →':state.round===12&&!state.halftime?'MID-SEASON UPGRADES →':'NEXT GRAND PRIX →';
+ const stackSummary=completedStacks.map(x=>`lap ${x.lap}: +${x.waitingSeconds.toFixed(1)}s to ${x.driver}`).join('; ');if(stackSummary)pushEvent(`PIT STACKING: ${stackSummary}.`);
  const yours=finishes.filter(x=>x.own).map(x=>`P${finishes.indexOf(x)+1} ${x.short}`).join(' · ');pushEvent(`RESULT: ${yours}. ${finishes[0].name} takes the win!`);if(sprint)pushEvent(`Sprint weekend: sprint points were also added to both championships.`);roundsRender();standingsRender()}
 function nextRace(){if(state.round===12&&!state.halftime&&state.mode!=='blitz'){state.halftime=true;renderHQ();show('hqPage');return}if(state.round===23){showEnd();return}renderSeason()}
 function showModal(html){modal=true;el('modalHost').innerHTML=`<div class="modal-back" id="modalBackdrop"><div class="panel modal">${html}</div></div>`}
