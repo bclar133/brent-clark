@@ -1,1 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#ccff54"/><stop offset="1" stop-color="#33dafa"/></linearGradient></defs><rect width="128" height="128" rx="25" fill="#091324"/><path d="M20 81h88M29 94h68" stroke="#2c4c66" stroke-width="4" stroke-linecap="round"/><path d="M18 75L30 53H53L64 47H89L106 63L112 76" fill="none" stroke="url(#g)" stroke-linejoin="round" stroke-width="8"/><path d="M52 53L63 67H93" fill="none" stroke="#e9f7ff" stroke-width="5"/><circle cx="39" cy="79" r="12" fill="#111925" stroke="#dbf7ff" stroke-width="5"/><circle cx="92" cy="79" r="12" fill="#111925" stroke="#dbf7ff" stroke-width="5"/><path d="M12 26h72M27 37h70" stroke="#bdff3a" stroke-width="5" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="F1 Invincible racing-car icon">
+ <defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18304b"/><stop offset=".45" stop-color="#0b1424"/><stop offset="1" stop-color="#050a16"/></linearGradient>
+  <linearGradient id="car" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffcb37"/><stop offset=".46" stop-color="#ff8d21"/><stop offset="1" stop-color="#e14e0a"/></linearGradient>
+  <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d1ff3d"/><stop offset="1" stop-color="#43dbdc"/></linearGradient>
+ </defs>
+ <rect width="128" height="128" rx="25" fill="url(#bg)"/>
+ <path d="M8 73L30 51M119 76L101 57" fill="none" stroke="#2f7795" stroke-opacity=".45" stroke-width="7"/>
+ <path d="M12 88L35 64M116 88L95 64" fill="none" stroke="#8affdd" stroke-opacity=".18" stroke-width="3"/>
+ <path d="M17 18H69L61 30H33v8h23l-7 11H33v10H17z" fill="#f5fbff"/>
+ <path d="M76 18h28v40H87V32H73z" fill="url(#neon)"/>
+ <path d="M15 66H113" stroke="#426778" stroke-width="2" stroke-dasharray="4 5"/>
+ <ellipse cx="64" cy="108" rx="44" ry="11" fill="#060c15"/>
+ <rect x="13" y="80" width="23" height="32" rx="9" fill="#030911" stroke="#445a69" stroke-width="3"/>
+ <rect x="92" y="80" width="23" height="32" rx="9" fill="#030911" stroke="#445a69" stroke-width="3"/>
+ <path d="M30 85Q31 77 42 76H86Q98 77 99 85L102 93H26z" fill="url(#car)" stroke="#ffbc40" stroke-width="2"/>
+ <path d="M48 79q4-11 16-11t16 11v13H48z" fill="#101a26" stroke="#ffb52b" stroke-width="3"/>
+ <path d="M55 77q9-7 18 0" fill="none" stroke="#2b8db4" stroke-width="2"/>
+ <path d="M57 87h14l8 25H49z" fill="url(#car)" stroke="#fdd476" stroke-width="2"/>
+ <path d="M61 94h6" stroke="#101727" stroke-width="3" stroke-linecap="round"/>
+ <path d="M27 94H101l6 5-2 8H23l-2-8z" fill="#121e2c" stroke="#fe9432" stroke-width="3"/>
+ <path d="M18 105h92" stroke="url(#neon)" stroke-width="4" stroke-linecap="round"/>
+ <path d="M31 84h16M81 84h16" stroke="#1e2632" stroke-width="3" stroke-linecap="round"/>
+ <path d="M51 63h26" stroke="#c0ff3a" stroke-width="3" stroke-linecap="round"/>
+ <rect x="1.25" y="1.25" width="125.5" height="125.5" rx="23.75" fill="none" stroke="#6ba0ae" stroke-opacity=".36" stroke-width="2.5"/>
+</svg>
