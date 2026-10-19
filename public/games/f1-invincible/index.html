@@ -76,6 +76,28 @@ body[data-theme="country"]{--accent:#ffd36b;--accent2:#54a2ff}body[data-theme="i
 .driver-strategy{padding:13px;border:1px solid #344861;border-radius:11px;background:#0e1b2b}.driver-strategy + .driver-strategy{margin-top:11px}.driver-strategy h4{font-size:20px;color:#e6f6ff}.driver-strategy .strategy-label{display:block;font-size:11px;color:#9db4c9;margin:12px 0 5px;font-weight:800}.driver-strategy .choice{padding:7px 9px;font-size:11px}.mode-tag{border:1px solid #536c70;padding:8px 12px;border-radius:7px;color:#eaffaa;font-size:11px;font-weight:900;background:#172735}
 .weather-panel{border:1px solid #3f576c;border-radius:10px;padding:13px 15px;margin:14px 0 12px;background:linear-gradient(110deg,#192a3c,#0d1b2d);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.weather-panel .conditions{font-size:14px;font-weight:900;color:#e5f5ff}.weather-panel .weather-detail{font-size:11px;color:#acc6da;margin-top:4px}.weather-panel .weather-flag{font:800 12px 'DM Sans',sans-serif;color:#ffe79a}.tyre-panel{border:1px solid #31495e;background:#101f32;border-radius:10px;padding:13px 15px;margin:12px 0}.tyre-panel h4{color:#eaf6fb}.tyre-options{display:flex;flex-wrap:wrap;gap:12px;margin-top:7px}.tyre-options label{font-size:12px;font-weight:800;display:flex;align-items:center;gap:7px}.tyre-options select{border:1px solid #4d6783;background:#203049;color:#fff;border-radius:7px;padding:8px;font-size:12px;max-width:200px}.tyre-options select:disabled{opacity:.55}.tyre-note{font-size:11px;color:#acc0d2;margin-top:8px}.race-bug.blitz{border-color:#ddff71;color:#eaffaa}.blitz-results{max-height:180px;overflow:auto;display:grid;gap:4px;margin-top:9px;font-size:11px}.blitz-results .blitz-row{border:1px solid #334d62;padding:6px 8px;border-radius:5px;display:flex;gap:12px;justify-content:space-between}.blitz-row b{color:#bafa60}
 @media(max-width:560px){.weather-panel{grid-template-columns:1fr}.mode-picker{grid-template-columns:1fr 1fr}.mode-option{font-size:11px}.tyre-options{flex-direction:column}.mode-tag{white-space:normal}}
+/* Post-qualifying tyre strategy planner and end-of-race navigation. */
+.tyre-panel{padding:20px;border-color:#556c82;background:linear-gradient(145deg,#16273a,#0b1727);box-shadow:0 8px 26px #0004}
+.tyre-head{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.tyre-head h4{font-size:24px;margin:5px 0}.tyre-head p{font-size:12px;color:#b5c6d8;margin:0;line-height:1.5}
+.tyre-lapbadge{padding:7px 11px;border-radius:8px;background:#243448;border:1px solid #506981;font-weight:900;color:#eaffaa;font-size:11px}
+.tyre-life-guide{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:11px;color:#c2d3e3;margin:16px 0}
+.tyre-life-guide strong{color:#e4effa;font-size:10px;letter-spacing:.08em;width:100%}.tyre-life-guide span{white-space:nowrap;background:#0d1c2d;padding:5px 7px;border-radius:5px}
+.tyre-life-guide i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.tyre-plans{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tyre-driver{padding:13px;background:#0c1829;border:1px solid #405a73;border-radius:10px;min-width:0}
+.tyre-driver-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.tyre-driver-head strong{font-size:14px;color:#f2f8ff}
+.tyre-driver-head label{font-size:10px;font-weight:900;color:#b8cada}.tyre-panel select{background:#233449;border:1px solid #536d88;border-radius:6px;color:#f0f6ff;padding:7px 8px;font-size:12px;max-width:100%;min-width:0}
+.seat-light{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.seat-0{background:#edff58}.seat-1{background:#2ee4ff}
+.stint-controls{margin:14px 0 12px;display:grid;grid-template-columns:1fr;gap:8px}.stint-control{display:grid;grid-template-columns:49px minmax(82px,1fr) 62px;align-items:center;gap:7px;background:#1b2d43;border-radius:7px;padding:8px}
+.stint-label{font-size:10px;color:#d4e2ed;font-weight:900}.stint-laps{font-size:12px;color:#d8ecff;font-weight:900;white-space:nowrap}.pit-lap-label{grid-column:2/-1;justify-self:end;display:flex;gap:6px;align-items:center;color:#9fc5cf;font-size:10px;font-weight:900;white-space:nowrap}.pit-lap-label select{min-width:94px}.to-finish{grid-column:2/-1;justify-self:end;font-size:10px;color:#baff63;font-weight:900}
+.stint-timeline{display:flex;height:28px;overflow:hidden;border-radius:6px;border:1px solid #607086}.stint-segment{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:900;min-width:0;overflow:hidden;white-space:nowrap}.stint-segment span{font-size:9px;opacity:.85}
+.tyre-feedback{min-height:30px;margin-top:9px;font-size:11px}.tyre-warning{color:#ffd48b}.tyre-good{color:#b8ec9a}
+.tyre-note{line-height:1.6;padding-top:8px;border-top:1px solid #2e465c;margin-top:14px}.tyre-start-actions{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin:15px 0}.tyre-start-actions>span{color:#a0b8ce;font-size:11px}.tyre-start-cta{font-size:14px;box-shadow:0 0 22px #bdff3a33}
+.next-race-cta{background:linear-gradient(110deg,#baff3a,#e0ff5f);color:#10170a;font-size:18px;padding:17px 29px;border:2px solid #ecff9c;letter-spacing:.04em;min-width:255px;box-shadow:0 0 0 4px #aaff2a16,0 0 35px #bdff3a55;animation:nextRaceGlow 1.7s ease-in-out infinite alternate}
+.next-race-cta:hover{background:#edff9e;transform:translateY(-2px)}@keyframes nextRaceGlow{from{box-shadow:0 0 0 4px #aaff2a0a,0 0 17px #bdff3a44}to{box-shadow:0 0 0 4px #aaff2a27,0 0 32px #bdff3a99}}
+@media(max-width:1200px){.tyre-plans{grid-template-columns:1fr}}
+@media(max-width:560px){.tyre-head h4{font-size:20px}.tyre-panel{padding:12px}.stint-control{grid-template-columns:42px minmax(80px,1fr) 48px;gap:5px}.pit-lap-label,.to-finish{grid-column:2 / span 2}.next-race-cta{width:100%;font-size:16px}.tyre-driver-head{flex-direction:column;align-items:start}}
+@media(prefers-reduced-motion:reduce){.next-race-cta{animation:none}}
 </style>
 </head>
 <body data-theme="laser">
@@ -85,7 +107,7 @@ body[data-theme="country"]{--accent:#ffd36b;--accent2:#54a2ff}body[data-theme="i
 <section id="driversPage" class="page"><div class="stepper"><div class="step current">01 · DRIVERS</div><div class="step">02 · CAR</div><div class="step">03 · TEAM HQ</div><div class="step">04 · CHAMPIONSHIP</div></div><div class="subhead"><div><div class="eyebrow">The driver market</div><h2>SPIN YOUR DREAM TEAM</h2><p>Two driver/year combinations from 1950–2026, including provisional 2026 ratings. One shared re-roll. Choose who leads.</p></div><span id="rerollCounter" class="pill">1 RE-ROLL AVAILABLE</span></div><div class="cards" id="driverCards"></div><div class="split-actions"><button id="spinFirst" class="btn">SPIN DRIVER 1</button><button id="spinSecond" class="btn" disabled>SPIN DRIVER 2</button><button id="swapDrivers" class="btn secondary" disabled>⇄ SWAP #1 &amp; #2</button><button id="rerollBtn" class="btn secondary" disabled>↺ RE-ROLL</button><button id="confirmDrivers" class="btn secondary" disabled>ACCEPT DRIVERS →</button></div><p class="notice">Roulette odds: 60% from 2022–26 (all drivers); 24% from 2002–21 (top 10); 12% from 1982–2001 (top 5); 4% from 1950–81 (top 3). 2026 ratings are provisional and update when online. Each historical year is selected randomly within its era.</p><p class="notice" id="driverStatus" aria-live="polite"></p></section>
 <section id="carPage" class="page"><div class="stepper"><div class="step done">01 · DRIVERS</div><div class="step current">02 · CAR</div><div class="step">03 · TEAM HQ</div><div class="step">04 · CHAMPIONSHIP</div></div><div class="subhead"><div><div class="eyebrow">The machinery</div><h2>LET HISTORY CHOOSE YOUR CAR</h2><p>One spin. No re-rolls. Legendary machinery might be just around the corner.</p></div></div><div class="car-reveal panel"><div class="car-visual" id="carVisual"><img id="carPhoto" src="https://commons.wikimedia.org/wiki/Special:FilePath/FIA%20F1%20Austria%202025%20Nr.%204%20Norris.jpg?width=1400" alt="2025 McLaren MCL39 driven by Lando Norris"><div id="carPhotoCaption" class="car-photo-caption">2025 McLaren MCL39 · Lando Norris</div><div id="carPhotoFallback" class="car-photo-fallback hidden">Searching for the original historic race car photograph…</div></div><div class="car-info" id="carInfo"><div class="eyebrow">Mystery constructor</div><h2>WHO WILL YOU DRIVE?</h2><p class="muted">Your car's power is calculated from the constructor's historical results.</p></div></div><div class="split-actions"><button class="btn" id="spinCar">SPIN MY CAR</button><button class="btn secondary" id="acceptCar" disabled>BUILD MY TEAM →</button></div><p class="notice" id="carStatus" aria-live="polite"></p></section>
 <section id="hqPage" class="page"><div class="stepper"><div class="step done">01 · DRIVERS</div><div class="step done">02 · CAR</div><div class="step current">03 · TEAM HQ</div><div class="step">04 · CHAMPIONSHIP</div></div><div class="subhead"><div><div class="eyebrow" id="hqEyebrow">Pre-season engineering</div><h2 id="hqHeading">BUILD YOUR ADVANTAGE</h2><p id="hqDesc">Spend your $10 million budget and set the team's racing approach.</p></div></div><div class="hq-grid"><div class="panel budget"><div class="budget-head"><div><h3>ENGINEERING BUDGET</h3><div class="muted small">Move funding between departments in $0.5m steps.</div></div><div style="text-align:right"><div class="money" id="moneyLeft">$0.0M</div><div class="muted small">UNALLOCATED</div></div></div><div class="bars" id="budgetBars"></div><div id="investments"></div></div><div class="panel choices"><div><h3>SEASON VIEWING MODE</h3><p class="muted small">Choose once. This cannot change during the championship.</p><div id="seasonModeChoices" class="mode-picker"></div></div><div><h3>DRIVER STRATEGIES</h3><p class="muted small">Set a different racing style, pit plan, qualifying approach and 2026 overtake mode for each driver.</p><div id="driverStrategies"></div></div><div class="team-summary" id="teamSummary"></div><div class="split-actions"><button class="btn" id="startSeason">START CHAMPIONSHIP →</button></div></div></div></section>
-<section id="seasonPage" class="page"><div class="stepper"><div class="step done">01 · DRIVERS</div><div class="step done">02 · CAR</div><div class="step done">03 · TEAM HQ</div><div class="step current">04 · CHAMPIONSHIP</div></div><div class="subhead"><div><div class="eyebrow">Alternate-history · World tour 2026</div><h2>THE CHAMPIONSHIP</h2><p id="seasonIntro">The title fight starts now. Every point counts.</p></div><div><label for="trackTheme" class="small muted">CIRCUIT COLOURS</label><br><select id="trackTheme" class="ghost"><option value="laser">Fluoro / Laser</option><option value="country">Home Country</option><option value="ice">Ice / Electric</option></select></div></div><details id="oppositionPanel" class="panel rivals-panel"><summary>MEET YOUR RIVALS <span class="muted small">5 REAL 2026 TEAMS + 5 HISTORIC TEAMS · 20 OPPONENTS</span></summary><div id="rivalTeams" class="rival-teams"></div><p class="muted small">Each rival keeps its actual driver pairing, season and car strengths. Different selections appear when you start a new championship.</p></details><div class="race-grid"><div class="panel track-panel"><div class="racepanel-head"><div><div class="eyebrow" id="roundBadge">ROUND 01 / 23</div><h2 id="venueName">AUSTRALIAN GP</h2><span class="muted" id="venueInfo">Melbourne • Australia</span></div><div id="leaderBadge" class="pill">READY FOR LIGHTS OUT</div></div><div class="track-stage"><svg id="circuitSvg" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet" aria-label="Circuit race animation"><path id="trackHalo" fill="none" stroke="#baff3a" stroke-width="33" opacity=".07" stroke-linecap="round" stroke-linejoin="round"/><path id="trackOuter" fill="none" stroke="#11283e" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path id="trackPath" fill="none" stroke="#bdff3a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><g id="carDots"></g></svg><div id="blitzStage" class="blitz-stage hidden" aria-live="polite"></div><div id="qualOverlay" class="qual-overlay hidden" aria-live="polite"></div><div id="gridPause" class="grid-pause hidden" aria-live="polite"></div><div class="race-bug" id="raceBug">READY · <strong>LIGHTS OUT</strong></div></div><div id="weatherPanel" class="weather-panel" aria-live="polite"></div><div id="tyrePanel" class="tyre-panel hidden"></div><div class="race-controls"><span id="raceMode" class="mode-tag">FULL RACE · 20s</span><button id="raceBtn" class="btn">▶ QUALIFY + RACE</button><button id="skipRace" class="btn secondary hidden">SKIP TO RESULT »</button><button id="nextRace" class="btn secondary hidden">NEXT GRAND PRIX →</button></div><div class="qual-summary" id="qualSummary"><span>🏁 <b>QUALIFYING FIRST</b> · Q1 → Q2 → Q3 before lights out</span><span class="qual-small">22 cars · 6 out in Q1 · 6 out in Q2 · 10 fight for pole</span></div><div class="race-events" id="raceEvents"><div class="race-event">Season viewing mode was set in Team HQ. Qualifying comes first.</div></div><div id="blitzResults" class="blitz-results hidden"></div></div><div class="panel timing"><div class="timing-head"><h3>LIVE TIMING</h3><div class="pill" id="gridLabel">22 CARS</div></div><div class="timing-list" id="liveTiming"></div></div></div><div class="points-grid"><div class="panel standings"><h3>DRIVERS' WORLD CHAMPIONSHIP</h3><div class="standings-list" id="driversStandings"></div></div><div class="panel standings"><h3>CONSTRUCTORS' WORLD CHAMPIONSHIP</h3><div class="standings-list" id="constructorsStandings"></div></div></div><h3 style="margin-top:26px">2026 RACE CALENDAR</h3><div class="rounds" id="roundCards"></div></section>
+<section id="seasonPage" class="page"><div class="stepper"><div class="step done">01 · DRIVERS</div><div class="step done">02 · CAR</div><div class="step done">03 · TEAM HQ</div><div class="step current">04 · CHAMPIONSHIP</div></div><div class="subhead"><div><div class="eyebrow">Alternate-history · World tour 2026</div><h2>THE CHAMPIONSHIP</h2><p id="seasonIntro">The title fight starts now. Every point counts.</p></div><div><label for="trackTheme" class="small muted">CIRCUIT COLOURS</label><br><select id="trackTheme" class="ghost"><option value="laser">Fluoro / Laser</option><option value="country">Home Country</option><option value="ice">Ice / Electric</option></select></div></div><details id="oppositionPanel" class="panel rivals-panel"><summary>MEET YOUR RIVALS <span class="muted small">5 REAL 2026 TEAMS + 5 HISTORIC TEAMS · 20 OPPONENTS</span></summary><div id="rivalTeams" class="rival-teams"></div><p class="muted small">Each rival keeps its actual driver pairing, season and car strengths. Different selections appear when you start a new championship.</p></details><div class="race-grid"><div class="panel track-panel"><div class="racepanel-head"><div><div class="eyebrow" id="roundBadge">ROUND 01 / 23</div><h2 id="venueName">AUSTRALIAN GP</h2><span class="muted" id="venueInfo">Melbourne • Australia</span></div><div id="leaderBadge" class="pill">READY FOR LIGHTS OUT</div></div><div class="track-stage"><svg id="circuitSvg" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet" aria-label="Circuit race animation"><path id="trackHalo" fill="none" stroke="#baff3a" stroke-width="33" opacity=".07" stroke-linecap="round" stroke-linejoin="round"/><path id="trackOuter" fill="none" stroke="#11283e" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path id="trackPath" fill="none" stroke="#bdff3a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><g id="carDots"></g></svg><div id="blitzStage" class="blitz-stage hidden" aria-live="polite"></div><div id="qualOverlay" class="qual-overlay hidden" aria-live="polite"></div><div id="gridPause" class="grid-pause hidden" aria-live="polite"></div><div class="race-bug" id="raceBug">READY · <strong>LIGHTS OUT</strong></div></div><div id="weatherPanel" class="weather-panel" aria-live="polite"></div><div id="tyrePanel" class="tyre-panel hidden"></div><div class="race-controls"><span id="raceMode" class="mode-tag">FULL RACE · 20s</span><button id="raceBtn" class="btn">▶ QUALIFY + RACE</button><button id="skipRace" class="btn secondary hidden">SKIP TO RESULT »</button><button id="nextRace" class="btn next-race-cta hidden">NEXT GRAND PRIX →</button></div><div class="qual-summary" id="qualSummary"><span>🏁 <b>QUALIFYING FIRST</b> · Q1 → Q2 → Q3 before lights out</span><span class="qual-small">22 cars · 6 out in Q1 · 6 out in Q2 · 10 fight for pole</span></div><div class="race-events" id="raceEvents"><div class="race-event">Season viewing mode was set in Team HQ. Qualifying comes first.</div></div><div id="blitzResults" class="blitz-results hidden"></div></div><div class="panel timing"><div class="timing-head"><h3>LIVE TIMING</h3><div class="pill" id="gridLabel">22 CARS</div></div><div class="timing-list" id="liveTiming"></div></div></div><div class="points-grid"><div class="panel standings"><h3>DRIVERS' WORLD CHAMPIONSHIP</h3><div class="standings-list" id="driversStandings"></div></div><div class="panel standings"><h3>CONSTRUCTORS' WORLD CHAMPIONSHIP</h3><div class="standings-list" id="constructorsStandings"></div></div></div><h3 style="margin-top:26px">2026 RACE CALENDAR</h3><div class="rounds" id="roundCards"></div></section>
 </main>
 <div id="modalHost"></div><div id="toast" class="toast hidden" role="status"></div>
 <script>
@@ -197,10 +219,66 @@ const pitStyles=[['balanced','Balanced'],['aggressive','Aggressive undercut'],['
 const qualStyles=[['balanced','Balanced setup'],['attack','All-out pole attack'],['race','Race-focused setup']];
 const SEASON_MODES=[['20000','FULL RACE · 20s','Qualifying and full race with a pause'],['10000','HIGHLIGHTS · 10s','Short race, major moments and pause'],['5000','QUICK RACE · 5s','Qualifying and race without pause'],['blitz','WHOLE SEASON · 26s','All 23 races, zero stops or intermissions']];
 const OVERTAKE_STYLES=[['attack','Deploy early','More passing, increased wear'],['balanced','Balanced','Deploy when close enough'],['save','Conserve','Save battery for later']];
-const TYRE_PRESETS=[['M-H-S','Medium → Hard → Soft'],['S-M-H','Soft → Medium → Hard'],['H-M-S','Hard → Medium → Soft'],['M-M-S','Medium → Medium → Soft'],['W-W-S','Wet → Wet → Soft'],['W-I-S','Wet → Intermediate → Soft'],['I-I-M','Intermediate → Intermediate → Medium'],['I-M-S','Intermediate → Medium → Soft']];
+const COMPOUNDS=[['S','Soft','#ff555f'],['M','Medium','#f9e15f'],['H','Hard','#e8f2ff'],['I','Intermediate','#47dd8e'],['W','Wet','#61bafa']];
+const ESTIMATED_RACE_LAPS=[58,56,53,57,70,78,66,71,52,44,70,72,53,56,51,55,62,56,71,71,50,57,58];
+const isManualTyres=()=>state.mode==='20000'||state.mode==='10000';
+const compoundInfo=c=>COMPOUNDS.find(x=>x[0]===c)||COMPOUNDS[1];
+const raceLaps=()=>ESTIMATED_RACE_LAPS[Math.min(state.round,22)]||55;
+// Convert legacy preset strings from older saved games without losing the user's chosen tyres.
+function normalisePlan(p,weather,race){
+ const laps=ESTIMATED_RACE_LAPS[Math.min(race?.round-1||0,22)]||55;
+ if(typeof p==='string'){const parts=p.split('-').filter(x=>COMPOUNDS.some(c=>c[0]===x));if(parts.length>=2)return {stops:Math.min(2,parts.length-1),compounds:parts.slice(0,3),pits:parts.length>2?[Math.round(laps*.32),Math.round(laps*.66)]:[Math.round(laps*.48)]}}
+ if(p&&typeof p==='object'){
+  const stops=Math.max(0,Math.min(2,Math.round(Number(p.stops)||0)));
+  const compounds=Array.from({length:stops+1},(_,i)=>COMPOUNDS.some(x=>x[0]===p.compounds?.[i])?p.compounds[i]:'M');
+  const pits=Array.from({length:stops},(_,i)=>Math.max(1,Math.min(laps-1,Math.round(Number(p.pits?.[i])||Math.round(laps*(i+1)/(stops+1))))));
+  if(stops===2){pits[0]=Math.min(pits[0],laps-2);pits[1]=Math.max(pits[0]+1,Math.min(laps-1,pits[1]));}
+  return {stops,compounds,pits};
+ }
+ return defaultTyrePlan(weather,race);
+}
+function defaultTyrePlan(weather,race){
+ const laps=ESTIMATED_RACE_LAPS[Math.min((race?.round||state.round+1)-1,22)]||55;
+ if(weather.wet==='Wet')return {stops:1,compounds:['W',weather.late==='Drying late'?'I':'W'],pits:[Math.round(laps*.52)]};
+ if(weather.wet==='Showers')return {stops:1,compounds:['I',weather.late==='Rain increasing'?'W':'M'],pits:[Math.round(laps*.52)]};
+ return {stops:1,compounds:weather.temp>=31?['M','H']:['M','H'],pits:[Math.round(laps*.46)]};
+}
+// Approximate stint durability is a game mechanic, not official Pirelli mileage.
+function tyreLife(c,race,weather){
+ const base={S:[12,22],M:[22,35],H:[33,48],I:[17,30],W:[21,37]}[c]||[20,34];
+ const heat=weather.temp>=30&&(c==='S'||c==='M')?3:0;
+ const corners=race.corner>.8?3:0;
+ return [Math.max(8,base[0]-heat-corners),Math.max(12,base[1]-heat-corners)];
+}
+function stintLengths(plan,laps){return [...plan.pits,laps].map((n,i,a)=>n-(i?a[i-1]:0));}
+// Simulated weather changes during a race, so it is legal to finish on Wets.
+function raceSurfaceAt(weather,progress){
+ if(weather.late==='Rain increasing'&&progress>.52)return 'wet';
+ if(weather.late==='Drying late'&&progress>.58)return 'dry';
+ return weather.wet==='Wet'?'wet':weather.wet==='Showers'?'damp':'dry';
+}
+function tyrePlanReview(plan,weather,race){
+ const laps=ESTIMATED_RACE_LAPS[Math.min(race.round-1,22)]||55;
+ const lengths=stintLengths(plan,laps);let score=0,warnings=[];
+ const dryAll=weather.wet!=='Wet'&&weather.wet!=='Showers'&&weather.late!=='Rain increasing';
+ if(dryAll&&new Set(plan.compounds.filter(x=>['S','M','H'].includes(x))).size<2){score-=6;warnings.push('Dry races require at least two different dry compounds.');}
+ for(let i=0,elapsed=0;i<lengths.length;i++){
+  const len=lengths[i],compound=plan.compounds[i],mid=(elapsed+len*.5)/laps,surface=raceSurfaceAt(weather,mid);elapsed+=len;
+  const [lo,hi]=tyreLife(compound,race,weather);
+  // Weather match: dry compounds on a soaked track hurt, Wet on dry is bad.
+  const suited=surface==='wet'?compound==='W'?3.4:compound==='I'?1.2:-5.7:surface==='damp'?compound==='I'?3.2:compound==='W'?1.1:-2:compound==='W'?-4.7:compound==='I'?-2.5:2.5;
+  score+=suited*len/laps;
+  if(len>hi){score-=(len-hi)*.32;warnings.push(`${compoundInfo(compound)[1]} stint ${i+1}: ${len} laps exceeds estimated ${hi}-lap life.`)}
+  else if(len>lo){score-=(len-lo)*.025}
+  if(len<7){score-=1.5;warnings.push(`Stint ${i+1} is very short (${len} laps).`)}
+ }
+ score-=Math.max(0,plan.stops-1)*.65;
+ return {score:Math.max(-18,Math.min(7,score)),warnings,lengths};
+}
+
 const DEFAULT_STRATEGIES=()=>[{style:'balanced',pit:'aggressive',qual:'balanced',overtake:'attack'},{style:'tyres',pit:'conservative',qual:'race',overtake:'balanced'}];
 const START_INVEST={power:2,aero:2,tyres:1.5,reliability:1.5,pits:1.5,qualifying:1.5};
-let state={stage:'home',drivers:[null,null],rerolls:1,rerollTarget:0,car:null,rivals:[],invest:{...START_INVEST},style:'balanced',pit:'balanced',qualStyle:'balanced',mode:'20000',driverStrategies:DEFAULT_STRATEGIES(),tyrePlans:['M-H-S','M-H-S'],weatherSeed:0,pendingQuali:null,round:0,results:[],halftime:false,theme:'laser',done:false};
+let state={stage:'home',drivers:[null,null],rerolls:1,rerollTarget:0,car:null,rivals:[],invest:{...START_INVEST},style:'balanced',pit:'balanced',qualStyle:'balanced',mode:'20000',driverStrategies:DEFAULT_STRATEGIES(),tyrePlans:[null,null],weatherSeed:0,pendingQuali:null,round:0,results:[],halftime:false,theme:'laser',done:false};
 let spinningDriver=-1, spinningCar=false, blitzRun=false, blitzTimer=null;
 let driverCache=new Map(), carCache=new Map(), photoCache=new Map(), rivals=[], racing=false, raceAnim=null, qualAnim=null, qualResult=null, raceFrame=0, circuitLength=0, modal=false, raceFinish=null;
 const toMoney=n=>'$'+n.toFixed(1)+'M';
@@ -218,7 +296,7 @@ async function fetchCareerWins(d){if(!d?.id)return;const key=d.id;const fallback
 
 function toast(msg){const t=el('toast');t.textContent=msg;t.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add('hidden'),3500)}
 function save(){try{localStorage.setItem('f1-invincible-save-v2',JSON.stringify(state))}catch(e){}}
-function load(){try{const v=JSON.parse(localStorage.getItem('f1-invincible-save-v2'));if(v&&Array.isArray(v.drivers)&&v.stage){state={...state,...v,invest:{...START_INVEST,...v.invest}};if(v.invest&&!('qualifying' in v.invest))state.invest.qualifying=0;state.qualStyle=state.qualStyle||'balanced';state.pendingQuali=state.pendingQuali||null;state.mode=SEASON_MODES.some(x=>x[0]===String(state.mode))?String(state.mode):'20000';state.driverStrategies=[0,1].map(i=>({...DEFAULT_STRATEGIES()[i],...(state.driverStrategies?.[i]||{})}));state.tyrePlans=Array.isArray(state.tyrePlans)?state.tyrePlans:['M-H-S','M-H-S'];state.weatherSeed=Number(state.weatherSeed)||117}}catch(e){}}
+function load(){try{const v=JSON.parse(localStorage.getItem('f1-invincible-save-v2'));if(v&&Array.isArray(v.drivers)&&v.stage){state={...state,...v,invest:{...START_INVEST,...v.invest}};if(v.invest&&!('qualifying' in v.invest))state.invest.qualifying=0;state.qualStyle=state.qualStyle||'balanced';state.pendingQuali=state.pendingQuali||null;state.mode=SEASON_MODES.some(x=>x[0]===String(state.mode))?String(state.mode):'20000';state.driverStrategies=[0,1].map(i=>({...DEFAULT_STRATEGIES()[i],...(state.driverStrategies?.[i]||{})}));state.tyrePlans=Array.isArray(state.tyrePlans)?state.tyrePlans:[null,null];state.tyrePlans=state.tyrePlans.map(p=>p?normalisePlan(p,forecastFor(CAL[Math.min(state.round,22)]),CAL[Math.min(state.round,22)]):null);state.weatherSeed=Number(state.weatherSeed)||117}}catch(e){}}
 function show(stage){state.stage=stage;document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===stage));el('progress-pill').textContent={home:'THE ULTIMATE F1 MIX-UP',driversPage:'DRIVER ROULETTE',carPage:'CAR ROULETTE',hqPage:'TEAM HEADQUARTERS',seasonPage:'2026 SEASON'}[stage]||'';el('resetTop').classList.toggle('hidden',stage==='home');save();window.scrollTo({top:0,behavior:'smooth'})}
 function weightedYear(type){let tier=Math.random()*100,arr;
  if(tier<60)arr=[2022,2026];else if(tier<84)arr=[2002,2021];else if(tier<96)arr=[1982,2001];else arr=[type==='car'?1958:1950,1981];return arr[0]+Math.floor(Math.random()*(arr[1]-arr[0]+1))}
@@ -295,24 +373,44 @@ function renderCar(){const c=state.car;if(c)fetchCarPhoto(c);else setCarPhoto(MC
 function getDriverStrategy(c){return state.driverStrategies?.[c.seat]||DEFAULT_STRATEGIES()[c.seat]||DEFAULT_STRATEGIES()[0]}
 function deterministicNoise(seed){const x=Math.sin(seed*127.17+seed*seed*.013)*43758.5453;return x-Math.floor(x)}
 function forecastFor(race){const seed=(state.weatherSeed||117);const p=deterministicNoise(seed+race.round*11);const q=deterministicNoise(seed+race.round*19+71);const wet=p<.12?'Wet':p<.30?'Showers':p<.54?'Cloudy':'Dry';const late=wet==='Showers'&&q>.45?'Rain increasing':wet==='Wet'&&q>.5?'Drying late':wet==='Dry'&&q<.15?'Possible showers':'Stable';const temp=Math.round(17+deterministicNoise(seed+race.round*29)*20);return {wet,late,temp,track:wet==='Wet'?'Very wet':wet==='Showers'?'Damp':'Dry', grip:wet==='Wet'?'Low':wet==='Showers'?'Variable':'High'} }
-function defaultTyrePlan(weather){return weather.wet==='Wet'?'W-W-S':weather.wet==='Showers'?'I-I-M':weather.temp>=32?'M-H-S':'S-M-H'}
-function tyresPerformance(plan,weather){const w=plan.split('-');let score=0;
- if(weather.wet==='Wet'){score+=w[0]==='W'?4:w[0]==='I'?1:-8;score+=w[1]==='W'?2:w[1]==='I'?.5:-4}
- else if(weather.wet==='Showers'){score+=['I','W'].includes(w[0])?2.4:-2;score+=w[1]==='I'?1.3:0}
- else {score+=['W','I'].includes(w[0])?-6:2;score+=['W','I'].includes(w[1])?-3:1;score+=weather.temp>=32&&w[0]==='S'?-1.5:0}
- if(weather.late==='Rain increasing'&&w[2]==='S')score-=1.8;
- if(weather.late==='Drying late'&&w[2]==='S')score+=2.2;
- return score;
-}
 function paintWeather(weather,progress=0){const mid=progress>.58;const rain=weather.wet==='Wet'||(weather.wet==='Showers'&&!mid)||(weather.late==='Rain increasing'&&mid);const drying=weather.late==='Drying late'&&mid;
  const word=drying?'DRYING':rain?'WET TRACK':weather.wet==='Cloudy'?'CLOUDY':'DRY TRACK';
  el('weatherPanel').innerHTML=`<div><div class="eyebrow">SIMULATED LIVE TRACK &amp; WEATHER</div><div class="conditions">${rain?'🌧️':weather.wet==='Cloudy'?'☁️':'☀️'} ${word} · ${weather.temp}°C</div><div class="weather-detail">Grip: ${rain?'Low':weather.grip} · Track: ${rain?'Damp / wet':'Drying or dry'} · Forecast: ${safe(weather.late)}</div></div><div class="weather-flag">${rain?'RAIN · CAUTION':'OVERTAKE MODE '+(progress>0?'ACTIVE':'READY')}</div>`;
 }
-function paintTyres(){const isManual=state.mode==='20000'||state.mode==='10000';const panel=el('tyrePanel');panel.classList.toggle('hidden',!isManual);if(!isManual)return;
- panel.innerHTML=`<h4>TYRE STRATEGY · THIS RACE</h4><div class="tyre-options">${[0,1].map(i=>`<label>${safe(state.drivers[i]?.name?.split(' ').at(-1)||'Driver '+(i+1))}<select data-tyre-seat="${i}" ${racing?'disabled':''}>${TYRE_PRESETS.map(([k,v])=>`<option value="${k}" ${state.tyrePlans[i]===k?'selected':''}>${v}</option>`).join('')}</select></label>`).join('')}</div><div class="tyre-note">Set a plan before qualifying each round. Weather can change during the race. W = Wet · I = Intermediate · S = Soft · M = Medium · H = Hard.</div>`;
+function tyreSelectHtml(seat,field,stint,current,disabled){
+ const options=COMPOUNDS.map(([id,label,color])=>`<option value="${id}" ${current===id?'selected':''}>${label}</option>`).join('');
+ return `<select aria-label="Stint ${stint+1} tyre for Driver ${seat+1}" data-plan-seat="${seat}" data-plan-stint="${stint}" ${disabled?'disabled':''}>${options}</select>`;
+}
+function pitSelectHtml(seat,pit,plan,laps,disabled){
+ const min=pit===0?7:(plan.pits[0]+6),max=pit===0&&plan.stops===2?laps-13:laps-6;
+ const options=[];for(let lap=Math.max(1,min);lap<=Math.max(min,max);lap++)options.push(`<option value="${lap}" ${lap===plan.pits[pit]?'selected':''}>Lap ${lap}</option>`);
+ return `<select aria-label="Pit stop ${pit+1} on lap" data-plan-seat="${seat}" data-plan-pit="${pit}" ${disabled?'disabled':''}>${options.join('')}</select>`;
+}
+function paintTyres(){
+ const panel=el('tyrePanel');const planning=isManualTyres()&&state.pendingQuali?.round===CAL[state.round]?.round&&!racing&&state.round<23;
+ panel.classList.toggle('hidden',!planning);
+ if(!planning){panel.innerHTML='';return;}
+ const weather=forecastFor(CAL[state.round]),race=CAL[state.round],laps=raceLaps();
+ panel.innerHTML=`<div class="tyre-head"><div><div class="eyebrow">AFTER QUALIFYING · BEFORE LIGHTS OUT</div><h4>BUILD YOUR RACE TYRE STRATEGY</h4><p>Choose your compounds and pit laps. Your decisions affect race pace, wear and pit-stop costs.</p></div><span class="tyre-lapbadge">${laps} RACE LAPS</span></div>
+ <div class="tyre-life-guide"><strong>ESTIMATED USABLE LIFE</strong>${COMPOUNDS.map(([c,label,color])=>`<span><i style="background:${color}"></i>${label} ${tyreLife(c,race,weather).join('–')} laps</span>`).join('')}</div>
+ <div class="tyre-plans">${[0,1].map(seat=>{
+  const plan=normalisePlan(state.tyrePlans[seat],weather,race);state.tyrePlans[seat]=plan;
+  const review=tyrePlanReview(plan,weather,race);
+  const starts=plan.pits,ends=[...starts,laps],lengths=review.lengths;
+  const driver=state.drivers[seat]?.name||`Driver ${seat+1}`;
+  return `<div class="tyre-driver"><div class="tyre-driver-head"><strong><span class="seat-light seat-${seat}"></span>${safe(driver)}</strong><label>STOPS <select data-plan-seat="${seat}" data-plan-stops="true"><option value="0" ${plan.stops===0?'selected':''}>0 · No stop (wet strategy)</option><option value="1" ${plan.stops===1?'selected':''}>1 · One-stop</option><option value="2" ${plan.stops===2?'selected':''}>2 · Two-stop</option></select></label></div>
+  <div class="stint-controls">${plan.compounds.map((c,stint)=>`<div class="stint-control"><span class="stint-label">STINT ${stint+1}</span>${tyreSelectHtml(seat,'compound',stint,c,false)}<span class="stint-laps">${lengths[stint]} laps</span>${stint<plan.stops?`<label class="pit-lap-label">PIT AFTER ${pitSelectHtml(seat,stint,plan,laps,false)}</label>`:`<span class="to-finish">TO FINISH 🏁</span>`}</div>`).join('')}</div>
+  <div class="stint-timeline" aria-label="${safe(driver)} tyre stints">${plan.compounds.map((c,i)=>`<div title="${compoundInfo(c)[1]} · ${lengths[i]} laps" class="stint-segment" style="width:${lengths[i]/laps*100}%;background:${compoundInfo(c)[2]};color:${c==='H'||c==='M'?'#101726':'#ffffff'}">${c} <span>${lengths[i]}L</span></div>`).join('')}</div>
+  <div class="tyre-feedback">${review.warnings.length?`<span class="tyre-warning">⚠ ${safe(review.warnings[0])}${review.warnings.length>1?' (+'+(review.warnings.length-1)+' more)':''}</span>`:`<span class="tyre-good">✓ Stint lengths within expected range</span>`}</div></div>`;
+ }).join('')}</div><div class="tyre-start-actions"><button class="btn tyre-start-cta" id="startWithTyres" type="button">▶ START RACE WITH THESE TYRES</button><span>Changes are saved automatically.</span></div><p class="tyre-note">Tyre life is an approximate in-game estimate affected by circuit and temperature, not a real-world tyre guarantee. The weather can change mid-race. Wet or Intermediate tyres may finish the race; in dry conditions, use two different dry compounds.</p>`;
 }
 function modeLabel(){return SEASON_MODES.find(x=>x[0]===state.mode)?.[1]||SEASON_MODES[0][1]}
-function prepareRoundPlans(){const weather=forecastFor(CAL[state.round]);if(state.tyrePreparedFor!==state.round){const preset=defaultTyrePlan(weather);state.tyrePlans=[preset,preset];state.tyrePreparedFor=state.round;save()}paintWeather(weather);paintTyres()}
+function prepareRoundPlans(){
+ const race=CAL[Math.min(state.round,22)],weather=forecastFor(race);
+ if(state.tyrePreparedFor!==state.round){state.tyrePlans=[defaultTyrePlan(weather,race),defaultTyrePlan(weather,race)];state.tyrePreparedFor=state.round;save();}
+ state.tyrePlans=[0,1].map(i=>normalisePlan(state.tyrePlans[i],weather,race));
+ paintWeather(weather);paintTyres();
+}
 
 function invested(){return Object.values(state.invest).reduce((a,b)=>a+Number(b||0),0)}
 function budgetTotal(){return state.halftime?12.5:10}
@@ -418,8 +516,8 @@ function grade(c,race){
   if(st.pit==='aggressive')base+=2.1+(Math.random()-.5)*6;else if(st.pit==='conservative')base+=1.25;
   if(st.qual==='attack')base-=1.3;else if(st.qual==='race')base+=2.2;else base+=.55;
   if(c.seat===0&&st.pit==='aggressive')base+=.3;
-  const weather=forecastFor(race), plan=state.tyrePlans?.[c.seat]||defaultTyrePlan(weather);
-  base+=tyresPerformance(plan,weather)*.8;
+  const weather=forecastFor(race), plan=normalisePlan(state.tyrePlans?.[c.seat],weather,race);
+  base+=tyrePlanReview(plan,weather,race).score*1.22;
   // The 2026 overtake mode can be deployed near a rival; attack gains places but wears tyres.
   if(st.overtake==='attack')base+=3.2*race.straight+.7+randomNormal()*1.65;
   else if(st.overtake==='save')base+=1.5*race.corner+1.1;
@@ -484,16 +582,19 @@ function showRacePause(){
  // Qualifying remains saved, so reloading the page still waits for the player's click.
  racing=false;cancelAnimationFrame(raceFrame);raceAnim=null;qualAnim=null;
  const you=qualResult.grid.filter(c=>c.own).map(c=>`P${c.gridPos} ${safe(c.short)}`).join(' · ');
- el('gridPause').innerHTML=`<div class="eyebrow">QUALIFYING COMPLETE</div><div class="pause-heading">THE GRID IS SET</div><div class="pause-details">🏁 <strong>POLE:</strong> ${safe(qualResult.poleName)}<br>${you}</div><button id="startFromGrid" class="btn" type="button">▶ START RACE</button><div class="pause-tip">Review the starting order, then start when ready.</div>`;
+ el('gridPause').innerHTML=`<div class="eyebrow">QUALIFYING COMPLETE</div><div class="pause-heading">THE GRID IS SET</div><div class="pause-details">🏁 <strong>POLE:</strong> ${safe(qualResult.poleName)}<br>${you}</div><div class="pause-tip">↓ SET BOTH DRIVERS' TYRES &amp; PIT LAPS BELOW ↓</div><button id="startFromGrid" class="btn" type="button">▶ START RACE</button>`;
  el('gridPause').classList.remove('hidden');el('raceBtn').disabled=false;el('raceBtn').textContent='▶ START RACE';
  el('skipRace').classList.add('hidden');
  el('leaderBadge').classList.remove('is-leader');el('leaderBadge').textContent='QUALIFYING COMPLETE';
  el('raceBug').innerHTML='GRID CONFIRMED · <strong>WAITING FOR LIGHTS OUT</strong>';
  addMarkers(qualResult.grid);qualResult.grid.forEach((c,i)=>moveMarker(c,.13+(qualResult.grid.length-1-i)*RACE_GRID_GAP));
  updateTrackOrder(qualResult.grid,true);timingRender(qualResult.grid.map(c=>({...c,qualifying:true})));
- el('startFromGrid').onclick=beginRace;
+ paintTyres();el('startFromGrid').onclick=beginRace;
 }
 function startGrandPrix(){
+ // Compute race results only AFTER tyre plans have been selected at the grid pause.
+ if(!raceFinish)raceFinish=simulateRace(CAL[state.round],qualResult);
+ paintTyres();el('skipRace').classList.remove('hidden');
  el('gridPause').classList.add('hidden');
  const sim=raceFinish, duration=Number(state.mode)||20000;
  const startRank=new Map(qualResult.grid.map((c,i)=>[c.id,i]));const rank=new Map(sim.entries.map((c,i)=>[c.id,i]));
@@ -613,7 +714,7 @@ async function runBlitzSeason(){
  for(let i=startRound;i<23&&blitzRun;i++){
   const pace=(i-startRound)*1100;
   const wait=Math.max(0,started+pace-performance.now());await new Promise(resolve=>setTimeout(resolve,wait));if(!blitzRun)break;
-  state.round=i;const race=CAL[i],weather=forecastFor(race);state.tyrePlans=[defaultTyrePlan(weather),defaultTyrePlan(weather)];
+  state.round=i;const race=CAL[i],weather=forecastFor(race);state.tyrePlans=[defaultTyrePlan(weather,race),defaultTyrePlan(weather,race)];
   if(i===12&&!state.halftime){state.halftime=true;state.invest.power+=.5;state.invest.aero+=.5;state.invest.tyres+=.5;state.invest.pits+=.5;state.invest.qualifying+=.5;pushEvent('HALFWAY: $2.5m automatically invested across power, aero, tyres, pit crew and qualifying.');}
   const q=runQualifying(race);const res=simulateRace(race,q);let finishes=res.entries.map(({id,team,own,dnf,short,name})=>({id,team,own,dnf,short,name}));let sprint=res.sprint?.map(({id,team,own})=>({id,team,own}))||null;
   state.results.push({round:i,finishes,sprint,grid:q.grid.map(c=>c.id),pole:q.poleId});state.round=i+1;state.pendingQuali=null;
@@ -638,8 +739,8 @@ function beginRace(){
  const previous=state.pendingQuali?.round===race.round?state.pendingQuali:null;
  qualResult=previous||runQualifying(race);
  if(!previous){state.pendingQuali=qualResult;save()}
- raceFinish=simulateRace(race,qualResult);
- el('raceBtn').disabled=true;el('raceBtn').textContent=previous?'RACING…':'QUALIFYING…';el('skipRace').classList.remove('hidden');paintTyres();
+ raceFinish=null;
+ el('raceBtn').disabled=true;el('raceBtn').textContent=previous?'RACING…':'QUALIFYING…';el('skipRace').classList.add('hidden');paintTyres();
  el('raceEvents').innerHTML='';
  if(previous){showGridSummary(qualResult);pushEvent(`Grid ready. ${qualResult.poleName} starts on pole.`);startGrandPrix()}
  else {addMarkers(qualResult.q1);qualAnim={start:performance.now(),phase:-1};raceFrame=requestAnimationFrame(tickQualifying)}
@@ -652,15 +753,32 @@ function nextRace(){if(state.round===12&&!state.halftime&&state.mode!=='blitz'){
 function showModal(html){modal=true;el('modalHost').innerHTML=`<div class="modal-back" id="modalBackdrop"><div class="panel modal">${html}</div></div>`}
 function closeModal(){modal=false;el('modalHost').innerHTML=''}
 function showEnd(){let pts=pointsTables();let f=field().sort((a,b)=>(pts.values[b.id]||0)-(pts.values[a.id]||0));let teams=Object.entries(pts.teams).sort((a,b)=>b[1]-a[1]);let champ=f[0],construct=teams[0]?.[0],winD=!!champ?.own,winC=construct==='Invincible Racing';state.done=true;save();showModal(`<div class="eyebrow">2026 World Championship complete</div><h2>${winD&&winC?'DOUBLE WORLD CHAMPIONS!':winD||winC?'WORLD TITLE SECURED':'THE SEASON IS OVER'}</h2><p class="muted">${winD&&winC?'Your team conquered both championships. Invincible!':'Every season creates a new legacy. Try a different driver-and-car combination.'}</p><div class="end-titles"><div>DRIVERS' CHAMPION<strong>${safe(champ?.name)}</strong><span class="small muted">${pts.values[champ?.id]||0} POINTS</span></div><div>CONSTRUCTORS' CHAMPION<strong>${safe(construct)}</strong><span class="small muted">${pts.teams[construct]||0} POINTS</span></div></div><button class="btn" id="endRestart">START ANOTHER SEASON →</button><button class="btn secondary" id="endClose" style="margin-left:8px">VIEW TABLES</button>`)}
-function reset(){if(racing)return;if(state.stage!=='home'&&!confirm('Start a brand-new season? This will replace your current progress.'))return;try{localStorage.removeItem('f1-invincible-save-v2')}catch(e){}state={stage:'driversPage',drivers:[null,null],rerolls:1,rerollTarget:0,car:null,rivals:[],invest:{...START_INVEST},style:'balanced',pit:'balanced',qualStyle:'balanced',mode:'20000',driverStrategies:DEFAULT_STRATEGIES(),tyrePlans:['M-H-S','M-H-S'],weatherSeed:0,tyrePreparedFor:-1,pendingQuali:null,round:0,results:[],halftime:false,theme:'laser',done:false};driverCache.clear();carCache.clear();rivals=[];photoCache.clear();closeModal();renderDrivers();renderCar();renderHQ();qualResult=null;raceFinish=null;qualAnim=null;show('driversPage')}
-function wire(){el('startGame').onclick=()=>{if(state.stage!=='home'){show(state.stage)}else{state.stage='driversPage';renderDrivers();show('driversPage')}};el('rulesBtn').onclick=()=>showModal(`<div class="eyebrow">Rules of the game</div><h2>HOW TO WIN</h2><p>Spin two driver/year combinations (1950–2026), with one shared re-roll. Spin one historical car, with no re-roll. 2026 driver and car ratings are provisional until the season finishes.</p><p>Driver and car ratings reflect <strong>how they performed in that particular season</strong> using real historical standings. Develop your car with a total of $10m across six departments including qualifying, race all 23 rounds of the updated 2026 calendar against five modern 2026 and five legendary historical teams, then add $2.5m of upgrades at halfway.</p><p>Every Grand Prix begins with a <strong>quick Q1/Q2/Q3 qualifying sequence</strong> for all 22 cars. Full Race and Highlights pause after qualifying until you click Start Race; Quick Race continues automatically. Track labels and live timing show current race positions, with the leader highlighted. Qualifying engineering and setup change one-lap pace; grid position significantly affects the race, particularly where overtaking is hard. Choose one locked-in mode at season start: <strong>Full Race (20s)</strong>, <strong>Highlights (10s)</strong>, <strong>Quick Race (5s)</strong>, or <strong>Whole Season (26s)</strong>. Choose a separate driver strategy for both drivers. Set wet or dry tyre sequences race by race in Full Race and Highlights. Simulated live weather and overtake mode affect racing. All cars travel continuously forwards around authentic circuits, with smooth on-track overtakes and live positions. Results are simulated, not actual historical race results.</p><p>Points: 25–18–15–12–10–8–6–4–2–1 in Grands Prix, plus 8–7–6–5–4–3–2–1 for six Sprint weekends. Your goal is to win both World Championships.</p><button class="btn" id="rulesClose">LET'S RACE →</button>`);el('resetTop').onclick=reset;el('spinFirst').onclick=()=>spinDriverAt(0);el('spinSecond').onclick=()=>spinDriverAt(1);
+function reset(){if(racing)return;if(state.stage!=='home'&&!confirm('Start a brand-new season? This will replace your current progress.'))return;try{localStorage.removeItem('f1-invincible-save-v2')}catch(e){}state={stage:'driversPage',drivers:[null,null],rerolls:1,rerollTarget:0,car:null,rivals:[],invest:{...START_INVEST},style:'balanced',pit:'balanced',qualStyle:'balanced',mode:'20000',driverStrategies:DEFAULT_STRATEGIES(),tyrePlans:[null,null],weatherSeed:0,tyrePreparedFor:-1,pendingQuali:null,round:0,results:[],halftime:false,theme:'laser',done:false};driverCache.clear();carCache.clear();rivals=[];photoCache.clear();closeModal();renderDrivers();renderCar();renderHQ();qualResult=null;raceFinish=null;qualAnim=null;show('driversPage')}
+function wire(){el('startGame').onclick=()=>{if(state.stage!=='home'){show(state.stage)}else{state.stage='driversPage';renderDrivers();show('driversPage')}};el('rulesBtn').onclick=()=>showModal(`<div class="eyebrow">Rules of the game</div><h2>HOW TO WIN</h2><p>Spin two driver/year combinations (1950–2026), with one shared re-roll. Spin one historical car, with no re-roll. 2026 driver and car ratings are provisional until the season finishes.</p><p>Driver and car ratings reflect <strong>how they performed in that particular season</strong> using real historical standings. Develop your car with a total of $10m across six departments including qualifying, race all 23 rounds of the updated 2026 calendar against five modern 2026 and five legendary historical teams, then add $2.5m of upgrades at halfway.</p><p>Every Grand Prix begins with a <strong>quick Q1/Q2/Q3 qualifying sequence</strong> for all 22 cars. Full Race and Highlights pause after qualifying until you click Start Race; Quick Race continues automatically. Track labels and live timing show current race positions, with the leader highlighted. Qualifying engineering and setup change one-lap pace; grid position significantly affects the race, particularly where overtaking is hard. Choose one locked-in mode at season start: <strong>Full Race (20s)</strong>, <strong>Highlights (10s)</strong>, <strong>Quick Race (5s)</strong>, or <strong>Whole Season (26s)</strong>. Choose a separate driver strategy for both drivers. After qualifying, customise each driver's tyre compounds and pit lap(s), including one- or two-stop plans, in Full Race and Highlights. Simulated live weather and overtake mode affect racing. All cars travel continuously forwards around authentic circuits, with smooth on-track overtakes and live positions. Results are simulated, not actual historical race results.</p><p>Points: 25–18–15–12–10–8–6–4–2–1 in Grands Prix, plus 8–7–6–5–4–3–2–1 for six Sprint weekends. Your goal is to win both World Championships.</p><button class="btn" id="rulesClose">LET'S RACE →</button>`);el('resetTop').onclick=reset;el('spinFirst').onclick=()=>spinDriverAt(0);el('spinSecond').onclick=()=>spinDriverAt(1);
  el('swapDrivers').onclick=()=>{state.drivers.reverse();renderDrivers();save()};el('rerollBtn').onclick=()=>showModal(`<div class="eyebrow">One chance only</div><h2>CHOOSE YOUR RE-ROLL</h2><p>You have one re-roll to use on either driver. The new result must be kept.</p><div class="split-actions"><button class="btn" id="reroll0">DRIVER #1</button><button class="btn" id="reroll1">DRIVER #2</button><button class="btn secondary" id="cancelReroll">CANCEL</button></div>`);
  el('confirmDrivers').onclick=()=>{if(state.drivers.every(Boolean)){renderCar();show('carPage')}};
  el('spinCar').onclick=async()=>{const b=el('spinCar');b.disabled=true;b.textContent='SPINNING…';el('carStatus').textContent='Spinning through famous F1 cars…';const card=document.querySelector('.car-reveal');card.classList.add('spinning');const startAt=performance.now();const spins=['McLaren','Ferrari','Mercedes','Red Bull','Lotus','Williams','Renault','Haas','Brawn'];const timer=setInterval(()=>{const a=spins[Math.floor(Math.random()*spins.length)],yr=1950+Math.floor(Math.random()*77);el('carInfo').innerHTML=`<div class="eyebrow">THE MACHINE ROULETTE</div><h2>${a.toUpperCase()}</h2><div class="bigscore">${yr}</div><p class="muted">SPINNING…</p>`},105);try{const car=await spin('car');await new Promise(r=>setTimeout(r,Math.max(0,1500-(performance.now()-startAt))));state.car=car;el('carStatus').textContent=car.demo?'Demo selection — live historic standings unavailable.':'Car secured. No re-rolls!';b.textContent='CAR LOCKED'}finally{clearInterval(timer);card.classList.remove('spinning');renderCar();save()}};
  el('acceptCar').onclick=()=>{renderHQ();show('hqPage')};el('investments').onclick=e=>{let b=e.target.closest('[data-invest]');if(!b)return;let k=b.dataset.invest,v=+b.dataset.delta,next=state.invest[k]+v;if(next>=0&&invested()+v<=budgetTotal()+.001){state.invest[k]=Math.round(next*2)/2;renderHQ()}};
  el('seasonModeChoices').onclick=e=>{const b=e.target.closest('[data-mode]');if(b&&!state.halftime){state.mode=b.dataset.mode;renderHQ()}};el('driverStrategies').onclick=e=>{const b=e.target.closest('[data-strategy]');if(!b)return;const seat=Number(b.dataset.seat),key=b.dataset.strategy;state.driverStrategies[seat][key]=b.dataset.value;renderHQ()};
  el('startSeason').onclick=async()=>{if(Math.abs(invested()-budgetTotal())>.001)return;if(state.halftime){show('seasonPage');await renderSeason();return}let btn=el('startSeason');btn.disabled=true;btn.textContent='BUILDING THE GRID…';await loadRivals();if(!state.weatherSeed)state.weatherSeed=Math.floor(Math.random()*1000000)+117;btn.textContent='START CHAMPIONSHIP →';show('seasonPage');await renderSeason({skipTrack:state.mode==='blitz'});};
- el('tyrePanel').onchange=e=>{const sel=e.target.closest('[data-tyre-seat]');if(!sel||racing||!['20000','10000'].includes(state.mode))return;state.tyrePlans[Number(sel.dataset.tyreSeat)]=sel.value;save()};el('trackTheme').onchange=()=>{state.theme=el('trackTheme').value;document.body.dataset.theme=state.theme;setTrackStyle();save()};el('raceBtn').onclick=beginRace;el('skipRace').onclick=finaliseRace;el('nextRace').onclick=nextRace;
+ el('tyrePanel').onclick=e=>{if(e.target.closest('#startWithTyres')&&!racing&&state.pendingQuali?.round===CAL[state.round]?.round)beginRace()};el('tyrePanel').onchange=e=>{
+  const sel=e.target.closest('[data-plan-seat]');if(!sel||racing||!isManualTyres()||state.pendingQuali?.round!==CAL[state.round]?.round)return;
+  const seat=Number(sel.dataset.planSeat),weather=forecastFor(CAL[state.round]),race=CAL[state.round],laps=raceLaps();
+  let plan=normalisePlan(state.tyrePlans[seat],weather,race);
+  if(sel.hasAttribute('data-plan-stops')){
+   let stops=Number(sel.value);
+   if(stops===0&&weather.wet!=='Wet'&&weather.wet!=='Showers'){toast('No-stop is mainly for wet races. Two dry compounds are required on a dry track.');}
+   plan.stops=stops;
+   while(plan.compounds.length<stops+1)plan.compounds.push(weather.wet==='Wet'?'W':'H');
+   plan.compounds.length=stops+1;
+   plan.pits=Array.from({length:stops},(_,i)=>Math.round(laps*(i+1)/(stops+1)));
+  }else if(sel.hasAttribute('data-plan-stint'))plan.compounds[Number(sel.dataset.planStint)]=sel.value;
+  else if(sel.hasAttribute('data-plan-pit')){
+   const idx=Number(sel.dataset.planPit);plan.pits[idx]=Number(sel.value);
+   if(plan.stops===2){if(idx===0&&plan.pits[1]<=plan.pits[0]+5)plan.pits[1]=Math.min(laps-6,plan.pits[0]+6);if(idx===1&&plan.pits[0]>=plan.pits[1]-5)plan.pits[0]=Math.max(6,plan.pits[1]-6);}
+  }
+  state.tyrePlans[seat]=normalisePlan(plan,weather,race);save();paintTyres();
+ };el('trackTheme').onchange=()=>{state.theme=el('trackTheme').value;document.body.dataset.theme=state.theme;setTrackStyle();save()};el('raceBtn').onclick=beginRace;el('skipRace').onclick=finaliseRace;el('nextRace').onclick=nextRace;
  el('modalHost').onclick=e=>{if(e.target.id==='modalBackdrop'||e.target.id==='rulesClose'||e.target.id==='cancelReroll'||e.target.id==='endClose')closeModal();if(e.target.id==='endRestart'){closeModal();reset()}if(/^reroll[01]$/.test(e.target.id)){let i=+e.target.id.slice(-1);closeModal();state.rerolls=0;const old=state.drivers[i];state.drivers[i]=null;spinDriverAt(i,[old])}};
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal)closeModal()})}
 load();if(!Array.isArray(state.driverStrategies))state.driverStrategies=DEFAULT_STRATEGIES();if(!state.mode)state.mode='20000';wire();renderDrivers();renderCar();renderHQ();el('trackTheme').value=state.theme;document.body.dataset.theme=state.theme;
