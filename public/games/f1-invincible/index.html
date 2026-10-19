@@ -644,7 +644,25 @@ async function loadTrack(race){el('raceEvents').innerHTML='<div class="race-even
  try{const res=await fetch(url,{signal:AbortSignal.timeout(10000)});if(!res.ok)throw Error('Track asset not found');const txt=await res.text();let xml=new DOMParser().parseFromString(txt,'image/svg+xml');let p=xml.querySelector('path[d]');if(!p)throw Error('Path missing');let view=xml.documentElement.getAttribute('viewBox')||`0 0 ${xml.documentElement.getAttribute('width')||500} ${xml.documentElement.getAttribute('height')||500}`;const d=p.getAttribute('d');el('circuitSvg').setAttribute('viewBox',view);for(let id of ['trackHalo','trackOuter','trackPath'])el(id).setAttribute('d',d);circuitLength=el('trackPath').getTotalLength();setTrackStyle();addMarkers(field().map((c,i)=>({...c,simPos:i})));el('raceEvents').innerHTML=`<div class="race-event">Authentic ${safe(race.city)} circuit layout loaded. Select a race speed.</div>`;}
  catch(e){let text='Circuit map temporarily unavailable. Connect to the internet to load the original SVG artwork.';for(let id of ['trackHalo','trackOuter','trackPath'])el(id).setAttribute('d','');el('carDots').innerHTML='';el('raceEvents').innerHTML=`<div class="race-event">${text}</div>`;circuitLength=0}
 }
-function setTrackStyle(){const co=currentColors();el('trackPath').setAttribute('stroke',co[0]);el('trackHalo').setAttribute('stroke',co[0]);el('trackOuter').setAttribute('stroke',state.theme==='ice'?'#303357':'#132539')}
+// Keep home-country colours faithful, but choose a visible national shade for
+// the main track rather than drawing dark flag colours on a dark background.
+function trackColourLuminance(hex){
+ const rgb=(hex.match(/[0-9a-f]{2}/gi)||[]).slice(0,3).map(h=>parseInt(h,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
+ return (rgb[0]||0)*.2126+(rgb[1]||0)*.7152+(rgb[2]||0)*.0722;
+}
+function setTrackStyle(){
+ const co=currentColors();let main=co[0],outline=state.theme==='ice'?'#303357':'#132539';
+ if(state.theme==='country'){
+  // e.g. Belgium: brilliant flag-yellow track with a red border instead
+  // of an invisible black circuit line.
+  const sorted=[...co].sort((a,b)=>trackColourLuminance(b)-trackColourLuminance(a));
+  if(trackColourLuminance(main)<.32)main=sorted[0];
+  outline=co.find(c=>c!==main&&trackColourLuminance(c)>.13)||sorted[1]||'#53687e';
+ }
+ el('trackPath').setAttribute('stroke',main);
+ el('trackHalo').setAttribute('stroke',main);
+ el('trackOuter').setAttribute('stroke',outline);
+}
 function teamColor(team){const colors=['#ff465d','#ff9d39','#42d6ff','#ae8dff','#52d195','#ffe16e','#e47dfd','#8fd0f3','#ff7666','#a7c6d7'];let hash=0;for(let c of team)hash=(hash*31+c.charCodeAt(0))>>>0;return colors[hash%colors.length]}
 function addMarkers(entries){
  const g=el('carDots');g.innerHTML='';
