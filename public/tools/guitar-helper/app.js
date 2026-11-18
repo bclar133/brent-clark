@@ -139,7 +139,8 @@ const state = {
   tabTimer:null, progressionTimer:null, progressionIndex:-1, progression:[], progressionLoadId:0,
   customChordText:"C, G, Am, F",
   tunerStream:null, tunerFrame:null, tabActive:null,
-  writerSections:[], writerSectionIndex:0, writerColumns:[], writerSelected:null, writerTimers:[], writerPlaying:false, writerStep:0
+  writerSections:[], writerSectionIndex:0, writerColumns:[], writerSelected:null, writerArrangement:[], writerNextSectionId:1,
+  writerTimers:[], writerPlaying:false, writerPlayMode:"", writerStep:0
 };
 const WRITER_DURATIONS={s:.25,e:.5,q:1,dq:1.5,h:2,w:4};
 const WRITER_DURATION_LABELS={s:"1/16",e:"1/8",q:"1/4",dq:"1/4·",h:"1/2",w:"1"};
@@ -163,7 +164,8 @@ const els = {
   writerTitle:$("writerTitle"), writerTempo:$("writerTempo"), writerTempoValue:$("writerTempoValue"),
   writerGrid:$("writerGrid"), writerFret:$("writerFret"), writerTechnique:$("writerTechnique"), writerDuration:$("writerDuration"),
   writerAscii:$("writerAscii"), writerStatus:$("writerStatus"), selectedCellLabel:$("selectedCellLabel"),
-  writerSectionTabs:$("writerSectionTabs"), writerSectionName:$("writerSectionName"), writerBeatCount:$("writerBeatCount")
+  writerSectionTabs:$("writerSectionTabs"), writerSectionName:$("writerSectionName"), writerBeatCount:$("writerBeatCount"),
+  writerArrangement:$("writerArrangement"), writerArrangementSection:$("writerArrangementSection")
 };
 
 function init() {
@@ -767,13 +769,18 @@ function playTab(){
 }
 
 function initWriter(){
-  state.writerSections=[{name:"Intro",columns:makeWriterColumns()}];state.writerSectionIndex=0;state.writerColumns=state.writerSections[0].columns;
+  const intro=makeWriterSection("Intro");state.writerSections=[intro];state.writerArrangement=[intro.id];state.writerSectionIndex=0;state.writerColumns=intro.columns;
   renderWriterSections();renderWriterGrid();syncWriterAscii();
 }
 
 function makeWriterColumns(length=16){return Array.from({length},()=>({duration:"q",notes:{}}));}
+function makeWriterSection(name,columns=makeWriterColumns()){return{id:state.writerNextSectionId++,name,columns};}
 
 function activeWriterSection(){return state.writerSections[state.writerSectionIndex];}
+function arrangedWriterSections(){
+  const sections=new Map(state.writerSections.map(section=>[section.id,section]));
+  return state.writerArrangement.map(id=>sections.get(id)).filter(Boolean);
+}
 
 function setWriterColumns(columns){state.writerColumns=columns;activeWriterSection().columns=columns;}
 
@@ -781,6 +788,35 @@ function renderWriterSections(){
   els.writerSectionTabs.innerHTML=state.writerSections.map((section,index)=>`<button class="writer-section-tab ${index===state.writerSectionIndex?"active":""}" data-writer-section="${index}">${escapeHtml(section.name)}<small>${section.columns.length} beats</small></button>`).join("");
   els.writerSectionName.value=activeWriterSection().name;
   $("deleteWriterSection").disabled=state.writerSections.length===1;
+  renderWriterArrangement();
+}
+
+function renderWriterArrangement(){
+  const arranged=arrangedWriterSections();
+  els.writerArrangement.innerHTML=arranged.map((section,index)=>`<div class="arrangement-item"><button class="arrangement-name" data-arrangement-action="edit" data-arrangement-index="${index}"><small>${index+1}.</small> ${escapeHtml(section.name)}</button><button class="arrangement-action" data-arrangement-action="left" data-arrangement-index="${index}" aria-label="Move ${escapeHtml(section.name)} earlier" ${index===0?"disabled":""}>←</button><button class="arrangement-action" data-arrangement-action="right" data-arrangement-index="${index}" aria-label="Move ${escapeHtml(section.name)} later" ${index===arranged.length-1?"disabled":""}>→</button><button class="arrangement-action arrangement-remove" data-arrangement-action="remove" data-arrangement-index="${index}" aria-label="Remove ${escapeHtml(section.name)} from song order">×</button></div>`).join("");
+  els.writerArrangementSection.innerHTML=state.writerSections.map(section=>`<option value="${section.id}">${escapeHtml(section.name)}</option>`).join("");
+  els.writerArrangementSection.value=String(activeWriterSection().id);
+}
+
+function editArrangementItem(index){
+  const id=state.writerArrangement[index],sectionIndex=state.writerSections.findIndex(section=>section.id===id);
+  if(sectionIndex>=0)selectWriterSection(sectionIndex);
+}
+
+function moveArrangementItem(index,delta){
+  const target=index+delta;if(target<0||target>=state.writerArrangement.length)return;
+  [state.writerArrangement[index],state.writerArrangement[target]]=[state.writerArrangement[target],state.writerArrangement[index]];
+  renderWriterArrangement();syncWriterAscii();els.writerStatus.textContent="Song order updated";
+}
+
+function removeArrangementItem(index){
+  if(state.writerArrangement.length===1){showToast("Keep at least one section in the song order");return;}
+  state.writerArrangement.splice(index,1);renderWriterArrangement();syncWriterAscii();els.writerStatus.textContent="Section removed from song order";
+}
+
+function addArrangementSection(){
+  const id=Number(els.writerArrangementSection.value);if(!state.writerSections.some(section=>section.id===id))return;
+  state.writerArrangement.push(id);renderWriterArrangement();syncWriterAscii();els.writerStatus.textContent="Section added to song order";
 }
 
 function selectWriterSection(index){
@@ -791,13 +827,14 @@ function selectWriterSection(index){
 
 function addWriterSection(){
   stopWrittenTab("");const number=state.writerSections.length+1;
-  state.writerSections.push({name:`Section ${number}`,columns:makeWriterColumns()});selectWriterSection(state.writerSections.length-1);
+  const section=makeWriterSection(`Section ${number}`);state.writerSections.push(section);state.writerArrangement.push(section.id);selectWriterSection(state.writerSections.length-1);
   els.writerSectionName.focus();els.writerSectionName.select();
 }
 
 function deleteWriterSection(){
   if(state.writerSections.length===1){showToast("Keep at least one song section");return;}
-  const removed=activeWriterSection().name;state.writerSections.splice(state.writerSectionIndex,1);state.writerSectionIndex=Math.min(state.writerSectionIndex,state.writerSections.length-1);
+  const removedSection=activeWriterSection(),removed=removedSection.name;state.writerSections.splice(state.writerSectionIndex,1);state.writerArrangement=state.writerArrangement.filter(id=>id!==removedSection.id);state.writerSectionIndex=Math.min(state.writerSectionIndex,state.writerSections.length-1);
+  if(!state.writerArrangement.length)state.writerArrangement=[state.writerSections[0].id];
   state.writerColumns=activeWriterSection().columns;state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Deleted ${removed}`;
 }
 
@@ -861,7 +898,7 @@ function writerSectionAscii(section){
   const cell=note=>{
     const token=writerToken(note);return token?`--${token}${"-".repeat(Math.max(0,3-token.length))}`:"-----";
   };
-  const rhythm=`Rhythm|${section.columns.map(column=>(column.duration+"-----").slice(0,5)).join("")}|`;
+  const rhythm=` R|${section.columns.map(column=>(column.duration+"-----").slice(0,5)).join("")}|`;
   const lines=[];
   for(let display=0;display<state.tuning.length;display++){
     const string=state.tuning.length-1-display,label=SHARP_NAMES[state.tuning[string]%12].replace("♯","#").padStart(2," ");
@@ -870,13 +907,13 @@ function writerSectionAscii(section){
   return rhythm+"\n"+lines.join("\n");
 }
 
-function writerAsciiText(){return state.writerSections.map(section=>`[${section.name}]\n${writerSectionAscii(section)}`).join("\n\n");}
+function writerAsciiText(){return arrangedWriterSections().map(section=>`[${section.name}]\n${writerSectionAscii(section)}`).join("\n\n");}
 
 function syncWriterAscii(){els.writerAscii.value=writerAsciiText();}
 
 function parseWriterBlock(lines,name){
-  const rhythmLine=lines.find(line=>/^\s*Rhythm\|/i.test(line));
-  const tabLines=lines.filter(line=>!/^\s*Rhythm\|/i.test(line)).slice(0,state.tuning.length);
+  const rhythmLine=lines.find(line=>/^\s*(?:Rhythm|R)\|/i.test(line));
+  const tabLines=lines.filter(line=>!/^\s*(?:Rhythm|R)\|/i.test(line)).slice(0,state.tuning.length);
   if(tabLines.length!==state.tuning.length)throw new Error(`${name} needs ${state.tuning.length} tab lines`);
   const bodies=tabLines.map(line=>line.slice(line.indexOf("|")+1).replace(/\|.*$/, ""));
   let columns=[];
@@ -907,7 +944,7 @@ function parseWriterAscii(){
   raw.forEach(line=>{const heading=line.match(/^\s*\[([^\]]+)\]\s*$/);if(heading){if(current.lines.length)groups.push(current);current={name:heading[1].trim()||"Untitled section",lines:[]};sawHeading=true;}else if(line.includes("|"))current.lines.push(line);});
   if(current.lines.length)groups.push(current);
   if(!groups.length)throw new Error("No tab sections found");
-  state.writerSections=groups.map(group=>parseWriterBlock(group.lines,group.name));state.writerSectionIndex=0;state.writerColumns=state.writerSections[0].columns;
+  state.writerSections=groups.map(group=>{const parsed=parseWriterBlock(group.lines,group.name);return makeWriterSection(parsed.name,parsed.columns);});state.writerArrangement=state.writerSections.map(section=>section.id);state.writerSectionIndex=0;state.writerColumns=state.writerSections[0].columns;
   state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=sawHeading?"Song sections applied":"Typed tab applied";
 }
 
@@ -927,17 +964,20 @@ function playWriterNote(note,string,step,durationSeconds,columns,delay=0){
 }
 
 function stopWrittenTab(message="Playback stopped"){
-  state.writerTimers.forEach(clearTimeout);state.writerTimers=[];state.writerPlaying=false;state.writerStep=0;
+  state.writerTimers.forEach(clearTimeout);state.writerTimers=[];state.writerPlaying=false;state.writerPlayMode="";state.writerStep=0;
   $("playWrittenTab").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>Play';
+  $("playWrittenSection").textContent="▶ Play section";
   document.querySelectorAll(".tab-grid-cell.playing").forEach(cell=>cell.classList.remove("playing"));
   if(message)els.writerStatus.textContent=message;
 }
 
-function playWrittenTab(){
+function playWriterSequence(sectionOnly=false){
   if(state.writerPlaying){stopWrittenTab();return;}
-  if(!state.writerSections.some(section=>section.columns.some(column=>Object.keys(column.notes).length))){showToast("Add at least one note first");return;}
-  const sequence=state.writerSections.flatMap((section,sectionIndex)=>section.columns.map((column,step)=>({section,sectionIndex,column,step})));
-  state.writerPlaying=true;state.writerStep=0;$("playWrittenTab").textContent="Stop";
+  const sections=sectionOnly?[activeWriterSection()]:arrangedWriterSections();
+  if(!sections.some(section=>section.columns.some(column=>Object.keys(column.notes).length))){showToast(sectionOnly?"Add at least one note to this section first":"Add at least one note first");return;}
+  const sequence=sections.flatMap(section=>{const sectionIndex=state.writerSections.findIndex(item=>item.id===section.id);return section.columns.map((column,step)=>({section,sectionIndex,column,step}));});
+  state.writerPlaying=true;state.writerPlayMode=sectionOnly?"section":"song";state.writerStep=0;
+  if(sectionOnly)$("playWrittenSection").textContent="■ Stop section";else $("playWrittenTab").textContent="Stop";
   const tick=()=>{
     if(!state.writerPlaying)return;
     if(state.writerStep>=sequence.length){
@@ -953,6 +993,9 @@ function playWrittenTab(){
   tick();
 }
 
+function playWrittenTab(){playWriterSequence(false);}
+function playWrittenSection(){playWriterSequence(true);}
+
 function writerExportText(){return `${els.writerTitle.value.trim()||"Untitled Tab"}\n\n${writerAsciiText()}`;}
 
 function safeFileName(extension){return(els.writerTitle.value.trim()||"untitled-tab").replace(/[^a-z0-9_-]+/gi,"-").replace(/^-|-$/g,"").toLowerCase()+extension;}
@@ -967,7 +1010,7 @@ function pdfEscape(text){return text.replace(/[^\x20-\x7E]/g,"?").replace(/([\\(
 
 function exportWriterPdf(){
   const source=[els.writerTitle.value.trim()||"Untitled Tab",""];
-  state.writerSections.forEach(section=>{
+  arrangedWriterSections().forEach(section=>{
     source.push(`[${section.name}]`,"");
     const parts=writerSectionAscii(section).split("\n").map(line=>{const divider=line.indexOf("|");return{prefix:line.slice(0,divider+1),body:line.slice(divider+1).replace(/\|$/,"")};});
     const maxLength=Math.max(...parts.map(part=>part.body.length));
@@ -1118,7 +1161,9 @@ function bindEvents(){
   });
   els.writerSectionTabs.addEventListener("click",event=>{const button=event.target.closest("[data-writer-section]");if(button)selectWriterSection(Number(button.dataset.writerSection));});
   $("addWriterSection").addEventListener("click",addWriterSection);$("deleteWriterSection").addEventListener("click",deleteWriterSection);
-  els.writerSectionName.addEventListener("input",()=>{const name=els.writerSectionName.value.trim()||"Untitled section";activeWriterSection().name=name;const button=els.writerSectionTabs.querySelector(`[data-writer-section="${state.writerSectionIndex}"]`);if(button&&button.firstChild)button.firstChild.textContent=name;syncWriterAscii();});
+  els.writerArrangement.addEventListener("click",event=>{const button=event.target.closest("[data-arrangement-action]");if(!button)return;const index=Number(button.dataset.arrangementIndex),action=button.dataset.arrangementAction;if(action==="edit")editArrangementItem(index);else if(action==="left")moveArrangementItem(index,-1);else if(action==="right")moveArrangementItem(index,1);else if(action==="remove")removeArrangementItem(index);});
+  $("addArrangementSection").addEventListener("click",addArrangementSection);
+  els.writerSectionName.addEventListener("input",()=>{const name=els.writerSectionName.value.trim()||"Untitled section";activeWriterSection().name=name;const button=els.writerSectionTabs.querySelector(`[data-writer-section="${state.writerSectionIndex}"]`);if(button&&button.firstChild)button.firstChild.textContent=name;renderWriterArrangement();syncWriterAscii();});
   els.writerSectionName.addEventListener("change",()=>{activeWriterSection().name=els.writerSectionName.value.trim()||"Untitled section";renderWriterSections();syncWriterAscii();els.writerStatus.textContent="Section renamed";});
   els.writerSectionName.addEventListener("keydown",event=>{if(event.key==="Enter")els.writerSectionName.blur();});
   $("applyWriterNote").addEventListener("click",applyWriterNote);$("clearWriterNote").addEventListener("click",clearWriterCell);
@@ -1132,7 +1177,7 @@ function bindEvents(){
   $("clearWrittenTab").addEventListener("click",()=>{stopWrittenTab("");setWriterColumns(makeWriterColumns());state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`${activeWriterSection().name} cleared`;});
   $("applyWriterAscii").addEventListener("click",()=>{try{parseWriterAscii();showToast("Typed tab applied");}catch(error){showToast(error.message);}});
   els.writerTempo.addEventListener("input",()=>els.writerTempoValue.textContent=els.writerTempo.value);
-  $("playWrittenTab").addEventListener("click",playWrittenTab);$("exportTabTxt").addEventListener("click",exportWriterTxt);$("exportTabPdf").addEventListener("click",exportWriterPdf);$("openTabViewer").addEventListener("click",openTabViewer);
+  $("playWrittenTab").addEventListener("click",playWrittenTab);$("playWrittenSection").addEventListener("click",playWrittenSection);$("exportTabTxt").addEventListener("click",exportWriterTxt);$("exportTabPdf").addEventListener("click",exportWriterPdf);$("openTabViewer").addEventListener("click",openTabViewer);
   els.startTuner.addEventListener("click",startTuner);
   els.tuningStrings.addEventListener("click",e=>{const b=e.target.closest("[data-string]");if(b)pluckMidi(state.tuning[Number(b.dataset.string)],Number(b.dataset.string));});
 }
