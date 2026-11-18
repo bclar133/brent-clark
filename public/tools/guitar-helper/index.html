@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
   <link rel="apple-touch-icon" href="./guitar-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=20261118-writer">
+  <link rel="stylesheet" href="./styles.css?v=20261118-writer3">
 </head>
 <body data-mode="chords">
   <main class="app-shell">
@@ -154,7 +154,7 @@
 
       <div class="progression-panel panel" id="progressionsPanel">
         <div class="progression-controls">
-          <label class="tempo-field progression-tempo">Tempo <input type="range" min="50" max="180" value="90" id="progressionTempo"><b id="progressionTempoValue">90</b></label>
+          <label class="tempo-field progression-tempo">Tempo <input type="range" min="50" max="400" value="90" id="progressionTempo"><b id="progressionTempoValue">90</b></label>
           <label class="field beats-field">
             <span>Beats per chord</span>
             <select id="progressionBeats"><option value="1">1</option><option value="2" selected>2</option><option value="4">4</option></select>
@@ -193,7 +193,7 @@
             <strong>Tab player</strong>
             <span>Paste standard ASCII tab, then press play.</span>
           </div>
-          <label class="tempo-field">Tempo <input type="range" min="50" max="180" value="90" id="tempoSlider"><b id="tempoValue">90</b></label>
+          <label class="tempo-field">Tempo <input type="range" min="50" max="400" value="90" id="tempoSlider"><b id="tempoValue">90</b></label>
           <button class="secondary-button" id="loadDemo">Load demo</button>
           <button class="secondary-button" id="loadProgressionTab">Load progression</button>
           <button class="primary-button" id="playTab">
@@ -209,7 +209,7 @@
         <div class="writer-toolbar">
           <label class="field writer-title-field"><span>Tab title</span><input id="writerTitle" type="text" value="Untitled Tab" maxlength="80"></label>
           <label class="field"><span>Sound</span><select id="writerInstrument"></select></label>
-          <label class="tempo-field writer-tempo">Tempo <input type="range" min="40" max="220" value="100" id="writerTempo"><b id="writerTempoValue">100</b></label>
+          <label class="tempo-field writer-tempo">Tempo <input type="range" min="40" max="400" value="100" id="writerTempo"><b id="writerTempoValue">100</b></label>
           <label class="loop-field"><input type="checkbox" id="writerLoop"> Loop</label>
           <button class="primary-button" id="playWrittenTab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>Play</button>
         </div>
@@ -237,8 +237,9 @@
             <button class="text-button" id="clearWriterNote">Clear cell</button>
           </div>
           <div class="writer-grid-actions">
-            <button class="secondary-button" id="addWriterBeats">+ 4 beats</button>
-            <button class="secondary-button" id="removeWriterBeats">− 4 beats</button>
+            <label class="field beat-count-field"><span>Number of beats</span><input id="writerBeatCount" type="number" min="1" max="128" value="4"></label>
+            <button class="secondary-button" id="addWriterBeats">Add beats</button>
+            <button class="secondary-button" id="removeWriterBeats">Delete beats</button>
             <button class="text-button" id="clearWrittenTab">Clear tab</button>
           </div>
         </div>
@@ -325,7 +326,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=20261118-writer2"></script>
+  <script src="./app.js?v=20261118-writer3"></script>
 </body>
 </html>
 

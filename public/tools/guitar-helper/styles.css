@@ -215,6 +215,8 @@ input[type="range"] { accent-color: var(--amber); width: 100%; }
 .note-editor { display:grid; grid-template-columns:minmax(150px,1fr) 105px minmax(130px,.8fr) 105px auto auto; gap:8px; align-items:end; margin-top:8px; padding:9px; border:1px solid #3b3832; border-radius:12px; background:#1d1c19; }
 .selected-cell-label { align-self:center; color:var(--muted); font-size:.78rem; }
 .writer-grid-actions,.ascii-actions,.writer-export-bar { display:flex; align-items:center; gap:8px; margin-top:8px; }
+.beat-count-field { width:126px; }
+.beat-count-field input { padding:9px 10px; }
 #writerAscii { width:100%; min-height:220px; resize:vertical; padding:12px; font:600 .8rem/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; white-space:pre; overflow:auto; }
 .ascii-actions span,.writer-export-bar > span { color:var(--muted); font-size:.75rem; }
 .writer-export-bar { justify-content:flex-end; padding-top:9px; border-top:1px solid var(--line); }
