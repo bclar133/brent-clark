@@ -799,7 +799,7 @@ function renderWriterGrid(){
     html+=`<div class="tab-grid-label">${writerStringLabel(string)}</div>`;
     state.writerColumns.forEach((column,step)=>{
       const note=column.notes[string],selected=state.writerSelected&&state.writerSelected.step===step&&state.writerSelected.string===string;
-      html+=`<button class="tab-grid-cell ${note?"filled":""} ${selected?"selected":""}" data-writer-step="${step}" data-writer-string="${string}" aria-label="String ${string+1}, beat ${step+1}${note?`, ${writerToken(note)}`:""}">${writerCellText(note)}</button>`;
+      html+=`<button class="tab-grid-cell ${note?"filled":""} ${selected?"selected":""}" data-writer-step="${step}" data-writer-string="${string}" aria-label="String ${state.tuning.length-string}, beat ${step+1}${note?`, ${writerToken(note)}`:""}">${writerCellText(note)}</button>`;
     });
   }
   els.writerGrid.innerHTML=html;
@@ -926,9 +926,10 @@ function exportWriterTxt(){downloadWriterFile(writerExportText(),"text/plain;cha
 function pdfEscape(text){return text.replace(/[^\x20-\x7E]/g,"?").replace(/([\\()])/g,"\\$1");}
 
 function exportWriterPdf(){
-  const source=writerExportText().split("\n"),wrapped=[];
-  source.forEach(line=>{if(!line.length)wrapped.push("");else for(let i=0;i<line.length;i+=92)wrapped.push(line.slice(i,i+92));});
-  const pages=[];for(let i=0;i<wrapped.length;i+=58)pages.push(wrapped.slice(i,i+58));
+  const tabLines=writerAsciiText().split("\n"),parts=tabLines.map(line=>{const divider=line.indexOf("|");return{prefix:line.slice(0,divider+1),body:line.slice(divider+1).replace(/\|$/,"")};});
+  const maxLength=Math.max(...parts.map(part=>part.body.length)),source=[els.writerTitle.value.trim()||"Untitled Tab",""];
+  for(let start=0;start<maxLength;start+=75){parts.forEach(part=>source.push(part.prefix+part.body.slice(start,start+75)+"|"));source.push("");}
+  const pages=[];for(let i=0;i<source.length;i+=58)pages.push(source.slice(i,i+58));
   const objects=[null,"<< /Type /Catalog /Pages 2 0 R >>",null,"<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>"];
   const kids=[];
   pages.forEach(lines=>{const pageId=objects.length,contentId=pageId+1;kids.push(`${pageId} 0 R`);objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentId} 0 R >>`);const stream=`BT /F1 8 Tf 30 810 Td 10 TL ${lines.map(line=>`(${pdfEscape(line)}) Tj T*`).join(" ")} ET`;objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);});
