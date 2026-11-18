@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
   <link rel="apple-touch-icon" href="./guitar-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=20261118-writer3">
+  <link rel="stylesheet" href="./styles.css?v=20261118-sections">
 </head>
 <body data-mode="chords">
   <main class="app-shell">
@@ -219,6 +219,14 @@
           <button class="writer-view" data-writer-view="ascii" role="tab" aria-selected="false">Type ASCII tab</button>
         </div>
 
+        <div class="writer-sections" aria-label="Song sections">
+          <div class="writer-section-tabs" id="writerSectionTabs"></div>
+          <button class="secondary-button add-section-button" id="addWriterSection">+ Section</button>
+          <label class="field section-name-field"><span>Section name</span><input id="writerSectionName" type="text" list="writerSectionNames" maxlength="30" value="Intro"></label>
+          <datalist id="writerSectionNames"><option>Intro</option><option>Verse</option><option>Pre-Chorus</option><option>Chorus</option><option>Bridge</option><option>Solo</option><option>Breakdown</option><option>Interlude</option><option>Outro</option></datalist>
+          <button class="text-button delete-section-button" id="deleteWriterSection">Delete section</button>
+        </div>
+
         <div class="writer-grid-view active" id="writerGridView">
           <div class="tab-grid-wrap"><div class="tab-grid" id="writerGrid" aria-label="Visual tablature editor"></div></div>
           <div class="note-editor">
@@ -237,7 +245,7 @@
             <button class="text-button" id="clearWriterNote">Clear cell</button>
           </div>
           <div class="writer-grid-actions">
-            <label class="field beat-count-field"><span>Number of beats</span><input id="writerBeatCount" type="number" min="1" max="128" value="4"></label>
+            <label class="field beat-count-field"><span>Number of beats</span><div class="number-stepper"><input id="writerBeatCount" type="text" inputmode="numeric" value="4" aria-label="Number of beats"><div class="stepper-buttons"><button type="button" id="beatCountUp" aria-label="Increase number of beats"><svg viewBox="0 0 12 8" aria-hidden="true"><path d="m2 6 4-4 4 4"/></svg></button><button type="button" id="beatCountDown" aria-label="Decrease number of beats"><svg viewBox="0 0 12 8" aria-hidden="true"><path d="m2 2 4 4 4-4"/></svg></button></div></div></label>
             <button class="secondary-button" id="addWriterBeats">Add beats</button>
             <button class="secondary-button" id="removeWriterBeats">Delete beats</button>
             <button class="text-button" id="clearWrittenTab">Clear tab</button>
@@ -326,7 +334,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=20261118-writer3"></script>
+  <script src="./app.js?v=20261118-sections"></script>
 </body>
 </html>
 

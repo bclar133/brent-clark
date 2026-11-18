@@ -139,7 +139,7 @@ const state = {
   tabTimer:null, progressionTimer:null, progressionIndex:-1, progression:[], progressionLoadId:0,
   customChordText:"C, G, Am, F",
   tunerStream:null, tunerFrame:null, tabActive:null,
-  writerColumns:[], writerSelected:null, writerTimers:[], writerPlaying:false, writerStep:0
+  writerSections:[], writerSectionIndex:0, writerColumns:[], writerSelected:null, writerTimers:[], writerPlaying:false, writerStep:0
 };
 const WRITER_DURATIONS={s:.25,e:.5,q:1,dq:1.5,h:2,w:4};
 const WRITER_DURATION_LABELS={s:"1/16",e:"1/8",q:"1/4",dq:"1/4·",h:"1/2",w:"1"};
@@ -162,7 +162,8 @@ const els = {
   referencePitch:$("referencePitch"), startTuner:$("startTuner"), setupToggle:$("setupToggle"), controlRack:$("controlRack"),
   writerTitle:$("writerTitle"), writerInstrument:$("writerInstrument"), writerTempo:$("writerTempo"), writerTempoValue:$("writerTempoValue"),
   writerGrid:$("writerGrid"), writerFret:$("writerFret"), writerTechnique:$("writerTechnique"), writerDuration:$("writerDuration"),
-  writerAscii:$("writerAscii"), writerStatus:$("writerStatus"), selectedCellLabel:$("selectedCellLabel")
+  writerAscii:$("writerAscii"), writerStatus:$("writerStatus"), selectedCellLabel:$("selectedCellLabel"),
+  writerSectionTabs:$("writerSectionTabs"), writerSectionName:$("writerSectionName"), writerBeatCount:$("writerBeatCount")
 };
 
 function init() {
@@ -768,13 +769,43 @@ function playTab(){
 function initWriter(){
   els.writerInstrument.innerHTML=[...els.instrument.options].map(option=>`<option value="${option.value}">${option.textContent}</option>`).join("");
   els.writerInstrument.value=state.instrument;
-  state.writerColumns=Array.from({length:16},()=>({duration:"q",notes:{}}));
-  renderWriterGrid();syncWriterAscii();
+  state.writerSections=[{name:"Intro",columns:makeWriterColumns()}];state.writerSectionIndex=0;state.writerColumns=state.writerSections[0].columns;
+  renderWriterSections();renderWriterGrid();syncWriterAscii();
+}
+
+function makeWriterColumns(length=16){return Array.from({length},()=>({duration:"q",notes:{}}));}
+
+function activeWriterSection(){return state.writerSections[state.writerSectionIndex];}
+
+function setWriterColumns(columns){state.writerColumns=columns;activeWriterSection().columns=columns;}
+
+function renderWriterSections(){
+  els.writerSectionTabs.innerHTML=state.writerSections.map((section,index)=>`<button class="writer-section-tab ${index===state.writerSectionIndex?"active":""}" data-writer-section="${index}">${escapeHtml(section.name)}<small>${section.columns.length} beats</small></button>`).join("");
+  els.writerSectionName.value=activeWriterSection().name;
+  $("deleteWriterSection").disabled=state.writerSections.length===1;
+}
+
+function selectWriterSection(index){
+  if(!state.writerSections[index])return;
+  stopWrittenTab("");state.writerSectionIndex=index;state.writerColumns=activeWriterSection().columns;state.writerSelected=null;
+  renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Editing ${activeWriterSection().name}`;
+}
+
+function addWriterSection(){
+  stopWrittenTab("");const number=state.writerSections.length+1;
+  state.writerSections.push({name:`Section ${number}`,columns:makeWriterColumns()});selectWriterSection(state.writerSections.length-1);
+  els.writerSectionName.focus();els.writerSectionName.select();
+}
+
+function deleteWriterSection(){
+  if(state.writerSections.length===1){showToast("Keep at least one song section");return;}
+  const removed=activeWriterSection().name;state.writerSections.splice(state.writerSectionIndex,1);state.writerSectionIndex=Math.min(state.writerSectionIndex,state.writerSections.length-1);
+  state.writerColumns=activeWriterSection().columns;state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Deleted ${removed}`;
 }
 
 function refreshWriterInstrument(){
   els.writerInstrument.value=state.instrument;
-  state.writerColumns.forEach(column=>Object.keys(column.notes).forEach(string=>{if(Number(string)>=state.tuning.length)delete column.notes[string];}));
+  state.writerSections.forEach(section=>section.columns.forEach(column=>Object.keys(column.notes).forEach(string=>{if(Number(string)>=state.tuning.length)delete column.notes[string];})));
   state.writerSelected=null;renderWriterGrid();syncWriterAscii();
 }
 
@@ -829,26 +860,27 @@ function clearWriterCell(){
   els.writerFret.value="";els.writerTechnique.value="";renderWriterGrid();syncWriterAscii();
 }
 
-function writerAsciiText(){
+function writerSectionAscii(section){
   const cell=note=>{
     const token=writerToken(note);return token?`--${token}${"-".repeat(Math.max(0,3-token.length))}`:"-----";
   };
-  const rhythm=`Rhythm|${state.writerColumns.map(column=>(column.duration+"-----").slice(0,5)).join("")}|`;
+  const rhythm=`Rhythm|${section.columns.map(column=>(column.duration+"-----").slice(0,5)).join("")}|`;
   const lines=[];
   for(let display=0;display<state.tuning.length;display++){
     const string=state.tuning.length-1-display,label=SHARP_NAMES[state.tuning[string]%12].replace("♯","#").padStart(2," ");
-    lines.push(`${label}|${state.writerColumns.map(column=>cell(column.notes[string])).join("")}|`);
+    lines.push(`${label}|${section.columns.map(column=>cell(column.notes[string])).join("")}|`);
   }
   return rhythm+"\n"+lines.join("\n");
 }
 
+function writerAsciiText(){return state.writerSections.map(section=>`[${section.name}]\n${writerSectionAscii(section)}`).join("\n\n");}
+
 function syncWriterAscii(){els.writerAscii.value=writerAsciiText();}
 
-function parseWriterAscii(){
-  const lines=els.writerAscii.value.split(/\r?\n/).filter(line=>line.includes("|"));
+function parseWriterBlock(lines,name){
   const rhythmLine=lines.find(line=>/^\s*Rhythm\|/i.test(line));
   const tabLines=lines.filter(line=>!/^\s*Rhythm\|/i.test(line)).slice(0,state.tuning.length);
-  if(tabLines.length!==state.tuning.length)throw new Error(`This instrument needs ${state.tuning.length} tab lines`);
+  if(tabLines.length!==state.tuning.length)throw new Error(`${name} needs ${state.tuning.length} tab lines`);
   const bodies=tabLines.map(line=>line.slice(line.indexOf("|")+1).replace(/\|.*$/, ""));
   let columns=[];
   if(rhythmLine){
@@ -868,20 +900,29 @@ function parseWriterAscii(){
       columns[step].notes[string]={fret:match[1].toLowerCase()==="x"?"x":Number(match[1]),technique:match[2]||""};
     }));
   }
-  if(!columns.length)throw new Error("No tab notes found");
+  if(!columns.length)throw new Error(`No beats found in ${name}`);
   columns.forEach(column=>{if(!WRITER_DURATIONS[column.duration])column.duration="q";});
-  state.writerColumns=columns;state.writerSelected=null;renderWriterGrid();syncWriterAscii();els.writerStatus.textContent="Typed tab applied";
+  return{name,columns};
 }
 
-function nextWriterNote(string,after){
-  for(let step=after+1;step<state.writerColumns.length;step++)if(state.writerColumns[step].notes[string])return state.writerColumns[step].notes[string];
+function parseWriterAscii(){
+  const raw=els.writerAscii.value.split(/\r?\n/),groups=[];let current={name:activeWriterSection().name,lines:[]},sawHeading=false;
+  raw.forEach(line=>{const heading=line.match(/^\s*\[([^\]]+)\]\s*$/);if(heading){if(current.lines.length)groups.push(current);current={name:heading[1].trim()||"Untitled section",lines:[]};sawHeading=true;}else if(line.includes("|"))current.lines.push(line);});
+  if(current.lines.length)groups.push(current);
+  if(!groups.length)throw new Error("No tab sections found");
+  state.writerSections=groups.map(group=>parseWriterBlock(group.lines,group.name));state.writerSectionIndex=0;state.writerColumns=state.writerSections[0].columns;
+  state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=sawHeading?"Song sections applied":"Typed tab applied";
+}
+
+function nextWriterNote(string,after,columns){
+  for(let step=after+1;step<columns.length;step++)if(columns[step].notes[string])return columns[step].notes[string];
   return null;
 }
 
-function playWriterNote(note,string,step,durationSeconds,delay=0){
+function playWriterNote(note,string,step,durationSeconds,columns,delay=0){
   const fret=note.fret==="x"?0:Number(note.fret),midi=state.tuning[string]+state.capo+fret;
   pluckMidi(midi,string,delay);
-  const follow=nextWriterNote(string,step),at=delay+Math.min(durationSeconds*.48,.5);
+  const follow=nextWriterNote(string,step,columns),at=delay+Math.min(durationSeconds*.48,.5);
   if(["h","p","/","\\"].includes(note.technique)&&follow&&follow.fret!=="x")pluckMidi(state.tuning[string]+state.capo+Number(follow.fret),string,at);
   else if(note.technique==="b")pluckMidi(midi+2,string,at);
   else if(note.technique==="r")pluckMidi(Math.max(0,midi-2),string,at);
@@ -897,17 +938,19 @@ function stopWrittenTab(message="Playback stopped"){
 
 function playWrittenTab(){
   if(state.writerPlaying){stopWrittenTab();return;}
-  if(!state.writerColumns.some(column=>Object.keys(column.notes).length)){showToast("Add at least one note first");return;}
+  if(!state.writerSections.some(section=>section.columns.some(column=>Object.keys(column.notes).length))){showToast("Add at least one note first");return;}
+  const sequence=state.writerSections.flatMap((section,sectionIndex)=>section.columns.map((column,step)=>({section,sectionIndex,column,step})));
   state.writerPlaying=true;state.writerStep=0;$("playWrittenTab").textContent="Stop";
   const tick=()=>{
     if(!state.writerPlaying)return;
-    if(state.writerStep>=state.writerColumns.length){
+    if(state.writerStep>=sequence.length){
       if($("writerLoop").checked)state.writerStep=0;else{stopWrittenTab("Finished");return;}
     }
-    const step=state.writerStep,column=state.writerColumns[step],seconds=60/Number(els.writerTempo.value)*WRITER_DURATIONS[column.duration];
+    const item=sequence[state.writerStep],{section,sectionIndex,column,step}=item,seconds=60/Number(els.writerTempo.value)*WRITER_DURATIONS[column.duration];
+    if(state.writerSectionIndex!==sectionIndex){state.writerSectionIndex=sectionIndex;state.writerColumns=section.columns;state.writerSelected=null;renderWriterSections();renderWriterGrid();}
     document.querySelectorAll(".tab-grid-cell.playing").forEach(cell=>cell.classList.remove("playing"));
-    Object.entries(column.notes).forEach(([string,note],index)=>{playWriterNote(note,Number(string),step,seconds,index*.012);document.querySelector(`.tab-grid-cell[data-writer-step="${step}"][data-writer-string="${string}"]`)?.classList.add("playing");});
-    els.writerStatus.textContent=`Playing beat ${step+1} of ${state.writerColumns.length}`;state.writerStep++;
+    Object.entries(column.notes).forEach(([string,note],index)=>{playWriterNote(note,Number(string),step,seconds,section.columns,index*.012);document.querySelector(`.tab-grid-cell[data-writer-step="${step}"][data-writer-string="${string}"]`)?.classList.add("playing");});
+    els.writerStatus.textContent=`${section.name} · beat ${step+1} of ${section.columns.length}`;state.writerStep++;
     state.writerTimers.push(setTimeout(tick,seconds*1000));
   };
   tick();
@@ -926,9 +969,13 @@ function exportWriterTxt(){downloadWriterFile(writerExportText(),"text/plain;cha
 function pdfEscape(text){return text.replace(/[^\x20-\x7E]/g,"?").replace(/([\\()])/g,"\\$1");}
 
 function exportWriterPdf(){
-  const tabLines=writerAsciiText().split("\n"),parts=tabLines.map(line=>{const divider=line.indexOf("|");return{prefix:line.slice(0,divider+1),body:line.slice(divider+1).replace(/\|$/,"")};});
-  const maxLength=Math.max(...parts.map(part=>part.body.length)),source=[els.writerTitle.value.trim()||"Untitled Tab",""];
-  for(let start=0;start<maxLength;start+=75){parts.forEach(part=>source.push(part.prefix+part.body.slice(start,start+75)+"|"));source.push("");}
+  const source=[els.writerTitle.value.trim()||"Untitled Tab",""];
+  state.writerSections.forEach(section=>{
+    source.push(`[${section.name}]`,"");
+    const parts=writerSectionAscii(section).split("\n").map(line=>{const divider=line.indexOf("|");return{prefix:line.slice(0,divider+1),body:line.slice(divider+1).replace(/\|$/,"")};});
+    const maxLength=Math.max(...parts.map(part=>part.body.length));
+    for(let start=0;start<maxLength;start+=75){parts.forEach(part=>source.push(part.prefix+part.body.slice(start,start+75)+"|"));source.push("");}
+  });
   const pages=[];for(let i=0;i<source.length;i+=58)pages.push(source.slice(i,i+58));
   const objects=[null,"<< /Type /Catalog /Pages 2 0 R >>",null,"<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>"];
   const kids=[];
@@ -1072,12 +1119,19 @@ function bindEvents(){
     const cell=event.target.closest("[data-writer-step]");if(cell){selectWriterCell(Number(cell.dataset.writerStep),Number(cell.dataset.writerString));return;}
     const beat=event.target.closest("[data-writer-beat]");if(beat){const step=Number(beat.dataset.writerBeat),string=state.writerSelected?.string??state.tuning.length-1;selectWriterCell(step,string);}
   });
+  els.writerSectionTabs.addEventListener("click",event=>{const button=event.target.closest("[data-writer-section]");if(button)selectWriterSection(Number(button.dataset.writerSection));});
+  $("addWriterSection").addEventListener("click",addWriterSection);$("deleteWriterSection").addEventListener("click",deleteWriterSection);
+  els.writerSectionName.addEventListener("change",()=>{activeWriterSection().name=els.writerSectionName.value.trim()||"Untitled section";renderWriterSections();syncWriterAscii();els.writerStatus.textContent="Section renamed";});
+  els.writerSectionName.addEventListener("keydown",event=>{if(event.key==="Enter")els.writerSectionName.blur();});
   $("applyWriterNote").addEventListener("click",applyWriterNote);$("clearWriterNote").addEventListener("click",clearWriterCell);
   els.writerFret.addEventListener("keydown",event=>{if(event.key==="Enter")applyWriterNote();});
   els.writerDuration.addEventListener("change",()=>{if(state.writerSelected){state.writerColumns[state.writerSelected.step].duration=els.writerDuration.value;renderWriterGrid();syncWriterAscii();}});
-  $("addWriterBeats").addEventListener("click",()=>{const amount=Math.max(1,Math.min(128,Number($("writerBeatCount").value)||1));state.writerColumns.push(...Array.from({length:amount},()=>({duration:"q",notes:{}})));renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Added ${amount} beat${amount===1?"":"s"}`;});
-  $("removeWriterBeats").addEventListener("click",()=>{const requested=Math.max(1,Math.min(128,Number($("writerBeatCount").value)||1)),amount=Math.min(requested,state.writerColumns.length-1);if(amount<1){showToast("Keep at least one beat");return;}state.writerColumns.splice(-amount);state.writerSelected=null;renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Deleted ${amount} beat${amount===1?"":"s"}`;});
-  $("clearWrittenTab").addEventListener("click",()=>{stopWrittenTab("");state.writerColumns=Array.from({length:16},()=>({duration:"q",notes:{}}));state.writerSelected=null;renderWriterGrid();syncWriterAscii();els.writerStatus.textContent="Tab cleared";});
+  const adjustBeatCount=delta=>{els.writerBeatCount.value=String(Math.max(1,Math.min(128,(Number(els.writerBeatCount.value)||1)+delta)));};
+  $("beatCountUp").addEventListener("click",()=>adjustBeatCount(1));$("beatCountDown").addEventListener("click",()=>adjustBeatCount(-1));
+  els.writerBeatCount.addEventListener("change",()=>{els.writerBeatCount.value=String(Math.max(1,Math.min(128,Number(els.writerBeatCount.value)||1)));});
+  $("addWriterBeats").addEventListener("click",()=>{const amount=Math.max(1,Math.min(128,Number(els.writerBeatCount.value)||1));state.writerColumns.push(...makeWriterColumns(amount));renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Added ${amount} beat${amount===1?"":"s"} to ${activeWriterSection().name}`;});
+  $("removeWriterBeats").addEventListener("click",()=>{const requested=Math.max(1,Math.min(128,Number(els.writerBeatCount.value)||1)),amount=Math.min(requested,state.writerColumns.length-1);if(amount<1){showToast("Keep at least one beat");return;}state.writerColumns.splice(-amount);state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`Deleted ${amount} beat${amount===1?"":"s"} from ${activeWriterSection().name}`;});
+  $("clearWrittenTab").addEventListener("click",()=>{stopWrittenTab("");setWriterColumns(makeWriterColumns());state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`${activeWriterSection().name} cleared`;});
   $("applyWriterAscii").addEventListener("click",()=>{try{parseWriterAscii();showToast("Typed tab applied");}catch(error){showToast(error.message);}});
   els.writerTempo.addEventListener("input",()=>els.writerTempoValue.textContent=els.writerTempo.value);
   els.writerInstrument.addEventListener("change",()=>{els.instrument.value=els.writerInstrument.value;els.instrument.dispatchEvent(new Event("change"));});

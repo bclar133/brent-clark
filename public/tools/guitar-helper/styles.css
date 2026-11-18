@@ -198,6 +198,12 @@ input[type="range"] { accent-color: var(--amber); width: 100%; }
 .writer-switch { display:inline-flex; align-self:flex-start; padding:3px; border:1px solid #3d3933; border-radius:10px; background:#1b1a18; }
 .writer-view { min-height:34px; padding:5px 12px; border:0; border-radius:7px; color:var(--muted); background:transparent; font-weight:700; font-size:.78rem; }
 .writer-view.active { color:#1b160e; background:var(--amber); }
+.writer-sections { display:grid; grid-template-columns:minmax(220px,1fr) auto minmax(150px,220px) auto; gap:8px; align-items:end; padding:9px; border:1px solid #3b3832; border-radius:12px; background:#1b1a18; }
+.writer-section-tabs { display:flex; gap:6px; align-items:center; overflow-x:auto; padding-bottom:1px; }
+.writer-section-tab { flex:0 0 auto; min-height:38px; padding:7px 12px; border:1px solid #45413b; border-radius:9px; color:var(--muted); background:#25231f; font-weight:700; }
+.writer-section-tab small { display:block; margin-top:2px; font-size:.58rem; font-weight:600; opacity:.72; }
+.writer-section-tab.active { color:#1b160e; border-color:var(--amber-light); background:var(--amber); }
+.section-name-field input { width:100%; border:1px solid #45413b; border-radius:10px; color:var(--ink); background:#25231f; padding:10px 11px; outline:none; }
 .writer-grid-view,.writer-ascii-view { display:none; }
 .writer-grid-view.active,.writer-ascii-view.active { display:block; }
 .tab-grid-wrap { overflow-x:auto; border:1px solid #3b3832; border-radius:13px; background:#171614; }
@@ -216,7 +222,15 @@ input[type="range"] { accent-color: var(--amber); width: 100%; }
 .selected-cell-label { align-self:center; color:var(--muted); font-size:.78rem; }
 .writer-grid-actions,.ascii-actions,.writer-export-bar { display:flex; align-items:center; gap:8px; margin-top:8px; }
 .beat-count-field { width:126px; }
-.beat-count-field input { padding:9px 10px; }
+.number-stepper { display:grid; grid-template-columns:1fr 32px; min-height:42px; overflow:hidden; border:1px solid #45413b; border-radius:10px; background:#25231f; }
+.number-stepper:focus-within { border-color:var(--amber); box-shadow:0 0 0 3px rgba(229,168,61,.12); }
+.number-stepper input { min-width:0; width:100%; border:0; border-radius:0; color:var(--ink); background:transparent; padding:9px 10px; outline:0; box-shadow:none!important; }
+.stepper-buttons { display:grid; grid-template-rows:1fr 1fr; border-left:1px solid #45413b; }
+.stepper-buttons button { display:grid; place-items:center; border:0; color:var(--muted); background:#302e29; padding:0; }
+.stepper-buttons button:first-child { border-bottom:1px solid #45413b; }
+.stepper-buttons button:hover { color:var(--amber-light); background:#3a3630; }
+.stepper-buttons svg { width:11px; height:7px; fill:none; stroke:currentColor; stroke-width:1.8; }
+body[data-mode="writer"] .fretboard-card { display:none; }
 #writerAscii { width:100%; min-height:220px; resize:vertical; padding:12px; font:600 .8rem/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; white-space:pre; overflow:auto; }
 .ascii-actions span,.writer-export-bar > span { color:var(--muted); font-size:.75rem; }
 .writer-export-bar { justify-content:flex-end; padding-top:9px; border-top:1px solid var(--line); }
@@ -406,6 +420,10 @@ dialog strong { color:var(--ink); }
   .writer-toolbar .primary-button { grid-column:2; }
   .writer-switch { width:100%; }
   .writer-view { flex:1; }
+  .writer-sections { grid-template-columns:1fr auto; }
+  .writer-section-tabs { grid-column:1/-1; }
+  .section-name-field { grid-column:1; }
+  .delete-section-button { grid-column:2; }
   .tab-grid { grid-template-columns:42px repeat(var(--writer-steps,16),40px); padding:6px; }
   .tab-grid-label,.tab-grid-beat,.tab-grid-cell { height:31px; }
   .note-editor { grid-template-columns:1fr 1fr; }
@@ -417,7 +435,7 @@ dialog strong { color:var(--ink); }
   .writer-export-bar { display:grid; grid-template-columns:repeat(3,1fr); }
   .writer-export-bar > span { grid-column:1/-1; }
   .writer-export-bar .secondary-button { padding-inline:5px; }
-  body[data-mode="writer"] .fretboard-card, body[data-mode="writer"] footer { display:none; }
+  body[data-mode="writer"] footer { display:none; }
   .tuner-panel.active { gap:10px; padding-top:10px; }
   .tuner-readout { grid-template-columns:64px minmax(0,1fr); gap:9px 11px; padding:11px; border:1px solid #3b3832; border-radius:15px; background:#191917; }
   .tuner-note { width:64px;height:64px;font-size:2.8rem; grid-row:1; }
