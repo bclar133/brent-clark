@@ -160,7 +160,7 @@ const els = {
   progressionSuggestions:$("progressionSuggestions"),
   tunerTarget:$("tunerTarget"), tunerNeedle:$("tunerNeedle"), meterLabel:$("meterLabel"), tuningStrings:$("tuningStrings"),
   referencePitch:$("referencePitch"), startTuner:$("startTuner"), setupToggle:$("setupToggle"), controlRack:$("controlRack"),
-  writerTitle:$("writerTitle"), writerInstrument:$("writerInstrument"), writerTempo:$("writerTempo"), writerTempoValue:$("writerTempoValue"),
+  writerTitle:$("writerTitle"), writerInstrument:$("writerInstrument"), writerTuning:$("writerTuning"), writerTempo:$("writerTempo"), writerTempoValue:$("writerTempoValue"),
   writerGrid:$("writerGrid"), writerFret:$("writerFret"), writerTechnique:$("writerTechnique"), writerDuration:$("writerDuration"),
   writerAscii:$("writerAscii"), writerStatus:$("writerStatus"), selectedCellLabel:$("selectedCellLabel"),
   writerSectionTabs:$("writerSectionTabs"), writerSectionName:$("writerSectionName"), writerBeatCount:$("writerBeatCount")
@@ -769,8 +769,14 @@ function playTab(){
 function initWriter(){
   els.writerInstrument.innerHTML=[...els.instrument.options].map(option=>`<option value="${option.value}">${option.textContent}</option>`).join("");
   els.writerInstrument.value=state.instrument;
+  populateWriterTunings();
   state.writerSections=[{name:"Intro",columns:makeWriterColumns()}];state.writerSectionIndex=0;state.writerColumns=state.writerSections[0].columns;
   renderWriterSections();renderWriterGrid();syncWriterAscii();
+}
+
+function populateWriterTunings(){
+  els.writerTuning.innerHTML=Object.keys(INSTRUMENTS[state.instrument].tunings).map(name=>`<option value="${name}">${name}</option>`).join("");
+  els.writerTuning.value=state.tuningName;
 }
 
 function makeWriterColumns(length=16){return Array.from({length},()=>({duration:"q",notes:{}}));}
@@ -805,6 +811,7 @@ function deleteWriterSection(){
 
 function refreshWriterInstrument(){
   els.writerInstrument.value=state.instrument;
+  populateWriterTunings();
   state.writerSections.forEach(section=>section.columns.forEach(column=>Object.keys(column.notes).forEach(string=>{if(Number(string)>=state.tuning.length)delete column.notes[string];})));
   state.writerSelected=null;renderWriterGrid();syncWriterAscii();
 }
@@ -1136,6 +1143,7 @@ function bindEvents(){
   $("applyWriterAscii").addEventListener("click",()=>{try{parseWriterAscii();showToast("Typed tab applied");}catch(error){showToast(error.message);}});
   els.writerTempo.addEventListener("input",()=>els.writerTempoValue.textContent=els.writerTempo.value);
   els.writerInstrument.addEventListener("change",()=>{els.instrument.value=els.writerInstrument.value;els.instrument.dispatchEvent(new Event("change"));});
+  els.writerTuning.addEventListener("change",()=>{els.tuning.value=els.writerTuning.value;els.tuning.dispatchEvent(new Event("change"));});
   $("playWrittenTab").addEventListener("click",playWrittenTab);$("exportTabTxt").addEventListener("click",exportWriterTxt);$("exportTabPdf").addEventListener("click",exportWriterPdf);$("openTabViewer").addEventListener("click",openTabViewer);
   els.startTuner.addEventListener("click",startTuner);
   els.tuningStrings.addEventListener("click",e=>{const b=e.target.closest("[data-string]");if(b)pluckMidi(state.tuning[Number(b.dataset.string)],Number(b.dataset.string));});
