@@ -1004,6 +1004,67 @@ function downloadWriterFile(content,type,name){
   const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([content],{type}));link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }
 
+function writerProjectData(){
+  return{
+    format:"guitar-helper-song",version:1,savedAt:new Date().toISOString(),
+    title:els.writerTitle.value.trim()||"Untitled Tab",
+    instrument:state.instrument,tuningName:state.tuningName,capo:state.capo,leftHanded:state.lefty,
+    tempo:Number(els.writerTempo.value),loop:$("writerLoop").checked,
+    sections:state.writerSections.map(section=>({id:section.id,name:section.name,columns:section.columns})),
+    arrangement:[...state.writerArrangement]
+  };
+}
+
+function saveWriterProject(){
+  downloadWriterFile(JSON.stringify(writerProjectData(),null,2),"application/json;charset=utf-8",safeFileName(".guitarhelper.json"));
+  showToast("Editable project saved");
+}
+
+function normaliseProjectColumns(rawColumns,stringCount){
+  if(!Array.isArray(rawColumns)||!rawColumns.length||rawColumns.length>512)throw new Error("A section has an invalid number of beats");
+  return rawColumns.map(raw=>{
+    const column={duration:WRITER_DURATIONS[raw?.duration]?raw.duration:"q",notes:{}};
+    if(raw?.notes&&typeof raw.notes==="object")Object.entries(raw.notes).forEach(([key,note])=>{
+      const string=Number(key),fret=note?.fret;
+      if(!Number.isInteger(string)||string<0||string>=stringCount)return;
+      if(fret!=="x"&&(!Number.isInteger(Number(fret))||Number(fret)<0||Number(fret)>24))return;
+      const technique=["","h","p","/","\\","b","r","~"].includes(note?.technique)?note.technique:"";
+      column.notes[string]={fret:fret==="x"?"x":Number(fret),technique:fret==="x"?"":technique};
+    });
+    return column;
+  });
+}
+
+async function loadWriterProject(file){
+  try{
+    const data=JSON.parse(await file.text());
+    if(data?.format!=="guitar-helper-song"||data.version!==1)throw new Error("This is not a Guitar Helper project file");
+    if(!Array.isArray(data.sections)||!data.sections.length||data.sections.length>64)throw new Error("The project has no valid song sections");
+    const instrument=INSTRUMENTS[data.instrument]?data.instrument:"acoustic";
+    els.instrument.value=instrument;els.instrument.dispatchEvent(new Event("change"));
+    if(INSTRUMENTS[instrument].tunings[data.tuningName]){els.tuning.value=data.tuningName;els.tuning.dispatchEvent(new Event("change"));}
+    const used=new Set(),idMap=new Map();let nextId=1;
+    const sections=data.sections.map((raw,index)=>{
+      let sourceId=Number(raw?.id),id=Number.isSafeInteger(sourceId)&&sourceId>0&&!used.has(sourceId)?sourceId:nextId;
+      while(used.has(id))id++;used.add(id);nextId=Math.max(nextId,id+1);idMap.set(String(raw?.id??index),id);
+      return{id,name:String(raw?.name||`Section ${index+1}`).slice(0,30),columns:normaliseProjectColumns(raw?.columns,state.tuning.length)};
+    });
+    const validIds=new Set(sections.map(section=>section.id));
+    let arrangement=Array.isArray(data.arrangement)?data.arrangement.map(id=>idMap.get(String(id))??Number(id)).filter(id=>validIds.has(id)):[];
+    if(!arrangement.length)arrangement=sections.map(section=>section.id);
+    stopWrittenTab("");state.writerSections=sections;state.writerArrangement=arrangement;state.writerNextSectionId=Math.max(...validIds)+1;
+    state.writerSectionIndex=0;state.writerColumns=sections[0].columns;state.writerSelected=null;
+    els.writerTitle.value=String(data.title||"Untitled Tab").slice(0,80);
+    els.writerTempo.value=String(Math.max(40,Math.min(400,Number(data.tempo)||100)));els.writerTempoValue.textContent=els.writerTempo.value;
+    $("writerLoop").checked=Boolean(data.loop);
+    els.capo.value=String(Math.max(0,Math.min(12,Number(data.capo)||0)));els.capo.dispatchEvent(new Event("input"));
+    els.lefty.checked=Boolean(data.leftHanded);els.lefty.dispatchEvent(new Event("change"));
+    renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`${sections.length} section${sections.length===1?"":"s"} imported`;
+    showToast("Editable project imported");
+  }catch(error){showToast(error.message||"Project file could not be imported");}
+  finally{$("writerProjectFile").value="";}
+}
+
 function exportWriterTxt(){downloadWriterFile(writerExportText(),"text/plain;charset=utf-8",safeFileName(".txt"));showToast("TXT exported");}
 
 function pdfEscape(text){return text.replace(/[^\x20-\x7E]/g,"?").replace(/([\\()])/g,"\\$1");}
@@ -1177,7 +1238,10 @@ function bindEvents(){
   $("clearWrittenTab").addEventListener("click",()=>{stopWrittenTab("");setWriterColumns(makeWriterColumns());state.writerSelected=null;renderWriterSections();renderWriterGrid();syncWriterAscii();els.writerStatus.textContent=`${activeWriterSection().name} cleared`;});
   $("applyWriterAscii").addEventListener("click",()=>{try{parseWriterAscii();showToast("Typed tab applied");}catch(error){showToast(error.message);}});
   els.writerTempo.addEventListener("input",()=>els.writerTempoValue.textContent=els.writerTempo.value);
-  $("playWrittenTab").addEventListener("click",playWrittenTab);$("playWrittenSection").addEventListener("click",playWrittenSection);$("exportTabTxt").addEventListener("click",exportWriterTxt);$("exportTabPdf").addEventListener("click",exportWriterPdf);$("openTabViewer").addEventListener("click",openTabViewer);
+  $("playWrittenTab").addEventListener("click",playWrittenTab);$("playWrittenSection").addEventListener("click",playWrittenSection);
+  $("saveWriterProject").addEventListener("click",saveWriterProject);$("importWriterProject").addEventListener("click",()=>$("writerProjectFile").click());
+  $("writerProjectFile").addEventListener("change",event=>{const file=event.target.files?.[0];if(file)loadWriterProject(file);});
+  $("exportTabTxt").addEventListener("click",exportWriterTxt);$("exportTabPdf").addEventListener("click",exportWriterPdf);$("openTabViewer").addEventListener("click",openTabViewer);
   els.startTuner.addEventListener("click",startTuner);
   els.tuningStrings.addEventListener("click",e=>{const b=e.target.closest("[data-string]");if(b)pluckMidi(state.tuning[Number(b.dataset.string)],Number(b.dataset.string));});
 }

@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
   <link rel="apple-touch-icon" href="./guitar-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=20261119-song-order">
+  <link rel="stylesheet" href="./styles.css?v=20261119-project-files">
 </head>
 <body data-mode="chords">
   <main class="app-shell">
@@ -266,6 +266,9 @@
 
         <div class="writer-export-bar">
           <span id="writerStatus">Ready to write</span>
+          <button class="secondary-button" id="saveWriterProject">Save project</button>
+          <button class="secondary-button" id="importWriterProject">Import project</button>
+          <input id="writerProjectFile" type="file" accept=".json,.guitarhelper.json,application/json" hidden>
           <button class="secondary-button" id="exportTabTxt">Export TXT</button>
           <button class="secondary-button" id="exportTabPdf">Export PDF</button>
           <button class="secondary-button" id="openTabViewer">Open viewer</button>
@@ -341,7 +344,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=20261119-song-order"></script>
+  <script src="./app.js?v=20261119-project-files"></script>
 </body>
 </html>
 

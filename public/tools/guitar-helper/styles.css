@@ -450,9 +450,10 @@ dialog strong { color:var(--ink); }
   .writer-grid-actions { flex-wrap:wrap; }
   #writerAscii { min-height:42dvh; font-size:.7rem; }
   .ascii-actions { align-items:flex-start; flex-direction:column; }
-  .writer-export-bar { display:grid; grid-template-columns:repeat(3,1fr); }
+  .writer-export-bar { display:grid; grid-template-columns:repeat(2,1fr); }
   .writer-export-bar > span { grid-column:1/-1; }
   .writer-export-bar .secondary-button { padding-inline:5px; }
+  #openTabViewer { grid-column:1/-1; }
   body[data-mode="writer"] footer { display:none; }
   .tuner-panel.active { gap:10px; padding-top:10px; }
   .tuner-readout { grid-template-columns:64px minmax(0,1fr); gap:9px 11px; padding:11px; border:1px solid #3b3832; border-radius:15px; background:#191917; }
