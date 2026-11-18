@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
   <link rel="apple-touch-icon" href="./guitar-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=20260916-mobile">
+  <link rel="stylesheet" href="./styles.css?v=20261118-writer">
 </head>
 <body data-mode="chords">
   <main class="app-shell">
@@ -79,6 +79,10 @@
           <button class="mode-tab" data-panel="tabs" role="tab" aria-selected="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 3v18m8-18v18"/></svg>
             Tabs
+          </button>
+          <button class="mode-tab" data-panel="writer" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h4L19 8l-4-4L4 15v4Zm9-13 4 4M4 22h16"/></svg>
+            Write
           </button>
           <button class="mode-tab" data-panel="tuner" role="tab" aria-selected="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v5a5 5 0 0 0 10 0V4M5 4h4m6 0h4M12 14v6m-4 0h8"/></svg>
@@ -201,6 +205,57 @@
         <div class="tab-status" id="tabStatus">Ready to play</div>
       </div>
 
+      <div class="writer-panel panel" id="writerPanel">
+        <div class="writer-toolbar">
+          <label class="field writer-title-field"><span>Tab title</span><input id="writerTitle" type="text" value="Untitled Tab" maxlength="80"></label>
+          <label class="field"><span>Sound</span><select id="writerInstrument"></select></label>
+          <label class="tempo-field writer-tempo">Tempo <input type="range" min="40" max="220" value="100" id="writerTempo"><b id="writerTempoValue">100</b></label>
+          <label class="loop-field"><input type="checkbox" id="writerLoop"> Loop</label>
+          <button class="primary-button" id="playWrittenTab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>Play</button>
+        </div>
+
+        <div class="writer-switch" role="tablist" aria-label="Tab writing method">
+          <button class="writer-view active" data-writer-view="grid" role="tab" aria-selected="true">Visual grid</button>
+          <button class="writer-view" data-writer-view="ascii" role="tab" aria-selected="false">Type ASCII tab</button>
+        </div>
+
+        <div class="writer-grid-view active" id="writerGridView">
+          <div class="tab-grid-wrap"><div class="tab-grid" id="writerGrid" aria-label="Visual tablature editor"></div></div>
+          <div class="note-editor">
+            <span class="selected-cell-label" id="selectedCellLabel">Select a string and beat</span>
+            <label class="field"><span>Fret</span><input id="writerFret" type="text" inputmode="numeric" maxlength="2" placeholder="0–24 or x"></label>
+            <label class="field"><span>Technique</span><select id="writerTechnique">
+              <option value="">Normal</option><option value="h">Hammer-on</option><option value="p">Pull-off</option>
+              <option value="/">Slide up</option><option value="\\">Slide down</option><option value="b">Bend</option>
+              <option value="r">Release</option><option value="~">Vibrato</option>
+            </select></label>
+            <label class="field"><span>Length</span><select id="writerDuration">
+              <option value="s">1/16</option><option value="e">1/8</option><option value="q" selected>1/4</option>
+              <option value="dq">Dotted 1/4</option><option value="h">1/2</option><option value="w">Whole</option>
+            </select></label>
+            <button class="secondary-button" id="applyWriterNote">Apply</button>
+            <button class="text-button" id="clearWriterNote">Clear cell</button>
+          </div>
+          <div class="writer-grid-actions">
+            <button class="secondary-button" id="addWriterBeats">+ 4 beats</button>
+            <button class="secondary-button" id="removeWriterBeats">− 4 beats</button>
+            <button class="text-button" id="clearWrittenTab">Clear tab</button>
+          </div>
+        </div>
+
+        <div class="writer-ascii-view" id="writerAsciiView">
+          <textarea id="writerAscii" aria-label="Editable ASCII tablature" spellcheck="false"></textarea>
+          <div class="ascii-actions"><button class="secondary-button" id="applyWriterAscii">Apply typed tab to grid</button><span>Supports 0–24, x, h, p, /, \, b, r and ~.</span></div>
+        </div>
+
+        <div class="writer-export-bar">
+          <span id="writerStatus">Ready to write</span>
+          <button class="secondary-button" id="exportTabTxt">Export TXT</button>
+          <button class="secondary-button" id="exportTabPdf">Export PDF</button>
+          <button class="secondary-button" id="openTabViewer">Open viewer</button>
+        </div>
+      </div>
+
       <div class="tuner-panel panel" id="tunerPanel">
         <div class="tuner-readout">
           <div class="tuner-note" id="tunerNote">—</div>
@@ -263,12 +318,14 @@
       <li><strong>Choose a chord.</strong> Coloured markers show exactly what to play. × means mute; ○ means play open.</li>
       <li><strong>Hear it.</strong> Press “Strum chord”, click a string, or sweep your pointer across the strings.</li>
       <li><strong>Follow tabs.</strong> Paste ordinary tab and the fretboard will light up as it plays.</li>
+      <li><strong>Write tabs.</strong> Build a tab visually or type ASCII, add techniques and timing, then play or export it.</li>
       <li><strong>Play progressions.</strong> Choose a key and pattern, then follow each highlighted chord or load it as tab.</li>
       <li><strong>Tune up.</strong> Allow microphone access and play one clear string at a time.</li>
     </ol>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=20260916-mobile"></script>
+  <script src="./app.js?v=20261118-writer"></script>
 </body>
 </html>
+

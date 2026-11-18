@@ -138,8 +138,11 @@ const state = {
   labelMode:"fingers", muted:false, shape:[], fingers:[], audio:null, audioBus:null,
   tabTimer:null, progressionTimer:null, progressionIndex:-1, progression:[], progressionLoadId:0,
   customChordText:"C, G, Am, F",
-  tunerStream:null, tunerFrame:null, tabActive:null
+  tunerStream:null, tunerFrame:null, tabActive:null,
+  writerColumns:[], writerSelected:null, writerTimers:[], writerPlaying:false, writerStep:0
 };
+const WRITER_DURATIONS={s:.25,e:.5,q:1,dq:1.5,h:2,w:4};
+const WRITER_DURATION_LABELS={s:"1/16",e:"1/8",q:"1/4",dq:"1/4·",h:"1/2",w:"1"};
 const chordSearchMap = new Map();
 let progressionChordChoices=[];
 let progressionSuggestionIndex=-1;
@@ -156,7 +159,10 @@ const els = {
   progressionChords:$("progressionChords"), progressionChordPicker:$("progressionChordPicker"), customProgressionInput:$("customProgressionInput"),
   progressionSuggestions:$("progressionSuggestions"),
   tunerTarget:$("tunerTarget"), tunerNeedle:$("tunerNeedle"), meterLabel:$("meterLabel"), tuningStrings:$("tuningStrings"),
-  referencePitch:$("referencePitch"), startTuner:$("startTuner"), setupToggle:$("setupToggle"), controlRack:$("controlRack")
+  referencePitch:$("referencePitch"), startTuner:$("startTuner"), setupToggle:$("setupToggle"), controlRack:$("controlRack"),
+  writerTitle:$("writerTitle"), writerInstrument:$("writerInstrument"), writerTempo:$("writerTempo"), writerTempoValue:$("writerTempoValue"),
+  writerGrid:$("writerGrid"), writerFret:$("writerFret"), writerTechnique:$("writerTechnique"), writerDuration:$("writerDuration"),
+  writerAscii:$("writerAscii"), writerStatus:$("writerStatus"), selectedCellLabel:$("selectedCellLabel")
 };
 
 function init() {
@@ -166,6 +172,7 @@ function init() {
   renderFretboard();
   updateChord();
   renderProgression(true);
+  initWriter();
   bindEvents();
   primeInstrument();
   registerWebMCP();
@@ -758,6 +765,188 @@ function playTab(){
   playEvent();state.tabTimer=setInterval(()=>{if(i<events.length)playEvent();},beat);
 }
 
+function initWriter(){
+  els.writerInstrument.innerHTML=[...els.instrument.options].map(option=>`<option value="${option.value}">${option.textContent}</option>`).join("");
+  els.writerInstrument.value=state.instrument;
+  state.writerColumns=Array.from({length:16},()=>({duration:"q",notes:{}}));
+  renderWriterGrid();syncWriterAscii();
+}
+
+function refreshWriterInstrument(){
+  els.writerInstrument.value=state.instrument;
+  state.writerColumns.forEach(column=>Object.keys(column.notes).forEach(string=>{if(Number(string)>=state.tuning.length)delete column.notes[string];}));
+  state.writerSelected=null;renderWriterGrid();syncWriterAscii();
+}
+
+function writerStringLabel(stringIndex){
+  return SHARP_NAMES[state.tuning[stringIndex]%12].replace("♯","#")+(stringIndex===state.tuning.length-1?" (high)":"");
+}
+
+function writerToken(note){
+  if(!note)return"";
+  return String(note.fret)+(note.fret==="x"?"":note.technique||"");
+}
+
+function writerCellText(note){return note?writerToken(note):"·";}
+
+function renderWriterGrid(){
+  const steps=state.writerColumns.length;
+  els.writerGrid.style.setProperty("--writer-steps",steps);
+  let html='<div class="tab-grid-label">String</div>';
+  state.writerColumns.forEach((column,index)=>html+=`<button class="tab-grid-beat ${index%4===0?"bar-start":""}" data-writer-beat="${index}" title="${WRITER_DURATION_LABELS[column.duration]}">${index+1}<small>${WRITER_DURATION_LABELS[column.duration]}</small></button>`);
+  for(let display=0;display<state.tuning.length;display++){
+    const string=state.tuning.length-1-display;
+    html+=`<div class="tab-grid-label">${writerStringLabel(string)}</div>`;
+    state.writerColumns.forEach((column,step)=>{
+      const note=column.notes[string],selected=state.writerSelected&&state.writerSelected.step===step&&state.writerSelected.string===string;
+      html+=`<button class="tab-grid-cell ${note?"filled":""} ${selected?"selected":""}" data-writer-step="${step}" data-writer-string="${string}" aria-label="String ${string+1}, beat ${step+1}${note?`, ${writerToken(note)}`:""}">${writerCellText(note)}</button>`;
+    });
+  }
+  els.writerGrid.innerHTML=html;
+}
+
+function selectWriterCell(step,string){
+  state.writerSelected={step,string};
+  const column=state.writerColumns[step],note=column.notes[string];
+  els.writerFret.value=note?note.fret:"";els.writerTechnique.value=note?.technique||"";els.writerDuration.value=column.duration;
+  els.selectedCellLabel.textContent=`${writerStringLabel(string)} string · beat ${step+1}`;
+  renderWriterGrid();els.writerFret.focus();
+}
+
+function applyWriterNote(){
+  if(!state.writerSelected){showToast("Select a cell in the tab grid first");return;}
+  const raw=els.writerFret.value.trim().toLowerCase();
+  if(!/^(x|\d{1,2})$/.test(raw)||raw!=="x"&&Number(raw)>24){showToast("Enter a fret from 0 to 24, or x");return;}
+  const {step,string}=state.writerSelected,column=state.writerColumns[step];
+  column.duration=els.writerDuration.value;
+  column.notes[string]={fret:raw==="x"?"x":Number(raw),technique:raw==="x"?"":els.writerTechnique.value};
+  renderWriterGrid();syncWriterAscii();els.writerStatus.textContent="Tab updated";
+}
+
+function clearWriterCell(){
+  if(!state.writerSelected)return;
+  delete state.writerColumns[state.writerSelected.step].notes[state.writerSelected.string];
+  els.writerFret.value="";els.writerTechnique.value="";renderWriterGrid();syncWriterAscii();
+}
+
+function writerAsciiText(){
+  const cell=note=>{
+    const token=writerToken(note);return token?`--${token}${"-".repeat(Math.max(0,3-token.length))}`:"-----";
+  };
+  const rhythm=`Rhythm|${state.writerColumns.map(column=>(column.duration+"-----").slice(0,5)).join("")}|`;
+  const lines=[];
+  for(let display=0;display<state.tuning.length;display++){
+    const string=state.tuning.length-1-display,label=SHARP_NAMES[state.tuning[string]%12].replace("♯","#").padStart(2," ");
+    lines.push(`${label}|${state.writerColumns.map(column=>cell(column.notes[string])).join("")}|`);
+  }
+  return rhythm+"\n"+lines.join("\n");
+}
+
+function syncWriterAscii(){els.writerAscii.value=writerAsciiText();}
+
+function parseWriterAscii(){
+  const lines=els.writerAscii.value.split(/\r?\n/).filter(line=>line.includes("|"));
+  const rhythmLine=lines.find(line=>/^\s*Rhythm\|/i.test(line));
+  const tabLines=lines.filter(line=>!/^\s*Rhythm\|/i.test(line)).slice(0,state.tuning.length);
+  if(tabLines.length!==state.tuning.length)throw new Error(`This instrument needs ${state.tuning.length} tab lines`);
+  const bodies=tabLines.map(line=>line.slice(line.indexOf("|")+1).replace(/\|.*$/, ""));
+  let columns=[];
+  if(rhythmLine){
+    const rhythmBody=rhythmLine.slice(rhythmLine.indexOf("|")+1).replace(/\|.*$/,"");
+    const rhythmCells=rhythmBody.match(/.{1,5}/g)||[];
+    const count=Math.max(rhythmCells.length,...bodies.map(body=>Math.ceil(body.length/5)));
+    columns=Array.from({length:count},(_,step)=>({duration:(rhythmCells[step]||"q").replace(/-/g,"").trim()||"q",notes:{}}));
+    bodies.forEach((body,display)=>(body.match(/.{1,5}/g)||[]).forEach((chunk,step)=>{
+      const match=chunk.match(/(x|\d{1,2})([hp/\\br~]?)/i);if(!match)return;
+      const string=state.tuning.length-1-display;columns[step].notes[string]={fret:match[1].toLowerCase()==="x"?"x":Number(match[1]),technique:match[2]||""};
+    }));
+  }else{
+    const positions=[...new Set(bodies.flatMap(body=>[...body.matchAll(/(x|\d{1,2})([hp/\\br~]?)/gi)].map(match=>match.index)))].sort((a,b)=>a-b);
+    columns=positions.map(()=>({duration:"q",notes:{}}));
+    bodies.forEach((body,display)=>[...body.matchAll(/(x|\d{1,2})([hp/\\br~]?)/gi)].forEach(match=>{
+      const step=positions.indexOf(match.index),string=state.tuning.length-1-display;
+      columns[step].notes[string]={fret:match[1].toLowerCase()==="x"?"x":Number(match[1]),technique:match[2]||""};
+    }));
+  }
+  if(!columns.length)throw new Error("No tab notes found");
+  columns.forEach(column=>{if(!WRITER_DURATIONS[column.duration])column.duration="q";});
+  state.writerColumns=columns;state.writerSelected=null;renderWriterGrid();syncWriterAscii();els.writerStatus.textContent="Typed tab applied";
+}
+
+function nextWriterNote(string,after){
+  for(let step=after+1;step<state.writerColumns.length;step++)if(state.writerColumns[step].notes[string])return state.writerColumns[step].notes[string];
+  return null;
+}
+
+function playWriterNote(note,string,step,durationSeconds,delay=0){
+  const fret=note.fret==="x"?0:Number(note.fret),midi=state.tuning[string]+state.capo+fret;
+  pluckMidi(midi,string,delay);
+  const follow=nextWriterNote(string,step),at=delay+Math.min(durationSeconds*.48,.5);
+  if(["h","p","/","\\"].includes(note.technique)&&follow&&follow.fret!=="x")pluckMidi(state.tuning[string]+state.capo+Number(follow.fret),string,at);
+  else if(note.technique==="b")pluckMidi(midi+2,string,at);
+  else if(note.technique==="r")pluckMidi(Math.max(0,midi-2),string,at);
+  else if(note.technique==="~"){pluckMidi(midi,string,delay+durationSeconds*.3);pluckMidi(midi,string,delay+durationSeconds*.6);}
+}
+
+function stopWrittenTab(message="Playback stopped"){
+  state.writerTimers.forEach(clearTimeout);state.writerTimers=[];state.writerPlaying=false;state.writerStep=0;
+  $("playWrittenTab").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>Play';
+  document.querySelectorAll(".tab-grid-cell.playing").forEach(cell=>cell.classList.remove("playing"));
+  if(message)els.writerStatus.textContent=message;
+}
+
+function playWrittenTab(){
+  if(state.writerPlaying){stopWrittenTab();return;}
+  if(!state.writerColumns.some(column=>Object.keys(column.notes).length)){showToast("Add at least one note first");return;}
+  state.writerPlaying=true;state.writerStep=0;$("playWrittenTab").textContent="Stop";
+  const tick=()=>{
+    if(!state.writerPlaying)return;
+    if(state.writerStep>=state.writerColumns.length){
+      if($("writerLoop").checked)state.writerStep=0;else{stopWrittenTab("Finished");return;}
+    }
+    const step=state.writerStep,column=state.writerColumns[step],seconds=60/Number(els.writerTempo.value)*WRITER_DURATIONS[column.duration];
+    document.querySelectorAll(".tab-grid-cell.playing").forEach(cell=>cell.classList.remove("playing"));
+    Object.entries(column.notes).forEach(([string,note],index)=>{playWriterNote(note,Number(string),step,seconds,index*.012);document.querySelector(`.tab-grid-cell[data-writer-step="${step}"][data-writer-string="${string}"]`)?.classList.add("playing");});
+    els.writerStatus.textContent=`Playing beat ${step+1} of ${state.writerColumns.length}`;state.writerStep++;
+    state.writerTimers.push(setTimeout(tick,seconds*1000));
+  };
+  tick();
+}
+
+function writerExportText(){return `${els.writerTitle.value.trim()||"Untitled Tab"}\n\n${writerAsciiText()}`;}
+
+function safeFileName(extension){return(els.writerTitle.value.trim()||"untitled-tab").replace(/[^a-z0-9_-]+/gi,"-").replace(/^-|-$/g,"").toLowerCase()+extension;}
+
+function downloadWriterFile(content,type,name){
+  const link=document.createElement("a");link.href=URL.createObjectURL(new Blob([content],{type}));link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+}
+
+function exportWriterTxt(){downloadWriterFile(writerExportText(),"text/plain;charset=utf-8",safeFileName(".txt"));showToast("TXT exported");}
+
+function pdfEscape(text){return text.replace(/[^\x20-\x7E]/g,"?").replace(/([\\()])/g,"\\$1");}
+
+function exportWriterPdf(){
+  const source=writerExportText().split("\n"),wrapped=[];
+  source.forEach(line=>{if(!line.length)wrapped.push("");else for(let i=0;i<line.length;i+=92)wrapped.push(line.slice(i,i+92));});
+  const pages=[];for(let i=0;i<wrapped.length;i+=58)pages.push(wrapped.slice(i,i+58));
+  const objects=[null,"<< /Type /Catalog /Pages 2 0 R >>",null,"<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>"];
+  const kids=[];
+  pages.forEach(lines=>{const pageId=objects.length,contentId=pageId+1;kids.push(`${pageId} 0 R`);objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentId} 0 R >>`);const stream=`BT /F1 8 Tf 30 810 Td 10 TL ${lines.map(line=>`(${pdfEscape(line)}) Tj T*`).join(" ")} ET`;objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);});
+  objects[2]=`<< /Type /Pages /Kids [${kids.join(" ")}] /Count ${pages.length} >>`;
+  let pdf="%PDF-1.4\n",offsets=[0];for(let i=1;i<objects.length;i++){offsets[i]=pdf.length;pdf+=`${i} 0 obj\n${objects[i]}\nendobj\n`;}
+  const xref=pdf.length;pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;for(let i=1;i<objects.length;i++)pdf+=String(offsets[i]).padStart(10,"0")+" 00000 n \n";pdf+=`trailer << /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  downloadWriterFile(pdf,"application/pdf",safeFileName(".pdf"));showToast("PDF exported");
+}
+
+function escapeHtml(value){return value.replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
+
+function openTabViewer(){
+  const viewer=window.open("","_blank");if(!viewer){showToast("Allow pop-ups to open the tab viewer");return;}
+  const title=escapeHtml(els.writerTitle.value.trim()||"Untitled Tab"),tab=escapeHtml(writerAsciiText());
+  viewer.document.write(`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>html,body{margin:0;min-height:100%;background:#0d0d0c;color:#f5efe6;font-family:system-ui,sans-serif}.bar{position:sticky;top:0;z-index:2;display:flex;gap:10px;align-items:center;padding:10px 14px;background:#191917;border-bottom:1px solid #3b3832}.bar strong{margin-right:auto}.bar button{border:1px solid #555047;border-radius:9px;color:#f5efe6;background:#292722;padding:8px 11px;font-weight:700}.bar input{accent-color:#e5a83d}main{padding:clamp(18px,4vw,55px)}h1{color:#ffd178;font-size:clamp(1.4rem,4vw,2.4rem)}pre{width:max-content;min-width:100%;font:700 clamp(.72rem,2.2vw,1rem)/1.55 ui-monospace,monospace;white-space:pre;margin:0} @media(max-width:600px){.bar{flex-wrap:wrap;font-size:.78rem}.bar strong{width:100%}main{padding:16px 10px}}</style></head><body><div class="bar"><strong>${title}</strong><button id="fs">Fullscreen</button><button id="scroll">Start autoscroll</button><label>Speed <input id="speed" type="range" min="1" max="10" value="3"></label></div><main><pre>${tab}</pre></main><script>let running=false,last=0;const btn=document.getElementById('scroll'),speed=document.getElementById('speed');function move(t){if(!running)return;if(last)scrollBy(0,(t-last)/1000*Number(speed.value)*12);last=t;if(scrollY+innerHeight>=document.documentElement.scrollHeight-2){running=false;btn.textContent='Restart autoscroll';last=0;return}requestAnimationFrame(move)}btn.onclick=()=>{if(scrollY+innerHeight>=document.documentElement.scrollHeight-2)scrollTo(0,0);running=!running;btn.textContent=running?'Pause autoscroll':'Start autoscroll';last=0;if(running)requestAnimationFrame(move)};document.getElementById('fs').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();<\/script></body></html>`);
+  viewer.document.close();
+}
+
 function renderTuningChips(){
   els.tuningStrings.innerHTML=state.tuning.map((m,i)=>`<button class="tuning-chip" data-string="${i}">String ${i+1} · <strong>${NOTE_NAMES[m%12]}</strong></button>`).join("");
 }
@@ -804,6 +993,7 @@ function setMode(name){
   closeMobileSetup();
   if(name!=="tabs")stopTab();
   if(name!=="progressions")stopProgression();
+  if(name!=="writer")stopWrittenTab("");
 }
 
 function closeMobileSetup(){
@@ -823,8 +1013,8 @@ function bindEvents(){
   document.addEventListener("pointerdown",event=>{
     if(document.body.classList.contains("setup-open")&&!els.controlRack.contains(event.target)&&!els.setupToggle.contains(event.target))closeMobileSetup();
   });
-  els.instrument.addEventListener("change",()=>{state.instrument=els.instrument.value;renderTunings();renderFretboard();updateChord();renderProgression(true);primeInstrument();});
-  els.tuning.addEventListener("change",()=>{state.tuningName=els.tuning.value;state.tuning=INSTRUMENTS[state.instrument].tunings[state.tuningName];renderFretboard();updateChord();renderProgression(true);});
+  els.instrument.addEventListener("change",()=>{state.instrument=els.instrument.value;renderTunings();renderFretboard();updateChord();renderProgression(true);refreshWriterInstrument();primeInstrument();});
+  els.tuning.addEventListener("change",()=>{state.tuningName=els.tuning.value;state.tuning=INSTRUMENTS[state.instrument].tunings[state.tuningName];renderFretboard();updateChord();renderProgression(true);refreshWriterInstrument();});
   els.capo.addEventListener("input",()=>{state.capo=Number(els.capo.value);els.capoValue.textContent=state.capo?`Fret ${state.capo}`:"Off";updateChord();});
   els.lefty.addEventListener("change",()=>{state.lefty=els.lefty.checked;renderFretboard();paintChord();});
   els.root.addEventListener("change",()=>{state.root=els.root.value;updateChord();});
@@ -872,6 +1062,25 @@ function bindEvents(){
   $("playProgression").addEventListener("click",playProgression);
   $("loadDemo").addEventListener("click",loadDemoTab);$("loadProgressionTab").addEventListener("click",loadProgressionTab);$("playTab").addEventListener("click",playTab);
   els.tempo.addEventListener("input",()=>els.tempoValue.textContent=els.tempo.value);
+  document.querySelectorAll(".writer-view").forEach(button=>button.addEventListener("click",()=>{
+    document.querySelectorAll(".writer-view").forEach(item=>{const active=item===button;item.classList.toggle("active",active);item.setAttribute("aria-selected",String(active));});
+    $("writerGridView").classList.toggle("active",button.dataset.writerView==="grid");$("writerAsciiView").classList.toggle("active",button.dataset.writerView==="ascii");
+    if(button.dataset.writerView==="ascii")syncWriterAscii();
+  }));
+  els.writerGrid.addEventListener("click",event=>{
+    const cell=event.target.closest("[data-writer-step]");if(cell){selectWriterCell(Number(cell.dataset.writerStep),Number(cell.dataset.writerString));return;}
+    const beat=event.target.closest("[data-writer-beat]");if(beat){const step=Number(beat.dataset.writerBeat),string=state.writerSelected?.string??state.tuning.length-1;selectWriterCell(step,string);}
+  });
+  $("applyWriterNote").addEventListener("click",applyWriterNote);$("clearWriterNote").addEventListener("click",clearWriterCell);
+  els.writerFret.addEventListener("keydown",event=>{if(event.key==="Enter")applyWriterNote();});
+  els.writerDuration.addEventListener("change",()=>{if(state.writerSelected){state.writerColumns[state.writerSelected.step].duration=els.writerDuration.value;renderWriterGrid();syncWriterAscii();}});
+  $("addWriterBeats").addEventListener("click",()=>{state.writerColumns.push(...Array.from({length:4},()=>({duration:"q",notes:{}})));renderWriterGrid();syncWriterAscii();});
+  $("removeWriterBeats").addEventListener("click",()=>{if(state.writerColumns.length<=4){showToast("Keep at least four beats");return;}state.writerColumns.splice(-4);state.writerSelected=null;renderWriterGrid();syncWriterAscii();});
+  $("clearWrittenTab").addEventListener("click",()=>{stopWrittenTab("");state.writerColumns=Array.from({length:16},()=>({duration:"q",notes:{}}));state.writerSelected=null;renderWriterGrid();syncWriterAscii();els.writerStatus.textContent="Tab cleared";});
+  $("applyWriterAscii").addEventListener("click",()=>{try{parseWriterAscii();showToast("Typed tab applied");}catch(error){showToast(error.message);}});
+  els.writerTempo.addEventListener("input",()=>els.writerTempoValue.textContent=els.writerTempo.value);
+  els.writerInstrument.addEventListener("change",()=>{els.instrument.value=els.writerInstrument.value;els.instrument.dispatchEvent(new Event("change"));});
+  $("playWrittenTab").addEventListener("click",playWrittenTab);$("exportTabTxt").addEventListener("click",exportWriterTxt);$("exportTabPdf").addEventListener("click",exportWriterPdf);$("openTabViewer").addEventListener("click",openTabViewer);
   els.startTuner.addEventListener("click",startTuner);
   els.tuningStrings.addEventListener("click",e=>{const b=e.target.closest("[data-string]");if(b)pluckMidi(state.tuning[Number(b.dataset.string)],Number(b.dataset.string));});
 }
@@ -894,3 +1103,4 @@ function registerWebMCP(){
 }
 
 init();
+
