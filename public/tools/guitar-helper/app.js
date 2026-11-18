@@ -1121,6 +1121,7 @@ function bindEvents(){
   });
   els.writerSectionTabs.addEventListener("click",event=>{const button=event.target.closest("[data-writer-section]");if(button)selectWriterSection(Number(button.dataset.writerSection));});
   $("addWriterSection").addEventListener("click",addWriterSection);$("deleteWriterSection").addEventListener("click",deleteWriterSection);
+  els.writerSectionName.addEventListener("input",()=>{const name=els.writerSectionName.value.trim()||"Untitled section";activeWriterSection().name=name;const button=els.writerSectionTabs.querySelector(`[data-writer-section="${state.writerSectionIndex}"]`);if(button&&button.firstChild)button.firstChild.textContent=name;syncWriterAscii();});
   els.writerSectionName.addEventListener("change",()=>{activeWriterSection().name=els.writerSectionName.value.trim()||"Untitled section";renderWriterSections();syncWriterAscii();els.writerStatus.textContent="Section renamed";});
   els.writerSectionName.addEventListener("keydown",event=>{if(event.key==="Enter")els.writerSectionName.blur();});
   $("applyWriterNote").addEventListener("click",applyWriterNote);$("clearWriterNote").addEventListener("click",clearWriterCell);
