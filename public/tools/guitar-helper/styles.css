@@ -192,7 +192,7 @@ input[type="range"] { accent-color: var(--amber); width: 100%; }
 
 .writer-panel { display:none; flex-direction:column; gap:10px; }
 .writer-panel.active { display:flex; }
-.writer-toolbar { display:grid; grid-template-columns:minmax(170px,1.25fr) minmax(145px,.8fr) minmax(175px,1fr) auto auto auto; gap:9px; align-items:end; }
+.writer-toolbar { display:grid; grid-template-columns:minmax(260px,1fr) auto auto auto; gap:12px; align-items:end; }
 .writer-title-field input,.note-editor input { width:100%; border:1px solid #45413b; border-radius:10px; color:var(--ink); background:#25231f; padding:10px 11px; outline:none; }
 .writer-tempo { min-height:42px; }
 .writer-switch { display:inline-flex; align-self:flex-start; padding:3px; border:1px solid #3d3933; border-radius:10px; background:#1b1a18; }

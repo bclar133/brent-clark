@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
   <link rel="apple-touch-icon" href="./guitar-icon.png">
-  <link rel="stylesheet" href="./styles.css?v=20261118-tunings">
+  <link rel="stylesheet" href="./styles.css?v=20261119-merged-controls">
 </head>
 <body data-mode="chords">
   <main class="app-shell">
@@ -208,8 +208,6 @@
       <div class="writer-panel panel" id="writerPanel">
         <div class="writer-toolbar">
           <label class="field writer-title-field"><span>Tab title</span><input id="writerTitle" type="text" value="Untitled Tab" maxlength="80"></label>
-          <label class="field"><span>Sound</span><select id="writerInstrument"></select></label>
-          <label class="field writer-tuning-field"><span>Tuning</span><select id="writerTuning"></select></label>
           <label class="tempo-field writer-tempo">Tempo <input type="range" min="40" max="400" value="100" id="writerTempo"><b id="writerTempoValue">100</b></label>
           <label class="loop-field"><input type="checkbox" id="writerLoop"> Loop</label>
           <button class="primary-button" id="playWrittenTab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg>Play</button>
@@ -335,7 +333,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=20261118-tunings"></script>
+  <script src="./app.js?v=20261119-merged-controls"></script>
 </body>
 </html>
 
